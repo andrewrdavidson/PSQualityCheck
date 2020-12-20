@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is a PowerShell module which runs a series of Pester 5 tests to validate code quality against it's rules
+This is a PowerShell module which runs a series of Pester 5 tests to validate code quality against rules
 
 ## Prerequisites
 
