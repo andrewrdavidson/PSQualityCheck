@@ -36,11 +36,11 @@ Copy the files to one of the available module folders:
 
 Basic usage:
 
-Check the folder C:\Scripts:
+Check the folder C:\Scripts and all subfolders beneath it:
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
-Check the folders C:\Scripts and C:\MoreScripts':
+Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
 
@@ -52,7 +52,7 @@ Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1:
 
 `Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1', 'C:\Scripts\Script.ps1')`
 
-Check the file C:\Scripts\Script.ps1 with the extra PSScriptAnalyzer rules used by SonarQube:
+Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules used by SonarQube:
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'`
 
