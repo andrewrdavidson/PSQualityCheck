@@ -73,7 +73,6 @@
         'Get-Token',
         'Get-TokenComponent',
         'Get-TokenMarker',
-        'Show-CheckResultsOutput',
         'Test-HelpForRequiredTokens',
         'Test-HelpForUnspecifiedTokens',
         'Test-HelpTokensCountIsValid',
