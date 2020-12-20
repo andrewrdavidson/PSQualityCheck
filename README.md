@@ -14,7 +14,7 @@ This module requires:
 
 Optional items:
 
-* Extra PSScriptAnalyzer rules used by SonarQube rules are available here: https://github.com/indented-automation/ScriptAnalyzerRules
+* Extra PSScriptAnalyzer rules (used by SonarQube) are available here: https://github.com/indented-automation/ScriptAnalyzerRules
 
 ## Installation
 
