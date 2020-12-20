@@ -23,7 +23,7 @@ Copy the files to one of the available module folders:
 * `C:\Users\<username>\Documents\PowerShell\Modules\PSQualityCheck` ^
 
 * `C:\Users\<username>\Documents\WindowsPowerShell\Modules\PSQualityCheck`
- 
+
 * `C:\Program Files\PowerShell\7\Modules\PSQualityCheck` ^
 
 * `C:\Program Files\WindowsPowerShell\Modules\PSQualityCheck`
@@ -64,7 +64,11 @@ This will display a summary of the checks performed (example below uses sample d
 
 ## Pester Tests
 
-A list of the Pester tests is will be available shortly in the wiki
+A quick description of the available Pester tests
+
+[Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
+
+[Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
 
 ## Tests
 
