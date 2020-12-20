@@ -209,13 +209,6 @@ Describe "Script Tests" {
 
             }
 
-            # TODO: make sure that Set-StrictMode -Version latest is set in the script?
-            # TODO: (low priority) params match the param block in order?
-
-        }
-
-        if ($PSCmdlet.ParameterSetName -eq "Single") {
-            break
         }
 
     }
