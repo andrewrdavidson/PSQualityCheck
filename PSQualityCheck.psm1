@@ -210,17 +210,95 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('ShowCheckResults')) {
 
-        $showCheckResultsOutputSplat = @{
-            'ModulesToTestCount' = $modulesToTest.Count
-            'ExtractedScriptsToTestCount' = $extractedScriptsToTest.Count
-            'ScriptsToTestCount' = $scriptsToTest.Count
-            'ModuleResults' = $moduleResults
-            'ExtractionResults' = $extractionResults
-            'ExtractedScriptResults' = $extractedScriptResults
-            'ScriptResults' = $scriptResults
+        $qualityCheckResults = @()
+        $filesTested = $total = $passed = $failed = $skipped = 0
+
+        if ($null -ne $moduleResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = 'Module Tests'
+                'Files Tested' = $ModulesToTestCount
+                'Total' = $moduleResults.TotalCount
+                'Passed' = $moduleResults.PassedCount
+                'Failed' = $moduleResults.FailedCount
+                'Skipped' = $moduleResults.SkippedCount
+            }
+            $filesTested += $ModulesToTestCount
+            $total += $moduleResults.TotalCount
+            $passed += $moduleResults.PassedCount
+            $failed += $moduleResults.FailedCount
+            $skipped += $moduleResults.SkippedCount
+        }
+        if ($null -ne $extractionResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = 'Extracting functions'
+                'Files Tested' = $ModulesToTestCount
+                'Total' = $extractionResults.TotalCount
+                'Passed' = $extractionResults.PassedCount
+                'Failed' = $extractionResults.FailedCount
+                'Skipped' = $extractionResults.SkippedCount
+            }
+            $total += $extractionResults.TotalCount
+            $passed += $extractionResults.PassedCount
+            $failed += $extractionResults.FailedCount
+            $skipped += $extractionResults.SkippedCount
+        }
+        if ($null -ne $extractedScriptResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = 'Extracted function script tests'
+                'Files Tested' = $extractedScriptsToTestCount
+                'Total' = $extractedScriptResults.TotalCount
+                'Passed' = $extractedScriptResults.PassedCount
+                'Failed' = $extractedScriptResults.FailedCount
+                'Skipped' = $extractedScriptResults.SkippedCount
+            }
+            $filesTested += $extractedScriptsToTestCount
+            $total += $extractedScriptResults.TotalCount
+            $passed += $extractedScriptResults.PassedCount
+            $failed += $extractedScriptResults.FailedCount
+            $skipped += $extractedScriptResults.SkippedCount
+        }
+        if ($null -ne $scriptResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = "Script Tests"
+                'Files Tested' = $scriptsToTestCount
+                'Total' = $scriptResults.TotalCount
+                'Passed' = $scriptResults.PassedCount
+                'Failed' = $scriptResults.FailedCount
+                'Skipped' = $scriptResults.SkippedCount
+            }
+            $filesTested += $scriptsToTestCount
+            $total += $scriptResults.TotalCount
+            $passed += $scriptResults.PassedCount
+            $failed += $scriptResults.FailedCount
+            $skipped += $scriptResults.SkippedCount
+        }
+        $qualityCheckResults +=
+        @{
+            'Test' = "Total"
+            'Files Tested' = $filesTested
+            'Total' = $total
+            'Passed' = $passed
+            'Failed' = $failed
+            'Skipped' = $skipped
         }
 
-        Show-CheckResultsOutput @showCheckResultsOutputSplat
+        # This works on PS5
+        $qualityCheckResults | ForEach-Object {
+            [PSCustomObject]@{
+                'Test' = $_.Test
+                'Files Tested' = $_.'Files Tested'
+                'Total' = $_.total
+                'Passed' = $_.passed
+                'Failed' = $_.failed
+                'Skipped' = $_.skipped
+            } } | Format-Table -AutoSize
+
+        # This works on PS7 not on PS5
+        # $qualityCheckResults | Select-Object Name, 'Files Tested', Total, Passed, Failed, Skipped | Format-Table -AutoSize
 
     }
 
