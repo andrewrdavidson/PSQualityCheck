@@ -54,12 +54,13 @@ This will display a summary of the checks performed (example below uses sample d
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
 
-    Name                            Files Tested Total Passed Failed Skipped
+    Test                            Files Tested Total Passed Failed Skipped
     ----                            ------------ ----- ------ ------ -------
-    Module Tests                               2    14     14      0       0
-    Extracting functions                       2     2      2      0       0
-    Extracted function script tests           22   330    309      0      21
-    Total                                     24   346    325      0      21
+    Module Tests                               3    21     20      1       0
+    Extracting functions                       3     3      3      0       0
+    Extracted function script tests           13   195     64    114      17
+    Script Tests                              17   255     78    152      25
+    Total                                     33   474    165    267      42
 
 ## Pester Tests
 
