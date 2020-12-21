@@ -15,6 +15,7 @@ function Convert-Help {
     [CmdletBinding()]
     [OutputType([HashTable], [System.Exception])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$HelpComment
     )
 
@@ -160,12 +161,14 @@ function Export-FunctionsFromModule {
         A string Path containing the full path to the extraction folder
 
         .EXAMPLE
-        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1'
+        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractionPath 'c:\extract'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$Path,
+        [parameter(Mandatory = $true)]
         [string]$FunctionExtractPath
     )
 
@@ -267,6 +270,7 @@ function Get-FileContent {
     [CmdletBinding()]
     [OutputType([System.String[]])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$File
     )
 
@@ -344,7 +348,9 @@ function Get-FileList {
     [CmdletBinding()]
     [OutputType([System.String[]])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$Path,
+        [parameter(Mandatory = $true)]
         [string]$Extension
     )
 
@@ -387,7 +393,9 @@ function Get-FunctionCount {
     [CmdletBinding()]
     [OutputType([Int[]])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$ModuleFile,
+        [parameter(Mandatory = $true)]
         [string]$ManifestFile
     )
 
@@ -451,6 +459,7 @@ function Get-ParsedContent {
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$Content
     )
 
@@ -479,6 +488,7 @@ function Get-ParsedFile {
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
+        [parameter(Mandatory = $true)]
         [string]$Path
     )
 
@@ -517,6 +527,7 @@ function Get-ScriptParameters {
     [OutputType([System.Exception], [HashTable])]
     param
     (
+        [parameter(Mandatory = $true)]
         [String]$Content
     )
 
@@ -599,8 +610,11 @@ function Get-Token {
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
+        [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFileContent,
+        [parameter(Mandatory = $true)]
         [string]$Type,
+        [parameter(Mandatory = $true)]
         [string]$Content
     )
 
@@ -632,7 +646,9 @@ function Get-TokenComponent {
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
+        [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFileContent,
+        [parameter(Mandatory = $true)]
         [int]$StartLine
     )
 
@@ -669,8 +685,11 @@ function Get-TokenMarker {
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
+        [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFileContent,
+        [parameter(Mandatory = $true)]
         [string]$Type,
+        [parameter(Mandatory = $true)]
         [string]$Content
     )
 
@@ -702,6 +721,7 @@ function Test-HelpForRequiredTokens {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
+        [parameter(Mandatory = $true)]
         [HashTable]$HelpTokens
     )
 
@@ -768,6 +788,7 @@ function Test-HelpForUnspecifiedTokens {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
+        [parameter(Mandatory = $true)]
         [HashTable]$HelpTokens
     )
 
@@ -842,6 +863,7 @@ function Test-HelpTokensCountIsValid {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
+        [parameter(Mandatory = $true)]
         [HashTable]$HelpTokens
     )
 
@@ -933,7 +955,9 @@ function Test-HelpTokensParamsMatch {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.String[]])]
     param (
+        [parameter(Mandatory = $true)]
         [HashTable]$HelpTokens,
+        [parameter(Mandatory = $true)]
         [PSCustomObject]$ParameterVariables
     )
 
@@ -1025,6 +1049,7 @@ function Test-HelpTokensTextIsValid {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
+        [parameter(Mandatory = $true)]
         [HashTable]$HelpTokens
     )
 
@@ -1084,7 +1109,9 @@ function Test-ImportModuleIsValid {
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param(
+        [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFile,
+        [parameter(Mandatory = $true)]
         [System.Object[]]$ImportModuleTokens
     )
 
@@ -1151,6 +1178,7 @@ function Test-ParameterVariablesHaveType {
     [OutputType([System.Exception], [System.Void])]
     param
     (
+        [parameter(Mandatory = $true)]
         [HashTable]$ParameterVariables
     )
 
