@@ -399,46 +399,75 @@ function Get-FunctionCount {
         [string]$ManifestFile
     )
 
+    try {
+        if (Test-Path -Path $ManifestFile) {
+            $ExportedCommands = @((Test-ModuleManifest -Path $ManifestFile).ExportedCommands)
+            $ExportedCommandsCount = $ExportedCommands.Count
+        }
+        else {
+            throw "Manifest file doesn't exist"
+        }
+    }
+    catch {
+        $ExportedCommands = @()
+        $ExportedCommandsCount = 0
+    }
+    try {
+        if (Test-Path -Path $ModuleFile) {
+            ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
+        }
+        else {
+            throw "Module file doesn't exist"
+        }
+    }
+    catch {
+        $ParsedModule = @()
+        $ParserErrors = 1
+    }
+
     $CommandFoundInModuleCount = 0
     $CommandFoundInManifestCount = 0
-    $CommandInModule = 0
+    $CommandInModuleCount = 0
 
-    $ExportedCommands = (Test-ModuleManifest -Path $ManifestFile).ExportedCommands
+    if ( -not ([string]::IsNullOrEmpty($ParsedModule))) {
 
-    ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
+        foreach ($ExportedCommand in $ExportedCommands.Keys) {
 
-    foreach ($ExportedCommand in $ExportedCommands.Keys) {
+            if ( ($ParsedModule | Where-Object { $_.Type -eq "CommandArgument" -and $_.Content -eq $ExportedCommand })) {
 
-        if ( ($ParsedModule | Where-Object { $_.Type -eq "CommandArgument" -and $_.Content -eq $ExportedCommand })) {
+                $CommandFoundInModuleCount++
 
-            $CommandFoundInModuleCount++
+            }
+
+        }
+
+        $functionNames = @()
+
+        $functionKeywords = ($ParsedModule | Where-Object { $_.Type -eq "Keyword" -and $_.Content -eq "function" })
+        $functionKeywords | ForEach-Object {
+
+            $functionLineNo = $_.StartLine
+            $functionNames += ($ParsedModule | Where-Object { $_.Type -eq "CommandArgument" -and $_.StartLine -eq $functionLineNo })
+
+        }
+    }
+
+    if ($ExportedCommandsCount -ge 1) {
+
+        $functionNames | ForEach-Object {
+
+            $CommandInModuleCount++
+            if ($ExportedCommands.ContainsKey($_.Content)) {
+
+                $CommandFoundInManifestCount++
+
+            }
 
         }
 
     }
 
-    $functionNames = @()
-
-    $functionKeywords = ($ParsedModule | Where-Object { $_.Type -eq "Keyword" -and $_.Content -eq "function" })
-    $functionKeywords | ForEach-Object {
-
-        $functionLineNo = $_.StartLine
-        $functionNames += ($ParsedModule | Where-Object { $_.Type -eq "CommandArgument" -and $_.StartLine -eq $functionLineNo })
-
-    }
-
-    $functionNames | ForEach-Object {
-
-        $CommandInModule++
-        if ($ExportedCommands.ContainsKey($_.Content)) {
-
-            $CommandFoundInManifestCount++
-
-        }
-
-    }
-
-    return ($ExportedCommands.Count, $CommandFoundInModuleCount, $CommandInModule, $CommandFoundInManifestCount)
+    return ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModule, $CommandFoundInManifestCount)
 
 }
 
