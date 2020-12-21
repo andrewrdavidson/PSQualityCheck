@@ -457,16 +457,18 @@ function Get-ParsedContent {
         ($ParsedModule, $ParserErrorCount) = Get-ParsedContent -Content $fileContent
     #>
     [CmdletBinding()]
-    [OutputType([System.Object[]])]
+    [OutputType([System.Object[]], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
         [string]$Content
     )
 
-    $ParserErrors = $null
-    $ParsedModule = [System.Management.Automation.PSParser]::Tokenize($Content, [ref]$ParserErrors)
+    if (-not ([string]::IsNullOrEmpty($Content))) {
+        $ParserErrors = $null
+        $ParsedModule = [System.Management.Automation.PSParser]::Tokenize($Content, [ref]$ParserErrors)
 
-    return $ParsedModule, ($ParserErrors.Count)
+        return $ParsedModule, ($ParserErrors.Count)
+    }
 
 }
 
