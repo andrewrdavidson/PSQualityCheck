@@ -217,13 +217,13 @@ function Invoke-PSQualityCheck {
             $qualityCheckResults +=
             @{
                 'Test' = 'Module Tests'
-                'Files Tested' = $ModulesToTestCount
+                'Files Tested' = $ModulesToTest.Count
                 'Total' = $moduleResults.TotalCount
                 'Passed' = $moduleResults.PassedCount
                 'Failed' = $moduleResults.FailedCount
                 'Skipped' = $moduleResults.SkippedCount
             }
-            $filesTested += $ModulesToTestCount
+            $filesTested += $ModulesToTest.Count
             $total += $moduleResults.TotalCount
             $passed += $moduleResults.PassedCount
             $failed += $moduleResults.FailedCount
@@ -233,7 +233,7 @@ function Invoke-PSQualityCheck {
             $qualityCheckResults +=
             @{
                 'Test' = 'Extracting functions'
-                'Files Tested' = $ModulesToTestCount
+                'Files Tested' = $ModulesToTest.Count
                 'Total' = $extractionResults.TotalCount
                 'Passed' = $extractionResults.PassedCount
                 'Failed' = $extractionResults.FailedCount
@@ -248,13 +248,13 @@ function Invoke-PSQualityCheck {
             $qualityCheckResults +=
             @{
                 'Test' = 'Extracted function script tests'
-                'Files Tested' = $extractedScriptsToTestCount
+                'Files Tested' = $extractedScriptsToTest.Count
                 'Total' = $extractedScriptResults.TotalCount
                 'Passed' = $extractedScriptResults.PassedCount
                 'Failed' = $extractedScriptResults.FailedCount
                 'Skipped' = $extractedScriptResults.SkippedCount
             }
-            $filesTested += $extractedScriptsToTestCount
+            $filesTested += $extractedScriptsToTest.Count
             $total += $extractedScriptResults.TotalCount
             $passed += $extractedScriptResults.PassedCount
             $failed += $extractedScriptResults.FailedCount
@@ -264,13 +264,13 @@ function Invoke-PSQualityCheck {
             $qualityCheckResults +=
             @{
                 'Test' = "Script Tests"
-                'Files Tested' = $scriptsToTestCount
+                'Files Tested' = $scriptsToTest.Count
                 'Total' = $scriptResults.TotalCount
                 'Passed' = $scriptResults.PassedCount
                 'Failed' = $scriptResults.FailedCount
                 'Skipped' = $scriptResults.SkippedCount
             }
-            $filesTested += $scriptsToTestCount
+            $filesTested += $scriptsToTest.Count
             $total += $scriptResults.TotalCount
             $passed += $scriptResults.PassedCount
             $failed += $scriptResults.FailedCount
@@ -295,7 +295,8 @@ function Invoke-PSQualityCheck {
                 'Passed' = $_.passed
                 'Failed' = $_.failed
                 'Skipped' = $_.skipped
-            } } | Format-Table -AutoSize
+            }
+        } | Format-Table -AutoSize
 
         # This works on PS7 not on PS5
         # $qualityCheckResults | Select-Object Name, 'Files Tested', Total, Passed, Failed, Skipped | Format-Table -AutoSize

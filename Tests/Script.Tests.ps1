@@ -17,7 +17,14 @@ Describe "Script Tests" {
             # This needs to get the content of the file or the content of the function inside the file
             $fileContent = Get-FileContent -File $scriptFile
 
-            ($ParsedFile, $ErrorCount) = Get-ParsedContent -Content $fileContent
+            if (-not([string]::IsNullOrEmpty($fileContent))) {
+                ($ParsedFile, $ErrorCount) = Get-ParsedContent -Content $fileContent
+            }
+            else {
+                Write-Warning "File is empty"
+                $ParsedFile = $null
+                $ErrorCount = 1
+            }
 
             It "check script has valid PowerShell syntax" -TestCases @{ 'ErrorCount' = $ErrorCount } {
 
