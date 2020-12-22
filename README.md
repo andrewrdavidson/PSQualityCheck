@@ -22,17 +22,19 @@ Optional items:
 
 ## Installation
 
-Copy the files to one of the available module folders:
+Copy the files to **one** of the available module folders:
 
-* `C:\Users\<username>\Documents\PowerShell\Modules\PSQualityCheck` ^
+__For PowerShell 5.x__
 
 * `C:\Users\<username>\Documents\WindowsPowerShell\Modules\PSQualityCheck`
 
-* `C:\Program Files\PowerShell\7\Modules\PSQualityCheck` ^
-
 * `C:\Program Files\WindowsPowerShell\Modules\PSQualityCheck`
 
-^ for PowerShell 7
+__For PowerShell 7.x__
+
+* `C:\Users\<username>\Documents\PowerShell\Modules\PSQualityCheck`
+
+* `C:\Program Files\PowerShell\7\Modules\PSQualityCheck`
 
 ## Usage
 
