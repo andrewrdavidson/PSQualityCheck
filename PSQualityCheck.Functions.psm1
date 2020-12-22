@@ -401,8 +401,7 @@ function Get-FunctionCount {
 
     try {
         if (Test-Path -Path $ManifestFile) {
-            $ExportedCommands = @((Test-ModuleManifest -Path $ManifestFile).ExportedCommands)
-            $ExportedCommandsCount = $ExportedCommands.Count
+            $ExportedCommandsCount = (Test-ModuleManifest -Path $ManifestFile).ExportedCommands.Count
         }
         else {
             throw "Manifest file doesn't exist"
@@ -467,7 +466,7 @@ function Get-FunctionCount {
 
     }
 
-    return ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModule, $CommandFoundInManifestCount)
+    return ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount)
 
 }
 
