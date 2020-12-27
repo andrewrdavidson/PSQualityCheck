@@ -86,3 +86,7 @@ Tested on:
 
 * PowerShell 7.1.0 on Windows 10
 * PowerShell 5.1 on Windows 10
+
+## Source
+
+Source is currently available here: [source](https://github.com/andrewrdavidson/powershell-quality-checks))
