@@ -22,6 +22,14 @@ Optional items:
 
 ## Installation
 
+__Preferred Method__
+
+From the PSGallery
+
+`Install-Module -Name PSQualityCheck`
+
+__Manual Installation__
+
 Copy the files to **one** of the available module folders:
 
 __For PowerShell 5.x__
