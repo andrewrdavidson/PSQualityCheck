@@ -759,14 +759,14 @@ function Test-HelpForRequiredTokens {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1")) {
+        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1"))
+            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
 
         }
         else {
 
-            throw "Unable to load Tests\HelpElementRules.psd1"
+            throw "Unable to load Checks\HelpElementRules.psd1"
 
         }
 
@@ -826,14 +826,14 @@ function Test-HelpForUnspecifiedTokens {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1")) {
+        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1"))
+            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
 
         }
         else {
 
-            throw "Unable to load Tests\HelpElementRules.psd1"
+            throw "Unable to load Checks\HelpElementRules.psd1"
 
         }
 
@@ -901,14 +901,14 @@ function Test-HelpTokensCountIsValid {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1")) {
+        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Tests\HelpElementRules.psd1"))
+            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
 
         }
         else {
 
-            throw "Unable to load Tests\HelpElementRules.psd1"
+            throw "Unable to load Checks\HelpElementRules.psd1"
 
         }
 
@@ -1239,3 +1239,4 @@ function Test-ParameterVariablesHaveType {
     }
 
 }
+

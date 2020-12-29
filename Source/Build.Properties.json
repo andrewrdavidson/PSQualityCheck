@@ -1,0 +1,37 @@
+{
+    "Author": "Andrew Davidson",
+    "Company": "Andrew Davidson",
+    "Copyright": "(c) Andrew Davidson. All rights reserved.",
+    "Description": {
+        "PSQualityCheck": "This module interfaces to a set of Pester tests that enable the enforcement of quality controls rules on PowerShell scripts and modules.",
+        "PSQualityCheck.Functions": "This module contains supporting functions for PSQualityCheck."
+    },
+    "FileList": {
+        "PSQualityCheck": null,
+        "PSQualityCheck.Functions": [
+            "Checks\\HelpElementRules.psd1"
+        ]
+    },
+    "GUID": {
+        "PSQualityCheck": "9daebff2-9a44-48e4-9d4b-bed18c3c8e4b",
+        "PSQualityCheck.Functions": "5ddfdef7-3985-476d-92d8-e7db35bf960b"
+    },
+    "HelpInfoURI": "https://github.com/andrewrdavidson/PSQualityCheck/wiki",
+    "LicenseUri": "https://github.com/andrewrdavidson/PSQualityCheck/blob/main/LICENSE",
+    "ModuleVersion": "1.0.8",
+    "NestedModules": {
+        "PSQualityCheck": "PSQualityCheck.Functions.psd1",
+        "PSQualityCheck.Functions": null
+    },
+    "PowerShellVersion": "5.0",
+    "ProjectUri": "https://github.com/andrewrdavidson/PSQualityCheck",
+    "Tags": [
+        "powershell",
+        "powershell-module",
+        "tests",
+        "quality",
+        "quality-check",
+        "pester",
+        "pester-tests"
+    ]
+}
