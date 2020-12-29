@@ -14,7 +14,7 @@ function Get-FunctionCount {
         A string containing the Manifest filename
 
         .EXAMPLE
-        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -Module $moduleFile -Manifest $manifestFile
+        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModuleFile $moduleFile -ManifestFile $manifestFile
 
     #>
     [CmdletBinding()]
@@ -28,7 +28,8 @@ function Get-FunctionCount {
 
     try {
         if (Test-Path -Path $ManifestFile) {
-            $ExportedCommandsCount = (Test-ModuleManifest -Path $ManifestFile).ExportedCommands.Count
+            $ExportedCommands = (Test-ModuleManifest -Path $ManifestFile -ErrorAction Stop).ExportedCommands
+            $ExportedCommandsCount = $ExportedCommands.Count
         }
         else {
             throw "Manifest file doesn't exist"
@@ -38,6 +39,7 @@ function Get-FunctionCount {
         $ExportedCommands = @()
         $ExportedCommandsCount = 0
     }
+
     try {
         if (Test-Path -Path $ModuleFile) {
             ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
@@ -80,10 +82,10 @@ function Get-FunctionCount {
 
     if ($ExportedCommandsCount -ge 1) {
 
-        $functionNames | ForEach-Object {
+        foreach ($function in $functionNames) {
 
             $CommandInModuleCount++
-            if ($ExportedCommands.ContainsKey($_.Content)) {
+            if ($ExportedCommands.ContainsKey($function.Content)) {
 
                 $CommandFoundInManifestCount++
 

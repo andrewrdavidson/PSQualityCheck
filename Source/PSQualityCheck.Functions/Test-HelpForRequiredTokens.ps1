@@ -10,7 +10,7 @@ function Test-HelpForRequiredTokens {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpForRequiredTokens -HelpComment $helpComment
+        Test-HelpForRequiredTokens -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

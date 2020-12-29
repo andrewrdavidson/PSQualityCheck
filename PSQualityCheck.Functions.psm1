@@ -161,7 +161,7 @@ function Export-FunctionsFromModule {
         A string Path containing the full path to the extraction folder
 
         .EXAMPLE
-        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractionPath 'c:\extract'
+        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractPath 'c:\extract'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
@@ -346,7 +346,7 @@ function Get-FileList {
         $files = Get-FileList -Path 'c:\folder' -Extension ".ps1"
     #>
     [CmdletBinding()]
-    [OutputType([System.String[]])]
+    [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
         [string]$Path,
@@ -387,7 +387,7 @@ function Get-FunctionCount {
         A string containing the Manifest filename
 
         .EXAMPLE
-        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -Module $moduleFile -Manifest $manifestFile
+        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModuleFile $moduleFile -ManifestFile $manifestFile
 
     #>
     [CmdletBinding()]
@@ -401,7 +401,8 @@ function Get-FunctionCount {
 
     try {
         if (Test-Path -Path $ManifestFile) {
-            $ExportedCommandsCount = (Test-ModuleManifest -Path $ManifestFile).ExportedCommands.Count
+            $ExportedCommands = (Test-ModuleManifest -Path $ManifestFile -ErrorAction Stop).ExportedCommands
+            $ExportedCommandsCount = $ExportedCommands.Count
         }
         else {
             throw "Manifest file doesn't exist"
@@ -411,6 +412,7 @@ function Get-FunctionCount {
         $ExportedCommands = @()
         $ExportedCommandsCount = 0
     }
+
     try {
         if (Test-Path -Path $ModuleFile) {
             ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
@@ -453,10 +455,10 @@ function Get-FunctionCount {
 
     if ($ExportedCommandsCount -ge 1) {
 
-        $functionNames | ForEach-Object {
+        foreach ($function in $functionNames) {
 
             $CommandInModuleCount++
-            if ($ExportedCommands.ContainsKey($_.Content)) {
+            if ($ExportedCommands.ContainsKey($function.Content)) {
 
                 $CommandFoundInManifestCount++
 
@@ -746,7 +748,7 @@ function Test-HelpForRequiredTokens {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpForRequiredTokens -HelpComment $helpComment
+        Test-HelpForRequiredTokens -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -813,7 +815,7 @@ function Test-HelpForUnspecifiedTokens {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpForUnspecifiedTokens -HelpComment $helpComment
+        Test-HelpForUnspecifiedTokens -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -885,7 +887,7 @@ function Test-HelpTokensCountIsValid {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpTokensCountIsValid -HelpComment $helpComment
+        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
 
         .NOTES
         This function will only check the Min/Max counts of required help tokens
@@ -980,7 +982,7 @@ function Test-HelpTokensParamsMatch {
         A object containing the parameters from the param block
 
         .EXAMPLE
-        Test-HelpTokensParamsMatch -HelpComment $helpComment -ParameterVariables $ParameterVariables
+        Test-HelpTokensParamsMatch -HelpTokens $HelpTokens -ParameterVariables $ParameterVariables
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.String[]])]
@@ -1074,7 +1076,7 @@ function Test-HelpTokensTextIsValid {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpTokensTextIsValid -HelpComment $helpComment
+        Test-HelpTokensTextIsValid -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -1134,7 +1136,7 @@ function Test-ImportModuleIsValid {
         An object containing the Import-Module calls found
 
         .EXAMPLE
-        TestImportModuleIsValid -ParsedFile $parsedFile
+        TestImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

@@ -1,3 +1,13 @@
+<#
+    .SYNOPSIS
+    Build the PSQualityCheck modules
+
+    .DESCRIPTION
+    Builds the PSQualityCheck and PSQualityCheck.Functions modules and generates new manifest files
+
+    .EXAMPLE
+    Invoke-Build.ps1
+#>
 [CmdletBinding()]
 [OutputType([System.Void])]
 param (
@@ -82,7 +92,6 @@ foreach ($folder in $sourceScriptFolders) {
         Tags = $buildProperties.Tags
 
         NestedModules = $buildProperties.NestedModules.($folder.Name)
-
 
     }
 
