@@ -95,4 +95,4 @@ Tested on:
 
 ## Source
 
-Source is currently available here: [source](https://github.com/andrewrdavidson/powershell-quality-checks)
+Source is currently available here: [source](https://github.com/andrewrdavidson/PSQualityCheck/tree/main/Source)
