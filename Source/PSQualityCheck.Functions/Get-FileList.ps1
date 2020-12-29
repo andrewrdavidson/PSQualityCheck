@@ -16,7 +16,7 @@ function Get-FileList {
         $files = Get-FileList -Path 'c:\folder' -Extension ".ps1"
     #>
     [CmdletBinding()]
-    [OutputType([System.String[]])]
+    [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
         [string]$Path,
