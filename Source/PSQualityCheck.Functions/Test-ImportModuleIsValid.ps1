@@ -13,7 +13,7 @@ function Test-ImportModuleIsValid {
         An object containing the Import-Module calls found
 
         .EXAMPLE
-        TestImportModuleIsValid -ParsedFile $parsedFile
+        TestImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

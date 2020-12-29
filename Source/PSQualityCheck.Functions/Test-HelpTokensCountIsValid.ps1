@@ -10,7 +10,7 @@ function Test-HelpTokensCountIsValid {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpTokensCountIsValid -HelpComment $helpComment
+        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
 
         .NOTES
         This function will only check the Min/Max counts of required help tokens

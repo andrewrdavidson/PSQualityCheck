@@ -13,7 +13,7 @@ function Export-FunctionsFromModule {
         A string Path containing the full path to the extraction folder
 
         .EXAMPLE
-        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractionPath 'c:\extract'
+        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractPath 'c:\extract'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]

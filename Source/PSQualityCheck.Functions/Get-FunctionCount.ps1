@@ -14,7 +14,7 @@ function Get-FunctionCount {
         A string containing the Manifest filename
 
         .EXAMPLE
-        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -Module $moduleFile -Manifest $manifestFile
+        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModuleFile $moduleFile -ManifestFile $manifestFile
 
     #>
     [CmdletBinding()]

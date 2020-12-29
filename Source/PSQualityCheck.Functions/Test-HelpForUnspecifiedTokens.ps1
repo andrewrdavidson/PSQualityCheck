@@ -10,7 +10,7 @@ function Test-HelpForUnspecifiedTokens {
         A string containing the text of the Help Comment
 
         .EXAMPLE
-        Test-HelpForUnspecifiedTokens -HelpComment $helpComment
+        Test-HelpForUnspecifiedTokens -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
