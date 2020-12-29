@@ -24,7 +24,7 @@ Optional items:
 
 __Preferred Method__
 
-From the PSGallery
+From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
 
@@ -46,29 +46,27 @@ __For PowerShell 7.x__
 
 ## Usage
 
-Basic usage:
-
-Check the folder C:\Scripts and all subfolders beneath it:
+#### Check the folder C:\Scripts and all subfolders beneath it:
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
-Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
+#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
 
-Check the file C:\Scripts\Script.ps1:
+#### Check the file C:\Scripts\Script.ps1:
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'`
 
-Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1:
+#### Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1:
 
 `Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1', 'C:\Scripts\Script.ps1')`
 
-Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules used by SonarQube:
+#### Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules used by SonarQube:
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'`
 
-This will display a summary of the checks performed (example below uses sample data):
+#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed (example below uses sample data):
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
 
