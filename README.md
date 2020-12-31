@@ -22,6 +22,8 @@ Optional items:
 
 * Extra PSScriptAnalyzer rules (used by SonarQube) are available here: https://github.com/indented-automation/ScriptAnalyzerRules
 
+* Extra PSScriptAnalyzer rules (used by VSCode) are available here: https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules
+
 ## Installation
 
 __Preferred Method__
