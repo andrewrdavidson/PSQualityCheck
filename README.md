@@ -14,7 +14,7 @@ Future plans are available here: [Future Plans](https://github.com/andrewrdavids
 
 This module requires:
 
-* PowerShell 5.1 or later
+* PowerShell 5.1 or PowerShell 7.1 or later
 * Pester 5.1 or later
 * PSScriptAnalyzer 1.19.1 or later
 
