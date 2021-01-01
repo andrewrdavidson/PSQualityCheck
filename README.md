@@ -21,7 +21,7 @@ This module requires:
 Optional items:
 
 * Extra PSScriptAnalyzer rules (used by SonarQube) are available here: https://github.com/indented-automation/ScriptAnalyzerRules
-* Extra PSScriptAnalyzer rules (used by VSCode) are available here: https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules (tested against sourc and fails, fixes will need to be made to the code)
+* Extra PSScriptAnalyzer rules (used by VSCode) are available here: https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules
 
 ## Installation
 
@@ -97,8 +97,17 @@ A quick description of the available Pester tests
 
 Tested on:
 
-* PowerShell 7.1.0 on Windows 10
-* PowerShell 5.1 on Windows 10
+|PowerShell Version|OS|Result|
+|---|---|---|
+|7.1.0|Windows 10|Pass
+|5.1|Windows 10|Pass
+
+Tested with:
+|RuleSet|Result|
+|---|---|
+|None|Pass|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules) (used by SonarQube)|Pass|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules) (used by VSCode)|Fail|
 
 ## Source
 
