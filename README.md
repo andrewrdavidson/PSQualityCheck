@@ -55,13 +55,13 @@ Import the module
 
 #### Check the folder C:\Scripts and all subfolders beneath it:
 
-###### Quick Note: This behaviour will change with version 1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-111).
+###### Note: This behaviour will change soon with release 1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-11).
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
 #### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
 
-###### Quick Note: This behaviour will change with version 1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-111).
+###### Note: This behaviour will change soon with release  1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-11).
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
 
