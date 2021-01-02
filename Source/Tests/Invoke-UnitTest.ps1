@@ -14,4 +14,8 @@ Get-ChildItem -Path "..\PSQualityCheck.Functions" -Filter *.ps1 | ForEach-Object
     . $_.FullName
 }
 
+Get-ChildItem -Path "..\PSQualityCheck" -Filter *.ps1 | ForEach-Object {
+    . $_.FullName
+}
+
 $result = Invoke-Pester -Configuration $configuration
