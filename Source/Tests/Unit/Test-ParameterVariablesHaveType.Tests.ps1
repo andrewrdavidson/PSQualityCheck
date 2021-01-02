@@ -28,7 +28,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
         It "should ParameterVariables type be HashTable" {
 
-            (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters['ParameterVariables'].ParameterType.Name | Should -Be 'hashtable'
+            (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters['ParameterVariables'].ParameterType.Name | Should -Be 'HashTable'
 
         }
 
