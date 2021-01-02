@@ -122,7 +122,7 @@ function Convert-Help {
             }
             else {
 
-                if ($numFound -ge 1 -and $line -ne ($commentArray.Count - 1)) {
+                if ($numFound -ge 1 -and $line -lt ($commentArray.Count - 1)) {
 
                     $help += $commentArray[$line]
 
