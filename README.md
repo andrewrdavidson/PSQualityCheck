@@ -98,7 +98,7 @@ A quick description of the available Pester tests
 
 ## Tests
 
-Testing matrix on:
+Testing matrix:
 
 |PowerShell Version|OS|Result|
 |---|---|---|
