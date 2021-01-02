@@ -45,7 +45,9 @@ function Test-ImportModuleIsValid {
             }
 
             # if one of RequiredVersion, MinimumVersion or MaximumVersion is not found
-            if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" ) })) {
+            if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and
+                        ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" )
+                    })) {
 
                 $errString += "Import-Module for '$name' : Missing -RequiredVersion, -MinimumVersion or -MaximumVersion parameter keyword. "
 
