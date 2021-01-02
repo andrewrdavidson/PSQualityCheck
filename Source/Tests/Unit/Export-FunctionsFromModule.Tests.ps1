@@ -4,7 +4,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         $mandatoryParameters = @(
             'Path'
-            'FunctionExtractPath'
+            'ExtractPath'
         )
 
         foreach ($parameter in $mandatoryParameters) {
