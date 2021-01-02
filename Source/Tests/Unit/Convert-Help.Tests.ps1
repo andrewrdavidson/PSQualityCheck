@@ -11,12 +11,24 @@ Describe "Convert-Help.Tests" {
             It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
 
                 # Check whether the parameter exists
-                (Get-Command -Name "Convert-Help").Parameters[$parameter].Name | Should -BeExactly $parameter
+                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Name | Should -BeExactly $parameter
 
                 # Check whether or not it's mandatory
-                (Get-Command -Name "Convert-Help").Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
+                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
 
             }
+
+            It "should $parameter not belong to a parameter set" -TestCases @{ 'parameter' = $parameter } {
+
+                (Get-Command -Name 'Convert-Help').Parameters[$parameter].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+            }
+
+        }
+
+        It "should HelpComment type be string" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Convert-Help').Parameters['HelpComment'].ParameterType.Name | Should -Be 'String'
 
         }
 
