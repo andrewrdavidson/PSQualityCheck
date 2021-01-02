@@ -14,8 +14,7 @@ function Get-ScriptParameters {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [HashTable])]
-    param
-    (
+    param (
         [parameter(Mandatory = $true)]
         [String]$Content
     )

@@ -17,7 +17,7 @@ function Test-ImportModuleIsValid {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
-    param(
+    param (
         [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFile,
         [parameter(Mandatory = $true)]
