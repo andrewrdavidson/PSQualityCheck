@@ -177,7 +177,7 @@ function Invoke-PSQualityCheck {
     if ($modulesToTest.Count -ge 1) {
 
         # Location of files extracted from any passed modules
-        $functionExtractPath = Join-Path -Path $Env:TEMP -ChildPath (New-Guid).Guid
+        $extractPath = Join-Path -Path $Env:TEMP -ChildPath (New-Guid).Guid
 
         # Run the Module tests on all the valid module files found
         $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Module.Tests.ps1") -Data @{ Source = $modulesToTest }
@@ -185,12 +185,12 @@ function Invoke-PSQualityCheck {
         $moduleResults = Invoke-Pester -Configuration $configuration
 
         # Extract all the functions from the modules into individual .ps1 files ready for testing
-        $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Function-Extraction.Tests.ps1") -Data @{ Source = $modulesToTest; FunctionExtractPath = $functionExtractPath }
+        $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Function-Extraction.Tests.ps1") -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
         $configuration.Run.Container = $container2
         $extractionResults = Invoke-Pester -Configuration $configuration
 
         # Get a list of the 'extracted' function scripts .ps1 files
-        $extractedScriptsToTest = Get-ChildItem -Path $functionExtractPath -Include '*.ps1' -Recurse
+        $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
         # Run the Script tests against all the extracted functions .ps1 files
         $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Script.Tests.ps1") -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
