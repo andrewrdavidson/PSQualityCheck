@@ -3,7 +3,7 @@ Describe "Get-FileContent.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'File'
+            'Path'
         )
 
         foreach ($parameter in $mandatoryParameters) {
