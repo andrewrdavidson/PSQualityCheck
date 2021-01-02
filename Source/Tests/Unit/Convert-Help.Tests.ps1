@@ -148,13 +148,7 @@ Describe "Convert-Help.Tests" {
 
         }
 
-        #! TODO - Fix this
         It "should not find .DUMMY in help" {
-
-            #! This test throws an exception about an invalid array index. It should return an empty hashtable
-            #! RuntimeException: Index operation failed; the array index evaluated to null.
-            #! at Convert-Help, C:\Source\PSQualityCheck\Source\PSQualityCheck.Functions\Convert-Help.ps1:143
-            #! at <ScriptBlock>, C:\Source\PSQualityCheck\Source\Tests\Unit\Convert-Help.Tests.ps1:111
 
             $helpComment = "<#
                             .DUMMY
@@ -163,6 +157,20 @@ Describe "Convert-Help.Tests" {
             $help = Convert-Help -HelpComment $helpComment
 
             $help.ContainsKey(".DUMMY") | Should -BeFalse
+
+        }
+
+        It "should not find .DUMMY but find .NOTES in help" {
+
+            $helpComment = "<#
+                            .DUMMY
+                            .NOTES
+                            #>"
+
+            $help = Convert-Help -HelpComment $helpComment
+
+            $help.ContainsKey(".DUMMY") | Should -BeFalse
+            $help.ContainsKey(".NOTES") | Should -BeTrue
 
         }
 
