@@ -14,8 +14,7 @@ function Test-ParameterVariablesHaveType {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
-    param
-    (
+    param (
         [parameter(Mandatory = $true)]
         [HashTable]$ParameterVariables
     )
