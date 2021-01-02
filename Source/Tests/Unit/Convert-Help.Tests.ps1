@@ -36,6 +36,39 @@ Describe "Convert-Help.Tests" {
 
     Context "Function tests" {
 
+        It "should throw on invalid help" {
+
+            {
+                $helpComment = '##InvalidHelp##'
+
+                $help = Convert-Help -HelpComment $helpComment
+
+            } | Should -Throw
+
+        }
+
+        It "should throw on empty help" {
+
+            {
+                $helpComment = ''
+
+                $help = Convert-Help -HelpComment $helpComment
+
+            } | Should -Throw
+
+        }
+
+        It "should throw on null help" {
+
+            {
+                $helpComment = $null
+
+                $help = Convert-Help -HelpComment $helpComment
+
+            } | Should -Throw
+
+        }
+
         $helpTokens = @(
             '.SYNOPSIS'
             '.DESCRIPTION'
@@ -98,7 +131,7 @@ Describe "Convert-Help.Tests" {
 
         }
 
-        It "should find multiple .EXAMPLEs with parameters named Path and Source" {
+        It "should find multiple .EXAMPLEs" {
 
             $helpComment = "<#
                             .EXAMPLE
