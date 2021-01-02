@@ -1,3 +1,18 @@
+<#
+    .SYNOPSIS
+    Test the functions of PSQualityCheck
+
+    .DESCRIPTION
+    Run the unit tests for the functions of PSQualityCheck
+
+    .EXAMPLE
+    Invoke-UnitTest
+#>
+[CmdletBinding()]
+[OutputType([HashTable], [System.Void])]
+param (
+)
+
 Import-Module -Name Pester -MinimumVersion 5.1.0
 
 $configuration = [PesterConfiguration]::Default
@@ -18,4 +33,4 @@ Get-ChildItem -Path "..\PSQualityCheck" -Filter *.ps1 | ForEach-Object {
     . $_.FullName
 }
 
-$result = Invoke-Pester -Configuration $configuration
+Invoke-Pester -Configuration $configuration
