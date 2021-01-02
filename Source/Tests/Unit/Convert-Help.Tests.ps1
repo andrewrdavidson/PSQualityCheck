@@ -86,12 +86,7 @@ Describe "Convert-Help.Tests" {
 
         }
 
-        #! TODO - Fix this
         It "should find multiple .EXAMPLEs with parameters named Path and Source" {
-
-            #! Fails with RuntimeException: A hash table can only be added to another hash table.
-            #! at Convert-Help, C:\Source\PSQualityCheck\Source\PSQualityCheck.Functions\Convert-Help.ps1:143
-            #! at <ScriptBlock>, C:\Source\PSQualityCheck\Source\Tests\Unit\Convert-Help.Tests.ps1:91
 
             $helpComment = "<#
                             .EXAMPLE
