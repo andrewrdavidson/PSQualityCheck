@@ -93,9 +93,8 @@ Import the module
 
 A quick description of the available Pester tests
 
-[Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
-
-[Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
+* [Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
+* [Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
 
 ## Tests
 
@@ -112,7 +111,3 @@ Tested with:
 |None|Pass|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules) (used by SonarQube)|Pass|
 |[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules) (used by VSCode)|Fail|
-
-## Source
-
-Source is currently available here: [source](https://github.com/andrewrdavidson/PSQualityCheck/tree/main/Source)
