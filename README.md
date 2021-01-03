@@ -2,9 +2,7 @@
 
 ## Summary
 
-This is a PowerShell module which runs a series of Pester 5 tests to validate code quality against rules
-
-It uses a combination of Pester tests, PSScriptAnalyzer and a set of standards to apply consistent quality checks on PowerShell scripts and modules.
+This is a PowerShell module which runs a series of Pester 5 tests to validate code quality. It uses a combination of Pester tests, PSScriptAnalyzer and a set of quality standards to ensure consistent quality on PowerShell scripts and modules.
 
 The quality standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
 
