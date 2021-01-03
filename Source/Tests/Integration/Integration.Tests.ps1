@@ -1,5 +1,7 @@
 Describe "Integration Tests" {
 
+    # Use the files in the TestFiles folder to do complete runs and then check the output
+
     Context "HelpRules tests" {
 
         ## Should validate the rules in the HelpElementsRules.psd1
