@@ -10,10 +10,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
 
             It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
 
-                # Check whether the parameter exists
                 (Get-Command -Name 'Test-HelpTokensTextIsValid').Parameters[$parameter].Name | Should -BeExactly $parameter
-
-                # Check whether or not it's mandatory
                 (Get-Command -Name 'Test-HelpTokensTextIsValid').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
 
             }
@@ -33,13 +30,15 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should not throw when checking help element text where it exists" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-                                Convert the help comment into an object
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = "Convert the help comment into an object"
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -50,13 +49,15 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking help element text where it is empty" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = ""
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -67,12 +68,15 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking help element text where it is missing" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = $null
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -83,17 +87,29 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should not throw when checking multiple valid help element text values" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-                                The SYNOPSIS property
-                                .DESCRIPTION
-                                The DESCRIPTION property
-                                .PARAMETER Path
-                                The Path parameter
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = "The SYNOPSIS property"
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = "The DESCRIPTION property"
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = "The Path property"
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -104,17 +120,29 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking multiple help element text values where one is empty" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-
-                                .DESCRIPTION
-                                The DESCRIPTION property
-                                .PARAMETER Path
-                                The Path parameter
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = ""
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = "The DESCRIPTION property"
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = "The Path property"
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -125,16 +153,29 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking multiple help element text values where one is missing" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-                                .DESCRIPTION
-                                The DESCRIPTION property
-                                .PARAMETER Path
-                                The Path parameter
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = $null
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = "The DESCRIPTION property"
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = "The Path property"
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -145,17 +186,29 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking multiple help element text values where all are empty" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-
-                                .DESCRIPTION
-
-                                .PARAMETER Path
-
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = ""
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = ""
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = ""
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
@@ -166,14 +219,29 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
         It "should throw when checking multiple help element text values where all are missing" {
 
             {
-                $helpComment = "<#
-                                .SYNOPSIS
-                                .DESCRIPTION
-                                .PARAMETER Path
-                                #>"
-
-                #TODO Replace this with the correct tokens for the above help
-                $help = Convert-Help -HelpComment $helpComment
+                $help = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = $null
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = $null
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = $null
+                        }
+                    )
+                }
 
                 Test-HelpTokensTextIsValid -HelpTokens $help
 
