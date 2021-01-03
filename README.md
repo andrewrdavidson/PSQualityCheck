@@ -8,7 +8,9 @@ It uses a combination of Pester tests, PSScriptAnalyzer and a set of standards t
 
 The quality standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
 
-Release Guide and Future Plans are available here: [Release Guide and Future Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans)
+## Release Guide and Future Plans
+
+If you want to see these, click [Release Guide and Future Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans)
 
 ## Prerequisites
 
