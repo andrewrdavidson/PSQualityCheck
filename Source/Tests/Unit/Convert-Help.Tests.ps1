@@ -174,6 +174,165 @@ Describe "Convert-Help.Tests" {
 
         }
 
+        It "should find no help element text when text is empty" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find no help element text when text is missing" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find multiple help element text values" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+                                The SYNOPSIS property
+                                .DESCRIPTION
+                                The DESCRIPTION property
+                                .PARAMETER Path
+                                The Path parameter
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".Text | Should -BeExactly "The SYNOPSIS property"
+                $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
+                $help.".PARAMETER".Text | Should -BeExactly "The Path parameter"
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find multiple help element text values where one is empty" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+
+                                .DESCRIPTION
+                                The DESCRIPTION property
+                                .PARAMETER Path
+                                The Path parameter
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".Text | Should -BeExactly ""
+                $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
+                $help.".PARAMETER".Text | Should -BeExactly "The Path parameter"
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find multiple help element text values where one is missing" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+                                .DESCRIPTION
+                                The DESCRIPTION property
+                                .PARAMETER Path
+                                The Path parameter
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".Text | Should -BeExactly $null
+                $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
+                $help.".PARAMETER".Text | Should -BeExactly "The Path parameter"
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find no help element text values when all text values are empty" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+
+                                .DESCRIPTION
+
+                                .PARAMETER Path
+
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".Text | Should -BeExactly ""
+                $help.".DESCRIPTION".Text | Should -BeExactly ""
+                $help.".PARAMETER".Text | Should -BeExactly ""
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find no help element text values when all text values are missing" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+                                .DESCRIPTION
+                                .PARAMETER Path
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".Text | Should -BeExactly $null
+                $help.".DESCRIPTION".Text | Should -BeExactly $null
+                $help.".PARAMETER".Text | Should -BeExactly $null
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should find correct line numbers" {
+
+            {
+                $helpComment = "<#
+                                .SYNOPSIS
+                                The SYNOPSIS property
+                                .DESCRIPTION
+                                The DESCRIPTION property
+                                .PARAMETER Path
+                                The Path parameter
+                                #>"
+
+                $help = Convert-Help -HelpComment $helpComment
+
+                $help.".SYNOPSIS".LineNumber | Should -BeExactly 1
+                $help.".DESCRIPTION".LineNumber | Should -BeExactly 3
+                $help.".PARAMETER".LineNumber | Should -BeExactly 5
+
+            } | Should -Not -Throw
+
+        }
+
     }
 
 }
