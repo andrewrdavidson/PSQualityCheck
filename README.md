@@ -111,8 +111,8 @@ Testing matrix:
 |5.1|Windows Server 2016|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
 
 Tested with:
-|RuleSet|Result|
-|---|---|
-|None|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules) (used by SonarQube)|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules) (used by VSCode)|![Fail](https://img.shields.io/badge/test-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/further%20testing-to%20be%20performed-lightgrey)|
+|RuleSet|PowerShell Version|Result|
+|---|---|---|
+|None|7.1.0 on Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules) (used by SonarQube)|7.1.0 on Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules) (used by VSCode)|7.1.0 on Windows 10|![Fail](https://img.shields.io/badge/test-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/further%20testing-to%20be%20performed-lightgrey)|
