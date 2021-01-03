@@ -25,13 +25,13 @@ Optional items:
 
 ## Installation
 
-__Preferred Method__
+### __Preferred Method__
 
 From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
 
-__Manual Installation__
+### __Manual Installation__
 
 Copy the files to **one** of the available module folders:
 
@@ -55,13 +55,9 @@ Import the module
 
 #### Check the folder C:\Scripts and all subfolders beneath it:
 
-###### Note: This behaviour will change soon with release 1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-11).
-
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
-#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
-
-###### Note: This behaviour will change soon with release  1.1.1. See [here](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans#release-11).
+#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders:
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
 
@@ -100,19 +96,19 @@ A quick description of the available Pester tests
 
 Testing matrix:
 
-|PowerShell Version|OS|Result|
-|---|---|---|
-|7.1.0|Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|7.1.0|Windows Server 2019|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
-|7.1.0|Windows Server 2016|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
-|7.1.0|Linux|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
-|5.1|Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|5.1|Windows Server 2019|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
-|5.1|Windows Server 2016|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
+|PowerShell Version|OS|PSQualityCheck Version|Result|
+|---|---|---|---|
+|7.1.0|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|7.1.0|Windows Server 2019|n/a|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
+|7.1.0|Windows Server 2016|n/a|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
+|7.1.0|Linux|n/a|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
+|5.1|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|5.1|Windows Server 2019|n/a|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
+|5.1|Windows Server 2016|n/a|![Testing To Be Performed](https://img.shields.io/badge/testing-to%20be%20performed-lightgrey)|
 
 Tested with:
-|RuleSet|PowerShell Version|Result|
-|---|---|---|
-|None|7.1.0 on Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules) (used by SonarQube)|7.1.0 on Windows 10|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules) (used by VSCode)|7.1.0 on Windows 10|![Fail](https://img.shields.io/badge/test-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/further%20testing-to%20be%20performed-lightgrey)|
+|RuleSet|PowerShell Version|PSQualityCheck Version|Result|
+|---|---|---|---|
+|None|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/test-pass-brightgreen)|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|7.1.0 on Windows 10|1.0.7|![Fail](https://img.shields.io/badge/test-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/further%20testing-to%20be%20performed-lightgrey)|
