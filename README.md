@@ -73,9 +73,11 @@ Import the module
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'`
 
-#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed (example below uses sample data):
+#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed:
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
+
+output below uses sample data:
 
     Test                            Files Tested Total Passed Failed Skipped
     ----                            ------------ ----- ------ ------ -------
