@@ -5,6 +5,7 @@ param(
 
 Describe "Module Tests" {
 
+    # TODO: Investigate whether the foreach can be put in the testcases block?
     foreach ($moduleFile in $Source) {
 
         Context "Module : $moduleFile" {
