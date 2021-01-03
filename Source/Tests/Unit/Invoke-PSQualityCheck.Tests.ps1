@@ -17,7 +17,6 @@ Describe "Invoke-PSQualityCheck.Tests" {
             It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
 
                 (Get-Command -Name 'Invoke-PSQualityCheck').Parameters[$parameter].Name | Should -BeExactly $parameter
-
                 (Get-Command -Name 'Invoke-PSQualityCheck').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
 
             }
@@ -29,7 +28,6 @@ Describe "Invoke-PSQualityCheck.Tests" {
             It "should have $parameter as a optional parameter" -TestCases @{ 'parameter' = $parameter } {
 
                 (Get-Command -Name 'Invoke-PSQualityCheck').Parameters[$parameter].Name | Should -BeExactly $parameter
-
                 (Get-Command -Name 'Invoke-PSQualityCheck').Parameters[$parameter].Attributes.Mandatory | Should -BeFalse
 
             }
