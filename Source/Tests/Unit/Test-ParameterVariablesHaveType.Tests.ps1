@@ -59,6 +59,19 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
         }
 
+        It "parameter ParameterWithEmptyType throws" {
+
+            {
+                $parameterVariable = @{
+                    'ParameterWithEmptyType' = ''
+                }
+
+                Test-ParameterVariablesHaveType -ParameterVariables $parameterVariable
+
+            } | Should -Throw
+
+        }
+
     }
 
 }
