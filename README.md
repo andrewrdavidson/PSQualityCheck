@@ -10,7 +10,7 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 #### PowerShell Gallery
 
-![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck) ![dowloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)
+[![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![dowloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
 
 #### GitHub
 
