@@ -14,10 +14,10 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 #### GitHub
 
-![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck) ![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)
+[![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
 
 #### Issues
-![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck) ![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)
+[![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
 
 ### Plans
 
