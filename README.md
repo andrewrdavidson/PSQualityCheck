@@ -8,7 +8,7 @@ The standards are summarised here: [Quality Standards Summary](https://github.co
 
 ## Release Plans
 
-If you want to see these, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
+If you want to see the plans and the progress of the steps within, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
 
 ## Release History
 
