@@ -53,9 +53,11 @@ __For PowerShell 7.x__
 
 ## Usage
 
-Import the module
+#### Import the module
 
 `Import-Module -Name PSQualityCheck`
+
+then run using the examples below as a guide:
 
 #### Check the folder C:\Scripts and all subfolders beneath it:
 
