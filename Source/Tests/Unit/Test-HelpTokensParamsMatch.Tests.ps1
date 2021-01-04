@@ -18,6 +18,18 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
 
         }
 
+        It "should HelpTokens type be HashTable" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters['HelpTokens'].ParameterType.Name | Should -Be 'HashTable'
+
+        }
+
+        It "should ParameterVariables type be PSCustomObject" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters['ParameterVariables'].ParameterType.Name | Should -Be 'PSObject'
+
+        }
+
     }
 
     Context "Function tests" {

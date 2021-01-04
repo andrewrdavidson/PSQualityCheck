@@ -17,6 +17,12 @@ Describe "Get-ParsedFile.Tests" {
 
         }
 
+        It "should Path type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-ParsedFile').Parameters['Path'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {

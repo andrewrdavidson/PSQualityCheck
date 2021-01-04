@@ -17,6 +17,12 @@ Describe "Test-HelpForRequiredTokens.Tests" {
 
         }
 
+        It "should HelpTokens type be HashTable" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Test-HelpForRequiredTokens').Parameters['HelpTokens'].ParameterType.Name | Should -Be 'HashTable'
+
+        }
+
     }
 
     Context "Function tests" {

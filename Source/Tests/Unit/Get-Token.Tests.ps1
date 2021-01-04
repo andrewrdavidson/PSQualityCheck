@@ -19,6 +19,24 @@ Describe "Get-Token.Tests" {
 
         }
 
+        It "should ParsedFileContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-Token').Parameters['ParsedFileContent'].ParameterType.Name | Should -Be 'Object[]'
+
+        }
+
+        It "should Type type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-Token').Parameters['Type'].ParameterType.Name | Should -Be 'String'
+
+        }
+
+        It "should Content type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-Token').Parameters['Content'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {

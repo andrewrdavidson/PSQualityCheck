@@ -18,6 +18,18 @@ Describe "Get-TokenComponent.Tests" {
 
         }
 
+        It "should ParsedFileContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-TokenComponent').Parameters['ParsedFileContent'].ParameterType.Name | Should -Be 'Object[]'
+
+        }
+
+        It "should StartLine type be Int" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-TokenComponent').Parameters['StartLine'].ParameterType.Name | Should -Be 'Int32'
+
+        }
+
     }
 
     Context "Function tests" {

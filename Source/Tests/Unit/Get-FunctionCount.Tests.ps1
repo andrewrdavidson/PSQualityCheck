@@ -18,6 +18,18 @@ Describe "Get-FunctionCount.Tests" {
 
         }
 
+        It "should ModuleFile type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-FunctionCount').Parameters['ModuleFile'].ParameterType.Name | Should -Be 'String'
+
+        }
+
+        It "should ManifestFile type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-FunctionCount').Parameters['ManifestFile'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {

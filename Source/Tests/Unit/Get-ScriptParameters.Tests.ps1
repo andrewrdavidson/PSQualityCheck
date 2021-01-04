@@ -17,6 +17,12 @@ Describe "Get-ScriptParameters.Tests" {
 
         }
 
+        It "should Content type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-ScriptParameters').Parameters['Content'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {
