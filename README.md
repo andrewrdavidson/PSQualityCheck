@@ -116,7 +116,7 @@ Tested with:
 |RuleSet|PowerShell Version|PSQualityCheck Version|Result|
 |:---|---|---|---|
 |None|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|7.1.0 on Windows 10|1.0.7|![Fail](https://img.shields.io/badge/tests-fail-red)<br/>![Futher Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
 |None|5.1 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|5.1 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|7.1.0 on Windows 10|1.0.7|![Fail](https://img.shields.io/badge/tests-fail-red)<br/>![Futher Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
