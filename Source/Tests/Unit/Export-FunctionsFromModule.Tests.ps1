@@ -18,6 +18,18 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         }
 
+        It "should Path type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Export-FunctionsFromModule').Parameters['Path'].ParameterType.Name | Should -Be 'String'
+
+        }
+
+        It "should ExtractPath type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Export-FunctionsFromModule').Parameters['ExtractPath'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {

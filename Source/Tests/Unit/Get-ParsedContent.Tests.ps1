@@ -17,6 +17,12 @@ Describe "Get-ParsedContent.Tests" {
 
         }
 
+        It "should Content type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-ParsedContent').Parameters['Content'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {

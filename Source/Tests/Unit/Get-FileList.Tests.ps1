@@ -18,6 +18,18 @@ Describe "Get-FileList.Tests" {
 
         }
 
+        It "should Path type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-FileList').Parameters['Path'].ParameterType.Name | Should -Be 'String'
+
+        }
+
+        It "should Extension type be String" -TestCases @{ 'parameter' = $parameter } {
+
+            (Get-Command -Name 'Get-FileList').Parameters['Extension'].ParameterType.Name | Should -Be 'String'
+
+        }
+
     }
 
     Context "Function tests" {
