@@ -6,9 +6,13 @@ This is a PowerShell module which runs a series of Pester 5 tests to validate co
 
 The standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
 
-## Release Guide and Future Plans
+## Release Plans
 
-If you want to see these, click [Release Guide and Future Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Guide-and-Future-Plans)
+If you want to see these, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
+
+## Release History
+
+Is available here [Release History](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-History)
 
 ## Prerequisites
 
