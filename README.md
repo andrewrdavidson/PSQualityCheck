@@ -117,17 +117,15 @@ A quick description of the available Pester tests
 
 #### PowerShell version/PSQualityCheck/Operating System testing matrix:
 
-|PowerShell Version|PSQualityCheck Version|Result|Result|Result|Result|
+|PowerShell Version|PSQualityCheck Version|O/S Result|O/S Result|O/S Result|O/S Result|
 |---|---|---|---|---|---|
 |7.1.0|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-to%20be%20performed-lightgrey)|![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-to%20be%20performed-lightgrey)|![Testing To Be Performed](https://img.shields.io/badge/linux-to%20be%20performed-lightgrey)|
 |5.1|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-to%20be%20performed-lightgrey)|![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-to%20be%20performed-lightgrey)|n/a|
 
 #### RuleSet/PowerShell version/PSQualityCheck testing matrix:
 
-|RuleSet|PowerShell Version|PSQualityCheck Version|Result|
+|RuleSet|PSQualityCheck Version|PowerShell Result|PowerShell Result|
 |:---|---|---|---|
-|None|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|None|5.1 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|7.1.0 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|5.1 on Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|7.1.0 on Windows 10|1.0.7|![Fail](https://img.shields.io/badge/tests-fail-red)<br/>![Futher Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
+|None|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen)|![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen)|![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red)|![Futher Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-to%20be%20performed-lightgrey)|
