@@ -119,13 +119,8 @@ Testing matrix:
 
 |PowerShell Version|OS|PSQualityCheck Version|Result|
 |---|---|---|---|
-|7.1.0|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|7.1.0|Windows Server 2019|n/a|![Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
-|7.1.0|Windows Server 2016|n/a|![Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
-|7.1.0|Linux|n/a|![Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
-|5.1|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/tests-pass-brightgreen)|
-|5.1|Windows Server 2019|n/a|![Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
-|5.1|Windows Server 2016|n/a|![Testing To Be Performed](https://img.shields.io/badge/tests-to%20be%20performed-lightgrey)|
+|7.1.0|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)<br/>![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server 2019-to%20be%20performed-lightgrey)<br/>![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server 2016-to%20be%20performed-lightgrey)<br/>![Testing To Be Performed](https://img.shields.io/badge/linux-to%20be%20performed-lightgrey)|
+|5.1|Windows 10|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)<br/>![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server 2019-to%20be%20performed-lightgrey)<br/>![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server 2016-to%20be%20performed-lightgrey)|
 
 Tested with:
 |RuleSet|PowerShell Version|PSQualityCheck Version|Result|
