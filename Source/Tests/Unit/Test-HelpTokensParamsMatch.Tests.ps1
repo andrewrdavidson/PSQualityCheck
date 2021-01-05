@@ -34,6 +34,16 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Test-HelpTokensParamsMatch -HelpTokens $null -ParameterVariables $null
+
+            } | Should -Throw
+
+        }
+
         It "should not throw when single param block variables matches .PARAMETER help when valid" {
 
             {

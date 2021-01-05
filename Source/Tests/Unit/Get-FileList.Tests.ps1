@@ -34,6 +34,16 @@ Describe "Get-FileList.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-FileList -Path $null -Extension $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

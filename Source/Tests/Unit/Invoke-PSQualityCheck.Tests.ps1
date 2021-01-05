@@ -86,6 +86,21 @@ Describe "Invoke-PSQualityCheck.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Invoke-PSQualityCheck -Path $null
+
+            } | Should -Throw
+
+            {
+
+                Invoke-PSQualityCheck -File $null
+
+            } | Should -Throw
+
+        }
     }
 
 }

@@ -27,6 +27,16 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Test-HelpTokensCountIsValid -HelpTokens $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

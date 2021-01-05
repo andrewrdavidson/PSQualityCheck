@@ -27,6 +27,16 @@ Describe "Test-HelpForRequiredTokens.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Test-HelpForRequiredTokens -HelpTokens $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

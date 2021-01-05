@@ -27,6 +27,16 @@ Describe "Get-ScriptParameters.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-ScriptParameters -Content $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

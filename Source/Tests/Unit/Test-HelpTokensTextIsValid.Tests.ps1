@@ -27,6 +27,16 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Test-HelpTokensTextIsValid -HelpTokens $null
+
+            } | Should -Throw
+
+        }
+
         It "should not throw when checking help element text where it exists" {
 
             {
