@@ -118,7 +118,7 @@ A quick description of the available Pester tests
 Testing matrix:
 
 |PowerShell Version|PSQualityCheck Version|Result|Result|Result|Result|
-|---|---|---|
+|---|---|---|---|---|---|
 |7.1.0|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-to%20be%20performed-lightgrey)|![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-to%20be%20performed-lightgrey)|![Testing To Be Performed](https://img.shields.io/badge/linux-to%20be%20performed-lightgrey)|
 |5.1|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-to%20be%20performed-lightgrey)|![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-to%20be%20performed-lightgrey)|n/a|
 
