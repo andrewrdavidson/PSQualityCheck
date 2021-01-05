@@ -126,6 +126,6 @@ A quick description of the available Pester tests
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
-|None|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen)|![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|None|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
