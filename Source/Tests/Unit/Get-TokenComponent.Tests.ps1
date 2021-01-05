@@ -34,6 +34,77 @@ Describe "Get-TokenComponent.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-TokenComponent -ParsedFileContent $null -StartLine $null
+
+            } | Should -Throw
+
+        }
+
+        $parsedFileContent = @(
+            @{
+                "Content" = "function"
+                "Type" = "Keyword"
+                "Start" = 0
+                "Length" = 8
+                "StartLine" = 1
+                "StartColumn" = 1
+                "EndLine" = 1
+                "EndColumn" = 9
+            },
+            @{
+                "Content" = "Get-FileContent"
+                "Type" = "CommandArgument"
+                "Start" = 9
+                "Length" = 15
+                "StartLine" = 1
+                "StartColumn" = 10
+                "EndLine" = 1
+                "EndColumn" = 25
+            },
+            @{
+                "Content" = "{"
+                "Type" = "GroupStart"
+                "Start" = 25
+                "Length" = 1
+                "StartLine" = 1
+                "StartColumn" = 26
+                "EndLine" = 1
+                "EndColumn" = 27
+            },
+            @{
+                "Content" = "}"
+                "Type" = "GroupEnd"
+                "Start" = 26
+                "Length" = 1
+                "StartLine" = 1
+                "StartColumn" = 27
+                "EndLine" = 1
+                "EndColumn" = 28
+            }
+        )
+
+        It "should not find token where 'StartLine' is valid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+
+            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 1
+
+            Compare-Object -ReferenceObject $token.Values -DifferenceObject $ParsedFileContent.values | Should -BeNullOrEmpty
+
+        }
+
+        It "should not find token where 'StartLine' is invalid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+
+            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 3
+            $token | Should -BeNullOrEmpty
+
+            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine $null
+            $token | Should -BeNullOrEmpty
+
+        }
+
     }
 
 }

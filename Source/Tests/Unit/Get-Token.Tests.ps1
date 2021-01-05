@@ -41,6 +41,16 @@ Describe "Get-Token.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-Token -ParsedFileContent $null -Type $null -Content $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

@@ -33,7 +33,17 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
     Context "Function tests" {
 
-        It "parameter ParameterWithType passes" {
+        It "should throw passing null parameters" {
+
+            {
+
+                Test-ParameterVariablesHaveType -ParameterVariables $null
+
+            } | Should -Throw
+
+        }
+
+        It "should not throw with valid parameter" {
 
             {
                 $parameterVariable = @{
@@ -46,7 +56,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
         }
 
-        It "parameter ParameterWithoutType throws" {
+        It "should throw with null type parameter" {
 
             {
                 $parameterVariable = @{
@@ -59,7 +69,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
         }
 
-        It "parameter ParameterWithEmptyType throws" {
+        It "should throw with empty type parameter" {
 
             {
                 $parameterVariable = @{

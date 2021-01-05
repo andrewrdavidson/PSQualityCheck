@@ -34,6 +34,16 @@ Describe "Get-FunctionCount.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-ParsedFile -FunctionCount $null -ManifestFile $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

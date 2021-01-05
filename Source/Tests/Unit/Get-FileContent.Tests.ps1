@@ -27,6 +27,16 @@ Describe "Get-FileContent.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-FileContent -Path $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

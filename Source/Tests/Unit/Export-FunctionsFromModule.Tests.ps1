@@ -34,6 +34,16 @@ Describe "Export-FunctionsFromModule.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Export-FunctionsFromModule -Path $null -ExtractPath $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }

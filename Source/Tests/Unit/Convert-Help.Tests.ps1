@@ -10,10 +10,7 @@ Describe "Convert-Help.Tests" {
 
             It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
 
-                # Check whether the parameter exists
                 (Get-Command -Name 'Convert-Help').Parameters[$parameter].Name | Should -BeExactly $parameter
-
-                # Check whether or not it's mandatory
                 (Get-Command -Name 'Convert-Help').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
 
             }
@@ -36,6 +33,16 @@ Describe "Convert-Help.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Convert-Help -HelpComment $null
+
+            } | Should -Throw
+
+        }
+
         It "should throw on invalid help" {
 
             {
@@ -51,17 +58,6 @@ Describe "Convert-Help.Tests" {
 
             {
                 $helpComment = ''
-
-                $help = Convert-Help -HelpComment $helpComment
-
-            } | Should -Throw
-
-        }
-
-        It "should throw on null help" {
-
-            {
-                $helpComment = $null
 
                 $help = Convert-Help -HelpComment $helpComment
 

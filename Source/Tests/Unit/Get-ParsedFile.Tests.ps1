@@ -27,6 +27,16 @@ Describe "Get-ParsedFile.Tests" {
 
     Context "Function tests" {
 
+        It "should throw passing null parameters" {
+
+            {
+
+                Get-ParsedFile -Path $null
+
+            } | Should -Throw
+
+        }
+
     }
 
 }
