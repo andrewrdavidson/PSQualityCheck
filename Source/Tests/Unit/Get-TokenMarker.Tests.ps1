@@ -41,7 +41,7 @@ Describe "Get-TokenMarker.Tests" {
 
     Context "Function tests" {
 
-        It "should throw passing null parameters" {
+        It "should throw when passing null parameters" {
 
             {
 
