@@ -35,7 +35,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
     Context "Function tests" {
 
-        It "should throw passing null parameter values" {
+        It "should throw when passing null parameter values" {
 
             {
 
