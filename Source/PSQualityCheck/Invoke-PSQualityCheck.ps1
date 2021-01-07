@@ -177,7 +177,7 @@ function Invoke-PSQualityCheck {
     if ($modulesToTest.Count -ge 1) {
 
         # Location of files extracted from any passed modules
-        $extractPath = Join-Path -Path $Env:TEMP -ChildPath (New-Guid).Guid
+        $extractPath = Join-Path -Path [IO.Path]::GetTempPath() -ChildPath (New-Guid).Guid
 
         # Run the Module tests on all the valid module files found
         $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Module.Tests.ps1") -Data @{ Source = $modulesToTest }
