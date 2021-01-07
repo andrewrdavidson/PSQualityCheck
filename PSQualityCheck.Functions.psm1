@@ -71,6 +71,7 @@ function Convert-Help {
         # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
         $numFound = 0
+        $lastHelpElement = $null
 
         # loop through all the 'lines' of the help comment
         for ($line = 0; $line -lt $commentArray.Count; $line++) {
@@ -121,7 +122,7 @@ function Convert-Help {
             }
             else {
 
-                if ($numFound -ge 1 -and $line -ne ($commentArray.Count - 1)) {
+                if ($numFound -ge 1 -and $line -lt ($commentArray.Count - 1)) {
 
                     $help += $commentArray[$line]
 
@@ -131,12 +132,15 @@ function Convert-Help {
 
         }
 
-        # process the very last one
-        $currentElement = @($foundElements[$lastHelpElement])
-        $currentElement[$currentElement.Count - 1].Text = $help
-        $foundElements[$lastHelpElement] = $currentElement
+        if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
+            # process the very last one
+            $currentElement = @($foundElements[$lastHelpElement])
+            $currentElement[$currentElement.Count - 1].Text = $help
+            $foundElements[$lastHelpElement] = $currentElement
+        }
 
         return $foundElements
+
     }
     catch {
 
@@ -157,11 +161,11 @@ function Export-FunctionsFromModule {
         .PARAMETER Path
         A string Path containing the full file name and path to the module
 
-        .PARAMETER FunctionExtractPath
+        .PARAMETER ExtractPath
         A string Path containing the full path to the extraction folder
 
         .EXAMPLE
-        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractPath 'c:\extract'
+        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -ExtractPath 'c:\extract'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
@@ -169,7 +173,7 @@ function Export-FunctionsFromModule {
         [parameter(Mandatory = $true)]
         [string]$Path,
         [parameter(Mandatory = $true)]
-        [string]$FunctionExtractPath
+        [string]$ExtractPath
     )
 
     # Get the file properties of our module
@@ -177,7 +181,7 @@ function Export-FunctionsFromModule {
     $moduleName = $fileProperties.BaseName
 
     # Generate a new temporary output path for our extracted functions
-    $FunctionOutputPath = Join-Path -Path $FunctionExtractPath -ChildPath $moduleName
+    $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
     New-Item $FunctionOutputPath -ItemType 'Directory'
 
     # Get the plain content of the module file
@@ -261,20 +265,20 @@ function Get-FileContent {
         .DESCRIPTION
         Gets the content of the file or the content of the function inside the file
 
-        .PARAMETER File
+        .PARAMETER Path
         A file name to parse
 
         .EXAMPLE
-        $fileContent = Get-FileContent -File 'c:\file.txt'
+        $fileContent = Get-FileContent -Path 'c:\file.txt'
     #>
     [CmdletBinding()]
     [OutputType([System.String[]])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$File
+        [string]$Path
     )
 
-    $fileContent = Get-Content -Path $File
+    $fileContent = Get-Content -Path $Path
 
     $parserErrors = $null
 
@@ -557,8 +561,7 @@ function Get-ScriptParameters {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [HashTable])]
-    param
-    (
+    param (
         [parameter(Mandatory = $true)]
         [String]$Content
     )
@@ -1087,6 +1090,8 @@ function Test-HelpTokensTextIsValid {
 
     try {
 
+        $tokenErrors = @()
+
         # Check that the help blocks aren't empty
         foreach ($key in $HelpTokens.Keys) {
 
@@ -1140,7 +1145,7 @@ function Test-ImportModuleIsValid {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
-    param(
+    param (
         [parameter(Mandatory = $true)]
         [System.Object[]]$ParsedFile,
         [parameter(Mandatory = $true)]
@@ -1168,7 +1173,9 @@ function Test-ImportModuleIsValid {
             }
 
             # if one of RequiredVersion, MinimumVersion or MaximumVersion is not found
-            if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" ) })) {
+            if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and
+                        ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" )
+                    })) {
 
                 $errString += "Import-Module for '$name' : Missing -RequiredVersion, -MinimumVersion or -MaximumVersion parameter keyword. "
 
@@ -1208,8 +1215,7 @@ function Test-ParameterVariablesHaveType {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
-    param
-    (
+    param (
         [parameter(Mandatory = $true)]
         [HashTable]$ParameterVariables
     )
@@ -1222,7 +1228,7 @@ function Test-ParameterVariablesHaveType {
 
             if ([string]::IsNullOrEmpty($ParameterVariables.$key)) {
 
-                $variableErrors += "Parameter '$key' does not have a type defined. "
+                $variableErrors += "Parameter '$key' does not have a type defined."
 
             }
 
