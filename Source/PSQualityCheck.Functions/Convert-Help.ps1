@@ -71,6 +71,7 @@ function Convert-Help {
         # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
         $numFound = 0
+        $lastHelpElement = $null
 
         # loop through all the 'lines' of the help comment
         for ($line = 0; $line -lt $commentArray.Count; $line++) {
@@ -121,7 +122,7 @@ function Convert-Help {
             }
             else {
 
-                if ($numFound -ge 1 -and $line -ne ($commentArray.Count - 1)) {
+                if ($numFound -ge 1 -and $line -lt ($commentArray.Count - 1)) {
 
                     $help += $commentArray[$line]
 
@@ -131,12 +132,15 @@ function Convert-Help {
 
         }
 
-        # process the very last one
-        $currentElement = @($foundElements[$lastHelpElement])
-        $currentElement[$currentElement.Count - 1].Text = $help
-        $foundElements[$lastHelpElement] = $currentElement
+        if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
+            # process the very last one
+            $currentElement = @($foundElements[$lastHelpElement])
+            $currentElement[$currentElement.Count - 1].Text = $help
+            $foundElements[$lastHelpElement] = $currentElement
+        }
 
         return $foundElements
+
     }
     catch {
 

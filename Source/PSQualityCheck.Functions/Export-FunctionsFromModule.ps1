@@ -9,11 +9,11 @@ function Export-FunctionsFromModule {
         .PARAMETER Path
         A string Path containing the full file name and path to the module
 
-        .PARAMETER FunctionExtractPath
+        .PARAMETER ExtractPath
         A string Path containing the full path to the extraction folder
 
         .EXAMPLE
-        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -FunctionExtractPath 'c:\extract'
+        Export-FunctionsFromModule -Path 'c:\path.to\module.psm1' -ExtractPath 'c:\extract'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
@@ -21,7 +21,7 @@ function Export-FunctionsFromModule {
         [parameter(Mandatory = $true)]
         [string]$Path,
         [parameter(Mandatory = $true)]
-        [string]$FunctionExtractPath
+        [string]$ExtractPath
     )
 
     # Get the file properties of our module
@@ -29,7 +29,7 @@ function Export-FunctionsFromModule {
     $moduleName = $fileProperties.BaseName
 
     # Generate a new temporary output path for our extracted functions
-    $FunctionOutputPath = Join-Path -Path $FunctionExtractPath -ChildPath $moduleName
+    $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
     New-Item $FunctionOutputPath -ItemType 'Directory'
 
     # Get the plain content of the module file

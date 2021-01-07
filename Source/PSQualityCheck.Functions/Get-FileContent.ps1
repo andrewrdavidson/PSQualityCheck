@@ -6,20 +6,20 @@ function Get-FileContent {
         .DESCRIPTION
         Gets the content of the file or the content of the function inside the file
 
-        .PARAMETER File
+        .PARAMETER Path
         A file name to parse
 
         .EXAMPLE
-        $fileContent = Get-FileContent -File 'c:\file.txt'
+        $fileContent = Get-FileContent -Path 'c:\file.txt'
     #>
     [CmdletBinding()]
     [OutputType([System.String[]])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$File
+        [string]$Path
     )
 
-    $fileContent = Get-Content -Path $File
+    $fileContent = Get-Content -Path $Path
 
     $parserErrors = $null
 

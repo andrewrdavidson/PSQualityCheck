@@ -21,6 +21,8 @@ function Test-HelpTokensTextIsValid {
 
     try {
 
+        $tokenErrors = @()
+
         # Check that the help blocks aren't empty
         foreach ($key in $HelpTokens.Keys) {
 

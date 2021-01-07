@@ -15,7 +15,7 @@ Describe "Script Tests" {
         Context "Script : $($scriptProperties.Name) at $($scriptProperties.Directory)" {
 
             # This needs to get the content of the file or the content of the function inside the file
-            $fileContent = Get-FileContent -File $scriptFile
+            $fileContent = Get-FileContent -Path $scriptFile
 
             if (-not([string]::IsNullOrEmpty($fileContent))) {
                 ($ParsedFile, $ErrorCount) = Get-ParsedContent -Content $fileContent

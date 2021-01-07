@@ -14,8 +14,7 @@ function Test-ParameterVariablesHaveType {
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
-    param
-    (
+    param (
         [parameter(Mandatory = $true)]
         [HashTable]$ParameterVariables
     )
@@ -28,7 +27,7 @@ function Test-ParameterVariablesHaveType {
 
             if ([string]::IsNullOrEmpty($ParameterVariables.$key)) {
 
-                $variableErrors += "Parameter '$key' does not have a type defined. "
+                $variableErrors += "Parameter '$key' does not have a type defined."
 
             }
 

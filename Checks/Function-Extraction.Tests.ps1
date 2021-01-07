@@ -3,17 +3,17 @@ param(
     [string[]]$Source,
 
     [parameter(Mandatory = $true)]
-    [string]$FunctionExtractPath
+    [string]$ExtractPath
 )
 
-Describe "Function Extraction Tests" -Tag 'Setup' {
+Describe "Function Extraction" {
 
-    if ( Test-Path -Path $FunctionExtractPath ) {
-        Get-ChildItem -Path $FunctionExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
-        Remove-Item $FunctionExtractPath -Force -ErrorAction SilentlyContinue
+    if ( Test-Path -Path $ExtractPath ) {
+        Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
+        Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
     }
 
-    New-Item -Path $FunctionExtractPath -ItemType 'Directory'
+    New-Item -Path $ExtractPath -ItemType 'Directory'
 
     foreach ($moduleFile in $Source) {
 
@@ -23,7 +23,7 @@ Describe "Function Extraction Tests" -Tag 'Setup' {
 
                 {
 
-                    Export-FunctionsFromModule -Path $moduleFile -FunctionExtractPath $FunctionExtractPath
+                    Export-FunctionsFromModule -Path $moduleFile -ExtractPath $ExtractPath
 
                 } | Should -Not -Throw
 
