@@ -6,7 +6,7 @@ This is a PowerShell module which runs a series of Pester 5 tests to validate co
 
 The quality standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
 
-## Release
+## Releases
 
 #### PowerShell Gallery
 
@@ -14,7 +14,13 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 #### GitHub
 
+**Release Version**
+
 [![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?sort=semver)](https://github.com/andrewrdavidson/PSQualityCheck/releases?sort=semver) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
+
+**Development/Preview Release**
+
+[![github pre-release tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?include_prereleases)](https://img.shields.io/github/v/release/andrewrdavidson/PSQualityCheck?include_prereleases)
 
 #### Issues
 
