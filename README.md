@@ -119,8 +119,8 @@ A quick description of the available Pester tests
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
-|7.1.0|1.0.9|<p>![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-not%20run-lightgrey) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey) ![Testing To Be Performed](https://img.shields.io/badge/linux-not%20run-lightgrey)</p>|
-|5.1|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-not%20run-lightgrey) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey)|n/a|
+|7.1.0|1.0.9|<p>![Pass](https://img.shields.io/badge/windows%2010-pass-green) ![Server 2019 Pass](https://img.shields.io/badge/server%202019-pass-green) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey) ![Testing To Be Performed](https://img.shields.io/badge/linux-not%20run-lightgrey)</p>|
+|5.1|1.0.9|![Fail](https://img.shields.io/badge/windows%2010-fail-red) ![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-fail-red) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey)|n/a|
 
 #### RuleSet/PowerShell version/PSQualityCheck testing matrix:
 
