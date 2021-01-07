@@ -6,17 +6,18 @@ This is a PowerShell module which runs a series of Pester 5 tests to validate co
 
 The quality standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
 
-## Release 
+## Release
 
 #### PowerShell Gallery
 
-[![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![dowloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
+[![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![downloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
 
 #### GitHub
 
 [![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
 
 #### Issues
+
 [![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
 
 ### Plans
@@ -37,28 +38,28 @@ This module requires:
 
 Optional items:
 
-* Extra PSScriptAnalyzer rules (used by SonarQube) are available here:<br/>https://github.com/indented-automation/ScriptAnalyzerRules
-* Extra PSScriptAnalyzer rules (used by VSCode) are available here:<br/>https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules
+* Extra PSScriptAnalyzer rules (used by SonarQube) are available here:<br/>[https://github.com/indented-automation/ScriptAnalyzerRules](https://github.com/indented-automation/ScriptAnalyzerRules)
+* Extra PSScriptAnalyzer rules (used by VSCode) are available here:<br/>[https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)
 
 ## Installation
 
-### __Preferred Method__
+### Preferred Method
 
 From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
 
-### __Manual Installation__
+### Manual Installation
 
 Copy the files to **one** of the available module folders:
 
-__For PowerShell 5.x__
+#### For PowerShell 5.x
 
 * `C:\Users\<username>\Documents\WindowsPowerShell\Modules\PSQualityCheck`
 
 * `C:\Program Files\WindowsPowerShell\Modules\PSQualityCheck`
 
-__For PowerShell 7.x__
+#### For PowerShell 7.x
 
 * `C:\Users\<username>\Documents\PowerShell\Modules\PSQualityCheck`
 
@@ -115,17 +116,17 @@ A quick description of the available Pester tests
 
 ## Tests
 
-#### PowerShell version/PSQualityCheck/Operating System testing matrix:
+#### PowerShell version/PSQualityCheck/Operating System testing matrix
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
 |7.1.0|1.0.9|<p>![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-not%20run-lightgrey) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey) ![Testing To Be Performed](https://img.shields.io/badge/linux-not%20run-lightgrey)</p>|
 |5.1|1.0.9|![Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 Testing To Be Performed](https://img.shields.io/badge/server%202019-not%20run-lightgrey) ![Server 2016 Testing To Be Performed](https://img.shields.io/badge/server%202016-not%20run-lightgrey)|n/a|
 
-#### RuleSet/PowerShell version/PSQualityCheck testing matrix:
+#### RuleSet/PowerShell version/PSQualityCheck testing matrix
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
 |None|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.9|![Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![Futher Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
+|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![Further Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
