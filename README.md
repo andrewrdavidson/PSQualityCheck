@@ -119,7 +119,7 @@ A quick description of the available Pester tests
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
-|7.1.0|1.0.9|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Linux - Fail](https://img.shields.io/badge/linux-fail-red)</p>|
+|7.1.0|1.0.9|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Fail](https://img.shields.io/badge/ubuntu%2020.04-fail-red)</p>|
 |5.1|1.0.9|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
 
 #### RuleSet/PowerShell version/PSQualityCheck testing matrix
