@@ -7,7 +7,7 @@
     Author = 'github@kelrys.com'
     CompanyName = 'n/a'
     Copyright = '(c) github@kelrys.com. All rights reserved.'
-    PowerShellVersion = "7.0"
+    PowerShellVersion = "5.0"
     FunctionsToExport = @('One', 'Two')
     CmdletsToExport = @()
     VariablesToExport = '*'

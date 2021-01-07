@@ -1,7 +1,5 @@
 # PSQualityCheck
 
-## BREAKING BUG ON POWERSHELL 5.1 with v1.0.9 - I'm working on a fix
-
 ## Summary
 
 This is a PowerShell module which runs a series of Pester 5 tests to validate code quality. It uses a combination of Pester tests, PSScriptAnalyzer and a set of quality standards to ensure consistent quality on PowerShell scripts and modules.
@@ -122,12 +120,12 @@ A quick description of the available Pester tests
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
 |7.1.0|1.0.9|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Testing not run](https://img.shields.io/badge/server%202016-not%20run-lightgrey) ![Linux - Testing not run](https://img.shields.io/badge/linux-not%20run-lightgrey)</p>|
-|5.1|1.0.9|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-fail-red) ![Server 2019 - Fail](https://img.shields.io/badge/server%202019-fail-red) ![Server 2016 - Testing not run](https://img.shields.io/badge/server%202016-not%20run-lightgrey)|n/a|
+|5.1|1.0.9|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Fail](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Testing not run](https://img.shields.io/badge/server%202016-not%20run-lightgrey)|n/a|
 
 #### RuleSet/PowerShell version/PSQualityCheck testing matrix
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
-|None|1.0.9|![PowerSHell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Fail](https://img.shields.io/badge/powershell%205.1-fail-red)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.9|![PowerSHell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerSHell 5.1 - Fail](https://img.shields.io/badge/powershell%205.1-fail-red)|
+|None|1.0.9|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-fail-red)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.9|![PowerSHell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerSHell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-fail-brightgreen)|
 |[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![PowerSHell 7.1.0 - Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![PowerSHell 5.1 - Further Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
