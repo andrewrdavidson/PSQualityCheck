@@ -37,6 +37,57 @@ Describe "Get-ScriptParameters.Tests" {
 
         }
 
+        It "should throw when passed find no parameters" {
+
+            {
+                $fileContent = "function Get-FileContent { }"
+
+                $parameterVariables = Get-ScriptParameters -Content $fileContent
+
+                $parameterVariables | Should -BeNullOrEmpty
+
+            } | Should -Throw
+
+        }
+
+        It "should find one parameter without type" {
+
+            $fileContent = 'param ( $parameterOne )'
+
+            $parameterVariables = Get-ScriptParameters -Content $fileContent
+
+            $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
+
+        }
+
+        It "should find one parameter with type" {
+
+            $fileContent = 'param ( [int]$parameterOne )'
+
+            $parameterVariables = Get-ScriptParameters -Content $fileContent
+
+            $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
+            $parameterVariables.('parameterOne') | Should -BeExactly '[int]'
+
+        }
+
+        It "should find one parameter with type" {
+
+            $fileContent = 'param (
+                            [int]$parameterOne,
+                            [string]$parameterTwo
+                            )'
+
+            $parameterVariables = Get-ScriptParameters -Content $fileContent
+
+            $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
+            $parameterVariables.('parameterOne') | Should -BeExactly '[int]'
+
+            $parameterVariables.ContainsKey('parameterTwo') | Should -BeTrue
+            $parameterVariables.('parameterTwo') | Should -BeExactly '[string]'
+
+        }
+
     }
 
 }
