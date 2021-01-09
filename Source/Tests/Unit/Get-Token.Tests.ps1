@@ -103,9 +103,6 @@ Describe "Get-Token.Tests" {
 
         $token = Get-Token -ParsedFileContent $parsedFileContent -Type "Keyword" -Content "Function"
 
-        Write-Host ($token | Out-String) -ForegroundColor Cyan
-        Write-Host $tokenMatch.StartLine -ForegroundColor Magenta
-
         for ($x = 0; $x -lt $parsedModule.Count; $x++) {
 
             (
