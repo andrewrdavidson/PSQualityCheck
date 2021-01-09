@@ -34,6 +34,11 @@ Describe "Export-FunctionsFromModule.Tests" {
 
     Context "Function tests" {
 
+        $sourcePath = Join-Path -Path $TestDrive -ChildPath "Source"
+        New-Item -Path $sourcePath -ItemType Directory
+        $extractPath = Join-Path -Path $TestDrive -ChildPath "Extract"
+        New-Item -Path $extractPath -ItemType Directory
+
         It "should throw when passing null parameters" {
 
             {
@@ -41,6 +46,82 @@ Describe "Export-FunctionsFromModule.Tests" {
                 Export-FunctionsFromModule -Path $null -ExtractPath $null
 
             } | Should -Throw
+
+        }
+
+        It "should throw when passing non-module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+
+            {
+                $fileContent = ""
+                $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.ps1'
+                Set-Content -Path $testPath1 -Value $fileContent
+
+                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+
+            } | Should -Throw
+
+        }
+
+        It "should throw when passing functionless module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+
+            {
+                $fileContent = ""
+                $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
+                Set-Content -Path $testPath1 -Value $fileContent
+
+                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+
+            } | Should -Throw
+
+        }
+
+        It "should not throw and create valid extracted file when passing simple, valid module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+
+            {
+                $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
+                $fileContent = "function Test-Function {
+                    Write-Host
+                }"
+                Set-Content -Path $testPath1 -Value $fileContent
+
+                $functionPath = Join-Path $extractPath -ChildPath "test"
+                $functionFile = Join-Path $functionPath -ChildPath "Test-Function.ps1"
+
+                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+
+                $files = Get-ChildItem -Path $functionPath
+
+                (Get-ChildItem -Path $functionPath).Count | Should -BeExactly 1
+                (Get-ChildItem -Path $functionPath).FullName | Should -BeExactly $functionFile
+
+            } | Should -Not -Throw
+
+        }
+
+        It "should not throw and create valid extracted files when passing simple, valid multi-function module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+
+            {
+                $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
+                $fileContent = "function Test-Function {
+                    Write-Host
+                }
+                function Test-SecondFunction {
+                    Write-Host
+                }"
+                Set-Content -Path $testPath1 -Value $fileContent
+
+                $functionPath = Join-Path $extractPath -ChildPath "test"
+                $functionFile1 = Join-Path $functionPath -ChildPath "Test-Function.ps1"
+                $functionFile2 = Join-Path $functionPath -ChildPath "Test-SecondFunction.ps1"
+
+                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+
+                $files = Get-ChildItem -Path $functionPath
+
+                (Get-ChildItem -Path $functionPath).Count | Should -BeExactly 2
+                (Get-ChildItem -Path $functionPath).FullName | Should -BeExactly @($functionFile1, $functionFile2)
+
+            } | Should -Not -Throw
 
         }
 
