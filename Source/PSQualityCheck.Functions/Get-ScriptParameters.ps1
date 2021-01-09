@@ -23,6 +23,10 @@ function Get-ScriptParameters {
 
         $parsedScript = [System.Management.Automation.Language.Parser]::ParseInput($Content, [ref]$null, [ref]$null)
 
+        if ([string]::IsNullOrEmpty($parsedScript.ParamBlock)) {
+            throw "No parameters found"
+        }
+
         [string]$paramBlock = $parsedScript.ParamBlock
 
         ($ParsedContent, $ParserErrorCount) = Get-ParsedContent -Content $paramBlock
