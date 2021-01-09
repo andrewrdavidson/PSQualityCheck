@@ -87,7 +87,7 @@ Describe "Get-TokenComponent.Tests" {
             }
         )
 
-        It "should not find token where 'StartLine' is valid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+        It "should find token where 'StartLine' is valid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
 
             $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 1
 
