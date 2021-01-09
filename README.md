@@ -22,6 +22,11 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 [![github pre-release tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?include_prereleases)](https://img.shields.io/github/v/release/andrewrdavidson/PSQualityCheck?include_prereleases)
 
+**Commits**
+
+[![commits since 1.0.9](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.0.9/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.0.9)
+[![commits since 1.0.10-alpha2](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/latest/release-1.0.10?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.0.10-alpha1)
+
 #### Issues
 
 [![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
@@ -126,8 +131,7 @@ A quick description of the available Pester tests
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
-|7.1.0|1.0.10-alpha2|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)|
-|7.1.0|1.0.9|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Fail](https://img.shields.io/badge/ubuntu%2020.04-fail-red)|
+|7.1.0|1.0.9|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Fail](https://img.shields.io/badge/ubuntu%2020.04-fail-red)</p>|
 |5.1|1.0.9|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
 
 #### RuleSet/PowerShell version/PSQualityCheck testing matrix
