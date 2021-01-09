@@ -44,50 +44,52 @@ Describe "Get-TokenComponent.Tests" {
 
         }
 
-        $parsedFileContent = @(
-            @{
-                "Content" = "function"
-                "Type" = "Keyword"
-                "Start" = 0
-                "Length" = 8
-                "StartLine" = 1
-                "StartColumn" = 1
-                "EndLine" = 1
-                "EndColumn" = 9
-            },
-            @{
-                "Content" = "Get-FileContent"
-                "Type" = "CommandArgument"
-                "Start" = 9
-                "Length" = 15
-                "StartLine" = 1
-                "StartColumn" = 10
-                "EndLine" = 1
-                "EndColumn" = 25
-            },
-            @{
-                "Content" = "{"
-                "Type" = "GroupStart"
-                "Start" = 25
-                "Length" = 1
-                "StartLine" = 1
-                "StartColumn" = 26
-                "EndLine" = 1
-                "EndColumn" = 27
-            },
-            @{
-                "Content" = "}"
-                "Type" = "GroupEnd"
-                "Start" = 26
-                "Length" = 1
-                "StartLine" = 1
-                "StartColumn" = 27
-                "EndLine" = 1
-                "EndColumn" = 28
-            }
-        )
+        BeforeAll {
+            $parsedFileContent = @(
+                @{
+                    "Content" = "function"
+                    "Type" = "Keyword"
+                    "Start" = 0
+                    "Length" = 8
+                    "StartLine" = 1
+                    "StartColumn" = 1
+                    "EndLine" = 1
+                    "EndColumn" = 9
+                },
+                @{
+                    "Content" = "Get-FileContent"
+                    "Type" = "CommandArgument"
+                    "Start" = 9
+                    "Length" = 15
+                    "StartLine" = 1
+                    "StartColumn" = 10
+                    "EndLine" = 1
+                    "EndColumn" = 25
+                },
+                @{
+                    "Content" = "{"
+                    "Type" = "GroupStart"
+                    "Start" = 25
+                    "Length" = 1
+                    "StartLine" = 1
+                    "StartColumn" = 26
+                    "EndLine" = 1
+                    "EndColumn" = 27
+                },
+                @{
+                    "Content" = "}"
+                    "Type" = "GroupEnd"
+                    "Start" = 26
+                    "Length" = 1
+                    "StartLine" = 1
+                    "StartColumn" = 27
+                    "EndLine" = 1
+                    "EndColumn" = 28
+                }
+            )
+        }
 
-        It "should find token where 'StartLine' is valid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+        It "should find token where 'StartLine' is valid" {
 
             $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 1
 
@@ -95,7 +97,7 @@ Describe "Get-TokenComponent.Tests" {
 
         }
 
-        It "should not find token where 'StartLine' is invalid" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+        It "should not find token where 'StartLine' is invalid" {
 
             $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 3
             $token | Should -BeNullOrEmpty
