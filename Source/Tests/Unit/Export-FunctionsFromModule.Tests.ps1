@@ -34,10 +34,14 @@ Describe "Export-FunctionsFromModule.Tests" {
 
     Context "Function tests" {
 
-        $sourcePath = Join-Path -Path $TestDrive -ChildPath "Source"
-        New-Item -Path $sourcePath -ItemType Directory
-        $extractPath = Join-Path -Path $TestDrive -ChildPath "Extract"
-        New-Item -Path $extractPath -ItemType Directory
+        BeforeAll {
+
+            $sourcePath = Join-Path -Path $TestDrive -ChildPath "Source"
+            New-Item -Path $sourcePath -ItemType Directory
+            $extractPath = Join-Path -Path $TestDrive -ChildPath "Extract"
+            New-Item -Path $extractPath -ItemType Directory
+
+        }
 
         It "should throw when passing null parameters" {
 
@@ -49,7 +53,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         }
 
-        It "should throw when passing non-module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+        It "should throw when passing non-module file" {
 
             {
                 $fileContent = ""
@@ -62,7 +66,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         }
 
-        It "should throw when passing functionless module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+        It "should throw when passing functionless module file" {
 
             {
                 $fileContent = ""
@@ -75,7 +79,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         }
 
-        It "should not throw and create valid extracted file when passing simple, valid module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+        It "should not throw and create valid extracted file when passing simple, valid module file" {
 
             {
                 $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
@@ -98,7 +102,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
         }
 
-        It "should not throw and create valid extracted files when passing simple, valid multi-function module file" -TestCases @{ 'sourcePath' = $sourcePath; 'extractPath' = $extractPath } {
+        It "should not throw and create valid extracted files when passing simple, valid multi-function module file" {
 
             {
                 $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
