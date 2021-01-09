@@ -39,7 +39,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with no function, empty content in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = ""
             Set-Content -Path $testPath -Value $fileContent
 
@@ -51,7 +51,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with no function, single-line content in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "Write-Host"
             Set-Content -Path $testPath -Value $fileContent
 
@@ -63,7 +63,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with no function, multi-line content in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "Write-Host
             Write-Host
             "
@@ -77,7 +77,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with only one empty function in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "function Get-FileContent {}"
             $matchContent = ""
             Set-Content -Path $testPath -Value $fileContent
@@ -90,7 +90,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with only one single-line function in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "function Get-FileContent { Write-Host }"
             $matchContent = " Write-Host "
             Set-Content -Path $testPath -Value $fileContent
@@ -103,7 +103,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with only one single-line advanced function in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "function Get-FileContent { if ($true) { Write-Host } }"
             $matchContent = " if ($true) { Write-Host } "
             Set-Content -Path $testPath -Value $fileContent
@@ -116,7 +116,7 @@ Describe "Get-FileContent.Tests" {
 
         It "should pass when Path is valid with only one multi-line function in the file" {
 
-            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent1 = "function Get-FileContent {
                                 Write-Host
                             }"
@@ -147,7 +147,7 @@ Describe "Get-FileContent.Tests" {
         It "should throw when Path is valid with two functions in the file" {
 
             {
-                $testPath = Join-Path -Path $TestDrive -ChildPath 'test.txt'
+                $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
                 $fileContent = "function Get-FileContent {
                                     Write-Host
                                 }
