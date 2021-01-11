@@ -3,7 +3,7 @@ Describe "Get-Token.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'ParsedFileContent'
+            'ParsedContent'
             'Type'
             'Content'
         )
@@ -19,9 +19,9 @@ Describe "Get-Token.Tests" {
 
         }
 
-        It "should ParsedFileContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should ParsedContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Get-Token').Parameters['ParsedFileContent'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name 'Get-Token').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
 
         }
 
@@ -45,7 +45,7 @@ Describe "Get-Token.Tests" {
 
             {
 
-                Get-Token -ParsedFileContent $null -Type $null -Content $null
+                Get-Token -ParsedContent $null -Type $null -Content $null
 
             } | Should -Throw
 
@@ -55,7 +55,7 @@ Describe "Get-Token.Tests" {
 
 
     BeforeAll {
-        $parsedFileContent = @(
+        $ParsedContent = @(
             @{
                 "Content" = "function"
                 "Type" = "Keyword"
@@ -101,19 +101,19 @@ Describe "Get-Token.Tests" {
 
     It "should find token where parameters are valid" {
 
-        $token = Get-Token -ParsedFileContent $parsedFileContent -Type "Keyword" -Content "Function"
+        $token = Get-Token -ParsedContent $ParsedContent -Type "Keyword" -Content "Function"
 
         for ($x = 0; $x -lt $parsedModule.Count; $x++) {
 
             (
-                ($token[$x].StartLine -eq $parsedFileContent[$x].StartLine) -and
-                ($token[$x].Content -eq $parsedFileContent[$x].Content) -and
-                ($token[$x].Type -eq $parsedFileContent[$x].Type) -and
-                ($token[$x].Start -eq $parsedFileContent[$x].Start) -and
-                ($token[$x].Length -eq $parsedFileContent[$x].Length) -and
-                ($token[$x].StartColumn -eq $parsedFileContent[$x].StartColumn) -and
-                ($token[$x].EndLine -eq $parsedFileContent[$x].EndLine) -and
-                ($token[$x].EndColumn -eq $parsedFileContent[$x].EndColumn)
+                ($token[$x].StartLine -eq $ParsedContent[$x].StartLine) -and
+                ($token[$x].Content -eq $ParsedContent[$x].Content) -and
+                ($token[$x].Type -eq $ParsedContent[$x].Type) -and
+                ($token[$x].Start -eq $ParsedContent[$x].Start) -and
+                ($token[$x].Length -eq $ParsedContent[$x].Length) -and
+                ($token[$x].StartColumn -eq $ParsedContent[$x].StartColumn) -and
+                ($token[$x].EndLine -eq $ParsedContent[$x].EndLine) -and
+                ($token[$x].EndColumn -eq $ParsedContent[$x].EndColumn)
             ) | Should -BeTrue
 
         }
@@ -122,7 +122,7 @@ Describe "Get-Token.Tests" {
 
     It "should not find token where parameters are invalid" {
 
-        $token = (Get-Token -ParsedFileContent $parsedFileContent -Type "Unknown" -Content "Data")
+        $token = (Get-Token -ParsedContent $ParsedContent -Type "Unknown" -Content "Data")
 
         $token | Should -BeNullOrEmpty
 

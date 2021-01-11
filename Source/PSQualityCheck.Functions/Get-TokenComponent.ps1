@@ -6,20 +6,20 @@ function Get-TokenComponent {
         .DESCRIPTION
         Get all the tokens components from a single line in the tokenized content
 
-        .PARAMETER ParsedFileContent
+        .PARAMETER ParsedContent
         A string array containing the tokenized content
 
         .PARAMETER StartLine
         A integer of the starting line to parse
 
         .EXAMPLE
-        $tokens = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 10
+        $tokens = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 10
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFileContent,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [int]$StartLine
     )
@@ -28,7 +28,7 @@ function Get-TokenComponent {
     #* which can't find the variables in the 'Where-Object' clause (even though it's valid)
     $StartLine = $StartLine
 
-    $tokenComponents = @($ParsedFileContent | Where-Object { $_.StartLine -eq $StartLine })
+    $tokenComponents = @($ParsedContent | Where-Object { $_.StartLine -eq $StartLine })
 
     return $tokenComponents
 

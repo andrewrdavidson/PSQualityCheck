@@ -3,7 +3,7 @@ Describe "Get-TokenMarker.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'ParsedFileContent'
+            'ParsedContent'
             'Type'
             'Content'
         )
@@ -19,9 +19,9 @@ Describe "Get-TokenMarker.Tests" {
 
         }
 
-        It "should ParsedFileContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should ParsedContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Get-TokenMarker').Parameters['ParsedFileContent'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name 'Get-TokenMarker').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
 
         }
 
@@ -45,13 +45,13 @@ Describe "Get-TokenMarker.Tests" {
 
             {
 
-                Get-TokenMarker -ParsedFileContent $null -Type $null -Content $null
+                Get-TokenMarker -ParsedContent $null -Type $null -Content $null
 
             } | Should -Throw
 
         }
 
-        $parsedFileContent = @(
+        $ParsedContent = @(
             @{
                 "Content" = "function"
                 "Type" = "Keyword"
@@ -105,35 +105,35 @@ Describe "Get-TokenMarker.Tests" {
             "EndColumn" = 25
         }
 
-        It "should find 'CommandArgument' type with 'Get-FileContent' value" -TestCases @{ 'parsedFileContent' = $parsedFileContent; 'tokenMatch' = $tokenMatch } {
+        It "should find 'CommandArgument' type with 'Get-FileContent' value" -TestCases @{ 'ParsedContent' = $ParsedContent; 'tokenMatch' = $tokenMatch } {
 
-            $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type "CommandArgument" -Content "Get-FileContent"
+            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Get-FileContent"
 
             Compare-Object -ReferenceObject $token.Values -DifferenceObject $tokenMatch.values | Should -BeNullOrEmpty
 
         }
 
-        It "should not find 'Dummy' type with 'Get-FileContent' value" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+        It "should not find 'Dummy' type with 'Get-FileContent' value" -TestCases @{ 'ParsedContent' = $ParsedContent } {
 
-            $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type "Dummy" -Content "Get-FileContent"
-
-            $token | Should -BeNullOrEmpty
-
-        }
-
-        It "should not find 'CommandArgument' type with 'Dummy' value" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
-
-            $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type "CommandArgument" -Content "Dummy"
+            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "Dummy" -Content "Get-FileContent"
 
             $token | Should -BeNullOrEmpty
 
         }
 
-        It "should throw with 'null' type and 'null' value" -TestCases @{ 'parsedFileContent' = $parsedFileContent } {
+        It "should not find 'CommandArgument' type with 'Dummy' value" -TestCases @{ 'ParsedContent' = $ParsedContent } {
+
+            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Dummy"
+
+            $token | Should -BeNullOrEmpty
+
+        }
+
+        It "should throw with 'null' type and 'null' value" -TestCases @{ 'ParsedContent' = $ParsedContent } {
 
             {
 
-                Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type $null -Content $null
+                Get-TokenMarker -ParsedContent $ParsedContent -Type $null -Content $null
 
             } | Should -Throw
         }

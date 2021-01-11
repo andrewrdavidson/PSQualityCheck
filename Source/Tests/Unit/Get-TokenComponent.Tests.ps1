@@ -3,7 +3,7 @@ Describe "Get-TokenComponent.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'ParsedFileContent'
+            'ParsedContent'
             'StartLine'
         )
 
@@ -18,9 +18,9 @@ Describe "Get-TokenComponent.Tests" {
 
         }
 
-        It "should ParsedFileContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should ParsedContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Get-TokenComponent').Parameters['ParsedFileContent'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name 'Get-TokenComponent').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
 
         }
 
@@ -38,14 +38,14 @@ Describe "Get-TokenComponent.Tests" {
 
             {
 
-                Get-TokenComponent -ParsedFileContent $null -StartLine $null
+                Get-TokenComponent -ParsedContent $null -StartLine $null
 
             } | Should -Throw
 
         }
 
         BeforeAll {
-            $parsedFileContent = @(
+            $ParsedContent = @(
                 @{
                     "Content" = "function"
                     "Type" = "Keyword"
@@ -91,18 +91,18 @@ Describe "Get-TokenComponent.Tests" {
 
         It "should find token where 'StartLine' is valid" {
 
-            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 1
+            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 1
 
-            Compare-Object -ReferenceObject $token.Values -DifferenceObject $ParsedFileContent.values | Should -BeNullOrEmpty
+            Compare-Object -ReferenceObject $token.Values -DifferenceObject $ParsedContent.values | Should -BeNullOrEmpty
 
         }
 
         It "should not find token where 'StartLine' is invalid" {
 
-            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 3
+            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 3
             $token | Should -BeNullOrEmpty
 
-            $token = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine $null
+            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $null
             $token | Should -BeNullOrEmpty
 
         }

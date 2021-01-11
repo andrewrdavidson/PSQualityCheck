@@ -7,7 +7,7 @@ function Test-HelpForUnspecifiedTokens {
         Check that the help comments do not contain tokens that are not specified in the external verification data file
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpForUnspecifiedTokens -HelpTokens $HelpTokens

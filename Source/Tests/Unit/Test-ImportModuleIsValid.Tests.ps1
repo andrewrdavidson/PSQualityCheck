@@ -3,7 +3,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'ParsedFile'
+            'ParsedContent'
             'ImportModuleTokens'
         )
 
@@ -18,9 +18,9 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
         }
 
-        It "should ParsedFile type be Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should ParsedContent type be Object[]" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Test-ImportModuleIsValid').Parameters['ParsedFile'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name 'Test-ImportModuleIsValid').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
 
         }
 
@@ -38,7 +38,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
             {
 
-                Test-ImportModuleIsValid -ParsedFile $null -ImportModuleTokens $null
+                Test-ImportModuleIsValid -ParsedContent $null -ImportModuleTokens $null
 
             } | Should -Throw
 
@@ -48,7 +48,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
             {
 
-                $parsedFile = @(
+                $ParsedContent = @(
                     @{
                         "Content" = "Import-Module"
                         "Type" = "Command"
@@ -101,9 +101,9 @@ Describe "Test-ImportModuleIsValid.Tests" {
                     }
                 )
 
-                $importModuleTokens = $parsedFile
+                $importModuleTokens = $ParsedContent
 
-                Test-ImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+                Test-ImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
 
             } | Should -Not -Throw
 
@@ -113,7 +113,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
             {
 
-                $parsedFile = @(
+                $ParsedContent = @(
                     @{
                         "Content" = "Import-Module"
                         "Type" = "Command"
@@ -136,11 +136,11 @@ Describe "Test-ImportModuleIsValid.Tests" {
                     }
                 )
 
-                $importModuleTokens = $parsedFile
+                $importModuleTokens = $ParsedContent
 
-                Test-ImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+                Test-ImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
 
-            } | Should -Not -Throw
+            } | Should -Throw
 
         }
 
@@ -148,7 +148,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
             {
 
-                $parsedFile = @(
+                $ParsedContent = @(
                     @{
                         "Content" = "Import-Module"
                         "Type" = "Command"
@@ -191,11 +191,11 @@ Describe "Test-ImportModuleIsValid.Tests" {
                     }
                 )
 
-                $importModuleTokens = $parsedFile
+                $importModuleTokens = $ParsedContent
 
-                Test-ImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+                Test-ImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
 
-            } | Should -Not -Throw
+            } | Should -Throw
 
         }
 
@@ -203,7 +203,7 @@ Describe "Test-ImportModuleIsValid.Tests" {
 
             {
 
-                $parsedFile = @(
+                $ParsedContent = @(
                     @{
                         "Content" = "Import-Module"
                         "Type" = "Command"
@@ -236,11 +236,11 @@ Describe "Test-ImportModuleIsValid.Tests" {
                     }
                 )
 
-                $importModuleTokens = $parsedFile
+                $importModuleTokens = $ParsedContent
 
-                Test-ImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+                Test-ImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
 
-            } | Should -Not -Throw
+            } | Should -Throw
 
         }
 

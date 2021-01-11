@@ -7,7 +7,7 @@ function Test-HelpTokensCountIsValid {
         Check that the help tokens count is valid by making sure that they appear between Min and Max times
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpTokensCountIsValid -HelpTokens $HelpTokens

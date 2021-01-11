@@ -7,7 +7,7 @@ function Test-HelpTokensTextIsValid {
         Check that the Help Tokens text is valid by making sure that they its not empty
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpTokensTextIsValid -HelpTokens $HelpTokens

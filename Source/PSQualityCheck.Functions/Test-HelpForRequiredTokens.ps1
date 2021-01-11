@@ -7,7 +7,7 @@ function Test-HelpForRequiredTokens {
         Check that the help comments contain tokens that are specified in the external verification data file
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpForRequiredTokens -HelpTokens $HelpTokens

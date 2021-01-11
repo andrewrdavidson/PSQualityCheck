@@ -6,20 +6,20 @@ function Test-ImportModuleIsValid {
         .DESCRIPTION
         Test that the Import-Module commands contain a -Name parameter, and one of RequiredVersion, MinimumVersion or MaximumVersion
 
-        .PARAMETER ParsedFile
+        .PARAMETER ParsedContent
         An object containing the source file parsed into its Tokenizer components
 
         .PARAMETER ImportModuleTokens
-        An object containing the Import-Module calls found
+        An object containing the Import-Module tokens found
 
         .EXAMPLE
-        TestImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+        TestImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFile,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [System.Object[]]$ImportModuleTokens
     )
@@ -32,7 +32,7 @@ function Test-ImportModuleIsValid {
         foreach ($token in $importModuleTokens) {
 
             # Get the full details of the command
-            $importModuleStatement = Get-TokenComponent -ParsedFileContent $ParsedFile -StartLine $token.StartLine
+            $importModuleStatement = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $token.StartLine
 
             # Get the name of the module to be imported (for logging only)
             $name = ($importModuleStatement | Where-Object { $_.Type -eq "CommandArgument" } | Select-Object -First 1).Content

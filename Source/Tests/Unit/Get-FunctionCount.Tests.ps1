@@ -3,8 +3,8 @@ Describe "Get-FunctionCount.Tests" {
     Context "Parameter Tests" {
 
         $mandatoryParameters = @(
-            'ModuleFile'
-            'ManifestFile'
+            'ModulePath'
+            'ManifestPath'
         )
 
         foreach ($parameter in $mandatoryParameters) {
@@ -18,15 +18,15 @@ Describe "Get-FunctionCount.Tests" {
 
         }
 
-        It "should ModuleFile type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should ModulePath type be String" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Get-FunctionCount').Parameters['ModuleFile'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name 'Get-FunctionCount').Parameters['ModulePath'].ParameterType.Name | Should -Be 'String'
 
         }
 
-        It "should ManifestFile type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should ManifestPath type be String" -TestCases @{ 'parameter' = $parameter } {
 
-            (Get-Command -Name 'Get-FunctionCount').Parameters['ManifestFile'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name 'Get-FunctionCount').Parameters['ManifestPath'].ParameterType.Name | Should -Be 'String'
 
         }
 
@@ -36,8 +36,8 @@ Describe "Get-FunctionCount.Tests" {
 
         BeforeAll {
 
-            $moduleFile = Join-Path -Path $TestDrive -ChildPath 'test1.psm1'
-            $manifestFile = Join-Path -Path $TestDrive -ChildPath 'test1.psd1'
+            $ModulePath = Join-Path -Path $TestDrive -ChildPath 'test1.psm1'
+            $ManifestPath = Join-Path -Path $TestDrive -ChildPath 'test1.psd1'
 
         }
 
@@ -45,7 +45,7 @@ Describe "Get-FunctionCount.Tests" {
 
             {
 
-                Get-ParsedFile -FunctionCount $null -ManifestFile $null
+                Get-ParsedFile -FunctionCount $null -ManifestPath $null
 
             } | Should -Throw
 
@@ -54,14 +54,14 @@ Describe "Get-FunctionCount.Tests" {
         It "should find one function with matching module and manifest" {
 
             $fileContent = "function Get-FileContent {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile -FunctionsToExport @('Get-FileContent')
+            New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent')
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(1, 1, 1, 1)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(1, 1, 1, 1)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
@@ -69,56 +69,56 @@ Describe "Get-FunctionCount.Tests" {
 
             $fileContent = "function Get-FileContent {}
             function Get-FileContent2 {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile -FunctionsToExport @('Get-FileContent', 'Get-FileContent2')
+            New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent', 'Get-FileContent2')
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(2, 2, 2, 2)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(2, 2, 2, 2)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
         It "should not find any function in manifest or module with empty manifest" {
 
             $fileContent = "function Get-FileContent {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile
+            New-ModuleManifest -Path $ManifestPath
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(0, 0, 0, 0)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(0, 0, 0, 0)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
         It "should not find function in manifest and module with mismatched functions between manifest and module" {
 
             $fileContent = "function Get-FileContent {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile -FunctionsToExport @('Get-FileContent2')
+            New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent2')
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(1, 0, 1, 0)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(1, 0, 1, 0)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
         It "should not find function in module with function in manifest and not in module" {
 
             $fileContent = "function Get-FileContent {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile -FunctionsToExport @('Get-FileContent', 'Get-FileContent2')
+            New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent', 'Get-FileContent2')
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(2, 1, 1, 1)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(2, 1, 1, 1)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
@@ -126,14 +126,14 @@ Describe "Get-FunctionCount.Tests" {
 
             $fileContent = "function Get-FileContent {}
             function Get-FileContent2 {}"
-            Set-Content -Path $moduleFile -Value $fileContent
+            Set-Content -Path $ModulePath -Value $fileContent
 
-            New-ModuleManifest -Path $manifestFile -FunctionsToExport @('Get-FileContent')
+            New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent')
 
-            Get-FunctionCount -Module $moduleFile -Manifest $manifestFile | Should -BeExactly @(1, 1, 2, 1)
+            Get-FunctionCount -Module $ModulePath -Manifest $ManifestPath | Should -BeExactly @(1, 1, 2, 1)
 
-            Remove-Item -Path $moduleFile -Force
-            Remove-Item -Path $manifestFile -Force
+            Remove-Item -Path $ModulePath -Force
+            Remove-Item -Path $ManifestPath -Force
 
         }
 
