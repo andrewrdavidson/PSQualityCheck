@@ -6,17 +6,17 @@ function Convert-Help {
         .DESCRIPTION
         Convert the help comment into an object containing all the elements from the help comment
 
-        .PARAMETER HelpComment
+        .PARAMETER Help
         A string containing the Help Comment
 
         .EXAMPLE
-        $helpObject = Convert-Help -HelpComment $helpComment
+        $helpObject = Convert-Help -Help $Help
     #>
     [CmdletBinding()]
     [OutputType([HashTable], [System.Exception])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$HelpComment
+        [string]$Help
     )
 
     # These are the possible Help Comment elements that the script will look for
@@ -41,8 +41,8 @@ function Convert-Help {
     try {
 
         if (-not(
-                $HelpComment.StartsWith("<#") -and
-                $HelpComment.EndsWith("#>")
+                $Help.StartsWith("<#") -and
+                $Help.EndsWith("#>")
             )) {
             throw "Help does not appear to be a comment block"
         }
@@ -66,7 +66,7 @@ function Convert-Help {
         '.EXTERNALHELP'
 
         # Split the single comment string into it's line components
-        $commentArray = ($HelpComment -split '\n').Trim()
+        $commentArray = ($Help -split '\n').Trim()
 
         # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
@@ -91,10 +91,10 @@ function Convert-Help {
                     # previous element to the found text so far, then reset it
 
                     $lastElement = @($foundElements[$lastHelpElement])
-                    $lastElement[$lastElement.Count - 1].Text = $help
+                    $lastElement[$lastElement.Count - 1].Text = $helpData
                     $foundElements[$lastHelpElement] = $lastElement
 
-                    $help = $null
+                    $helpData = $null
                 }
 
                 # this should be an array of HashTables {LineNumber, Name & Text}
@@ -124,7 +124,7 @@ function Convert-Help {
 
                 if ($numFound -ge 1 -and $line -lt ($commentArray.Count - 1)) {
 
-                    $help += $commentArray[$line]
+                    $helpData += $commentArray[$line]
 
                 }
 
@@ -135,7 +135,7 @@ function Convert-Help {
         if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
             # process the very last one
             $currentElement = @($foundElements[$lastHelpElement])
-            $currentElement[$currentElement.Count - 1].Text = $help
+            $currentElement[$currentElement.Count - 1].Text = $helpData
             $foundElements[$lastHelpElement] = $currentElement
         }
 
@@ -176,85 +176,97 @@ function Export-FunctionsFromModule {
         [string]$ExtractPath
     )
 
-    # Get the file properties of our module
-    $fileProperties = (Get-Item -LiteralPath $Path)
-    $moduleName = $fileProperties.BaseName
+    try {
+        # Get the file properties of our module
+        $fileProperties = (Get-Item -LiteralPath $Path)
 
-    # Generate a new temporary output path for our extracted functions
-    $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
-    New-Item $FunctionOutputPath -ItemType 'Directory'
+        if ($fileProperties.Extension -ne ".psm1") {
+            throw "Passed file does not appear to be a PowerShell module"
+        }
 
-    # Get the plain content of the module file
-    $ModuleFileContent = Get-Content -Path $Path -ErrorAction Stop
+        $moduleName = $fileProperties.BaseName
 
-    # Parse the PowerShell module using PSParser
-    $ParserErrors = $null
-    $ParsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($ModuleFileContent, [ref]$ParserErrors)
+        # Get the plain content of the module file
+        $ModuleFileContent = Get-Content -Path $Path -ErrorAction Stop
 
-    # Create an array of where each reference of the keyword 'function' is
-    $ParsedFunctions = ($ParsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
+        # Parse the PowerShell module using PSParser
+        $ParserErrors = $null
+        $ParsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($ModuleFileContent, [ref]$ParserErrors)
 
-    # Initialise the $parsedFunction tracking variable
-    $parsedFunction = 0
+        # Create an array of where each reference of the keyword 'function' is
+        $ParsedFunctions = ($ParsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-    if ($ParsedFunctions.Count -ge 1) {
+        # Initialise the $parsedFunction tracking variable
+        $parsedFunction = 0
 
-        foreach ($Function in $ParsedFunctions) {
+        if ($ParsedFunctions.Count -ge 1) {
 
-            # Counter for the array $ParsedFunction to help find the 'next' function
-            $parsedFunction++
+            # Generate a new temporary output path for our extracted functions
+            $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
 
-            # Get the name of the current function
-            # Cheat: Simply getting all properties with the same line number as the 'function' statement
-            $FunctionProperties = $ParsedFileFunctions | Where-Object { $_.StartLine -eq $Function.StartLine }
-            $FunctionName = ($FunctionProperties | Where-Object { $_.Type -eq "CommandArgument" }).Content
+            if (-not (Test-Path -Path $FunctionOutputPath)) {
+                New-Item $FunctionOutputPath -ItemType 'Directory'
+            }
 
-            # Establish the Start and End lines for the function in the main module file
-            if ($parsedFunction -eq $ParsedFunctions.Count) {
+            foreach ($Function in $ParsedFunctions) {
 
-                # This is the last function in the module so set the last line of this function to be the last line in the module file
+                # Counter for the array $ParsedFunction to help find the 'next' function
+                $parsedFunction++
 
-                $StartLine = ($Function.StartLine)
-                for ($line = $ModuleFileContent.Count; $line -gt $Function.StartLine; $line--) {
-                    if ($ModuleFileContent[$line] -like "}") {
-                        $EndLine = $line
-                        break
+                # Get the name of the current function
+                # Cheat: Simply getting all properties with the same line number as the 'function' statement
+                $FunctionProperties = $ParsedFileFunctions | Where-Object { $_.StartLine -eq $Function.StartLine }
+                $FunctionName = ($FunctionProperties | Where-Object { $_.Type -eq "CommandArgument" }).Content
+
+                # Establish the Start and End lines for the function in the main module file
+                if ($parsedFunction -eq $ParsedFunctions.Count) {
+
+                    # This is the last function in the module so set the last line of this function to be the last line in the module file
+
+                    $StartLine = ($Function.StartLine)
+                    for ($line = $ModuleFileContent.Count; $line -gt $Function.StartLine; $line--) {
+                        if ($ModuleFileContent[$line] -like "}") {
+                            $EndLine = $line
+                            break
+                        }
                     }
                 }
-            }
-            else {
+                else {
 
-                $StartLine = ($Function.StartLine)
+                    $StartLine = ($Function.StartLine)
 
-                # EndLine needs to be where the last } is
-                for ($line = $ParsedFunctions[$parsedFunction].StartLine; $line -gt $Function.StartLine; $line--) {
-                    if ($ModuleFileContent[$line] -like "}") {
-                        $EndLine = $line
-                        break
+                    # EndLine needs to be where the last } is
+                    for ($line = $ParsedFunctions[$parsedFunction].StartLine; $line -gt $Function.StartLine; $line--) {
+                        if ($ModuleFileContent[$line] -like "}") {
+                            $EndLine = $line
+                            break
+                        }
                     }
+
+                }
+
+                # Setup the FunctionOutputFile for the function file
+                $FunctionOutputFileName = "{0}\{1}{2}" -f $FunctionOutputPath, $FunctionName, ".ps1"
+
+                # If the file doesn't exist create an empty file so that we can Add-Content to it
+                if (-not (Test-Path -Path $FunctionOutputFileName)) {
+                    Out-File -FilePath $FunctionOutputFileName
+                }
+
+                # Output the lines of the function to the FunctionOutputFile
+                for ($line = $StartLine; $line -lt $EndLine; $line++) {
+                    Add-Content -Path $FunctionOutputFileName -Value $ModuleFileContent[$line]
                 }
 
             }
-
-            # Setup the FunctionOutputFile for the function file
-            $FunctionOutputFileName = "{0}\{1}{2}" -f $FunctionOutputPath, $FunctionName, ".ps1"
-
-            # If the file doesn't exist create an empty file so that we can Add-Content to it
-            if (-not (Test-Path -Path $FunctionOutputFileName)) {
-                Out-File -FilePath $FunctionOutputFileName
-            }
-
-            # Output the lines of the function to the FunctionOutputFile
-            for ($line = $StartLine; $line -lt $EndLine; $line++) {
-                Add-Content -Path $FunctionOutputFileName -Value $ModuleFileContent[$line]
-            }
-
+        }
+        else {
+            throw "File contains no functions"
         }
     }
-    else {
-        Write-Warning "Module contains no functions, skipping"
+    catch {
+        throw
     }
-
 }
 
 function Get-FileContent {
@@ -278,54 +290,96 @@ function Get-FileContent {
         [string]$Path
     )
 
-    $fileContent = Get-Content -Path $Path
+    try {
 
-    $parserErrors = $null
+        $fileContent = Get-Content -Path $Path
 
-    # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
-    if ([string]::IsNullOrEmpty($fileContent)) {
-        $parsedFileFunctions = @()
-    }
-    else {
-        $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
-    }
+        $parserErrors = $null
 
-    # Create an array of where each reference of the keyword 'function' is
-    $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
+        # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
+        if ([string]::IsNullOrEmpty($fileContent)) {
+            $parsedFileFunctions = @()
+        }
+        else {
+            $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
+        }
 
-    if ($parsedFunctions) {
+        # Create an array of where each reference of the keyword 'function' is
+        $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-        foreach ($function in $parsedFunctions) {
+        if ($parsedFunctions.Count -gt 1) {
+            throw "Too many functions in file, file is invalid"
+        }
 
-            $startLine = ($function.StartLine)
+        if ($parsedFunctions.Count -eq 1) {
 
-            for ($line = $fileContent.Count; $line -gt $function.StartLine; $line--) {
+            if ($fileContent.Count -gt 1) {
 
-                if ($fileContent[$line] -like "}") {
+                foreach ($function in $parsedFunctions) {
 
-                    $endLine = $line
-                    break
+                    $startLine = ($function.StartLine)
+
+                    for ($line = $fileContent.Count; $line -gt $function.StartLine; $line--) {
+
+                        if ($fileContent[$line] -like "*}*") {
+
+                            $endLine = $line
+                            break
+
+                        }
+
+                    }
+
+                    # Output the lines of the function to the FunctionOutputFile
+                    for ($line = $startLine; $line -lt $endLine; $line++) {
+
+                        $parsedFileContent += $fileContent[$line]
+
+                        if ($line -ne ($fileContent.Count - 1)) {
+                            $parsedFileContent += "`r`n"
+                        }
+
+                    }
 
                 }
 
             }
+            else {
 
-            # Output the lines of the function to the FunctionOutputFile
-            for ($line = $startLine; $line -lt $endLine; $line++) {
-                $parsedFileContent += $fileContent[$line]
-                $parsedFileContent += "`n"
+                # if there is only one line then the content should be on the line between { and }
+                [int]$startBracket = $fileContent.IndexOf('{')
+                [int]$endBracket = $fileContent.LastIndexOf('}')
+
+                $parsedFileContent = $fileContent.substring($startBracket + 1, $endBracket - 1 - $startBracket)
+
+            }
+        }
+        else {
+
+            if ($fileContent.Count -gt 1) {
+
+                for ($line = 0; $line -lt $fileContent.Count; $line++) {
+
+                    $parsedFileContent += $fileContent[$line]
+
+                    if ($line -ne ($fileContent.Count - 1)) {
+                        $parsedFileContent += "`r`n"
+                    }
+
+                }
+
+            }
+            else {
+
+                $parsedFileContent = $fileContent
+
             }
 
         }
 
     }
-    else {
-
-        for ($line = 0; $line -lt $fileContent.Count; $line++) {
-            $parsedFileContent += $fileContent[$line]
-            $parsedFileContent += "`n"
-        }
-
+    catch {
+        throw
     }
 
     return $parsedFileContent
@@ -384,28 +438,28 @@ function Get-FunctionCount {
         Return the count of functions in the Module and Manifest and whether they appear in their counterpart.
         e.g. Whether the functions in the manifest appear in the module and vice versa
 
-        .PARAMETER ModuleFile
+        .PARAMETER ModulePath
         A string containing the Module filename
 
-        .PARAMETER ManifestFile
+        .PARAMETER ManifestPath
         A string containing the Manifest filename
 
         .EXAMPLE
-        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModuleFile $moduleFile -ManifestFile $manifestFile
+        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModulePath $ModulePath -ManifestPath $ManifestPath
 
     #>
     [CmdletBinding()]
     [OutputType([Int[]])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$ModuleFile,
+        [string]$ModulePath,
         [parameter(Mandatory = $true)]
-        [string]$ManifestFile
+        [string]$ManifestPath
     )
 
     try {
-        if (Test-Path -Path $ManifestFile) {
-            $ExportedCommands = (Test-ModuleManifest -Path $ManifestFile -ErrorAction Stop).ExportedCommands
+        if (Test-Path -Path $ManifestPath) {
+            $ExportedCommands = (Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop).ExportedCommands
             $ExportedCommandsCount = $ExportedCommands.Count
         }
         else {
@@ -418,8 +472,8 @@ function Get-FunctionCount {
     }
 
     try {
-        if (Test-Path -Path $ModuleFile) {
-            ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
+        if (Test-Path -Path $ModulePath) {
+            ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModulePath
         }
         else {
             throw "Module file doesn't exist"
@@ -545,7 +599,7 @@ function Get-ParsedFile {
 
 }
 
-function Get-ScriptParameters {
+function Get-ScriptParameter {
     <#
         .SYNOPSIS
         Get a list of the parameters in the param block
@@ -557,7 +611,7 @@ function Get-ScriptParameters {
         A string containing the text of the script
 
         .EXAMPLE
-        $parameterVariables = Get-ScriptParameters -Content $Content
+        $parameterVariables = Get-ScriptParameter -Content $Content
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [HashTable])]
@@ -569,6 +623,10 @@ function Get-ScriptParameters {
     try {
 
         $parsedScript = [System.Management.Automation.Language.Parser]::ParseInput($Content, [ref]$null, [ref]$null)
+
+        if ([string]::IsNullOrEmpty($parsedScript.ParamBlock)) {
+            throw "No parameters found"
+        }
 
         [string]$paramBlock = $parsedScript.ParamBlock
 
@@ -630,7 +688,7 @@ function Get-Token {
         .DESCRIPTION
         Get token(s) from the tokenized output matching the passed Type and Content
 
-        .PARAMETER ParsedFileContent
+        .PARAMETER ParsedContent
         A string array containing the Tokenized data
 
         .PARAMETER Type
@@ -640,22 +698,22 @@ function Get-Token {
         The token content (or value) to be found
 
         .EXAMPLE
-        $outputTypeToken = (Get-Token -ParsedFileContent $ParsedFile -Type "Attribute" -Content "OutputType")
+        $outputTypeToken = (Get-Token -ParsedContent $ParsedFile -Type "Attribute" -Content "OutputType")
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFileContent,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [string]$Type,
         [parameter(Mandatory = $true)]
         [string]$Content
     )
 
-    $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type $Type -Content $Content
+    $token = Get-TokenMarker -ParsedContent $ParsedContent -Type $Type -Content $Content
 
-    $tokens = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine $token.StartLine
+    $tokens = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $token.StartLine
 
     return $tokens
 
@@ -669,20 +727,20 @@ function Get-TokenComponent {
         .DESCRIPTION
         Get all the tokens components from a single line in the tokenized content
 
-        .PARAMETER ParsedFileContent
+        .PARAMETER ParsedContent
         A string array containing the tokenized content
 
         .PARAMETER StartLine
         A integer of the starting line to parse
 
         .EXAMPLE
-        $tokens = Get-TokenComponent -ParsedFileContent $ParsedFileContent -StartLine 10
+        $tokens = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 10
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFileContent,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [int]$StartLine
     )
@@ -691,7 +749,7 @@ function Get-TokenComponent {
     #* which can't find the variables in the 'Where-Object' clause (even though it's valid)
     $StartLine = $StartLine
 
-    $tokenComponents = @($ParsedFileContent | Where-Object { $_.StartLine -eq $StartLine })
+    $tokenComponents = @($ParsedContent | Where-Object { $_.StartLine -eq $StartLine })
 
     return $tokenComponents
 
@@ -705,7 +763,7 @@ function Get-TokenMarker {
         .DESCRIPTION
         Gets single token from the tokenized output matching the passed Type and Content
 
-        .PARAMETER ParsedFileContent
+        .PARAMETER ParsedContent
         A string array containing the Tokenized data
 
         .PARAMETER Type
@@ -715,13 +773,13 @@ function Get-TokenMarker {
         The token content (or value) to be found
 
         .EXAMPLE
-        $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type $Type -Content $Content
+        $token = Get-TokenMarker -ParsedContent $ParsedContent -Type $Type -Content $Content
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFileContent,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [string]$Type,
         [parameter(Mandatory = $true)]
@@ -733,148 +791,9 @@ function Get-TokenMarker {
     $Type = $Type
     $Content = $Content
 
-    $token = @($ParsedFileContent | Where-Object { $_.Type -eq $Type -and $_.Content -eq $Content })
+    $token = @($ParsedContent | Where-Object { $_.Type -eq $Type -and $_.Content -eq $Content })
 
     return $token
-
-}
-
-function Test-HelpForRequiredTokens {
-    <#
-        .SYNOPSIS
-        Check that help tokens contain required tokens
-
-        .DESCRIPTION
-        Check that the help comments contain tokens that are specified in the external verification data file
-
-        .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
-
-        .EXAMPLE
-        Test-HelpForRequiredTokens -HelpTokens $HelpTokens
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
-    param (
-        [parameter(Mandatory = $true)]
-        [HashTable]$HelpTokens
-    )
-
-    try {
-
-        $module = Get-Module -Name PSQualityCheck
-
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
-
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
-
-        }
-        else {
-
-            throw "Unable to load Checks\HelpElementRules.psd1"
-
-        }
-
-        $tokenErrors = @()
-
-        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
-
-            $token = $helpElementRules."$order"
-
-            if ($token.Key -notin $HelpTokens.Keys ) {
-
-                if ($token.Required -eq $true) {
-
-                    $tokenErrors += $token.Key
-
-                }
-
-            }
-
-        }
-
-        if ($tokenErrors.Count -ge 1) {
-            throw "Missing required token(s): $tokenErrors"
-        }
-
-    }
-    catch {
-
-        throw $_.Exception.Message
-
-    }
-
-}
-
-function Test-HelpForUnspecifiedTokens {
-    <#
-        .SYNOPSIS
-        Check that help tokens do not contain unspecified tokens
-
-        .DESCRIPTION
-        Check that the help comments do not contain tokens that are not specified in the external verification data file
-
-        .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
-
-        .EXAMPLE
-        Test-HelpForUnspecifiedTokens -HelpTokens $HelpTokens
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Exception], [System.Void])]
-    param (
-        [parameter(Mandatory = $true)]
-        [HashTable]$HelpTokens
-    )
-
-    try {
-
-        $module = Get-Module -Name PSQualityCheck
-
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
-
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
-
-        }
-        else {
-
-            throw "Unable to load Checks\HelpElementRules.psd1"
-
-        }
-
-        $tokenErrors = @()
-        $helpTokensKeys = @()
-
-        # Create an array of the help element rules elements
-        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
-
-            $token = $helpElementRules."$order"
-
-            $helpTokensKeys += $token.key
-
-        }
-
-        # search through the found tokens and match them against the rules
-        foreach ($key in $HelpTokens.Keys) {
-
-            if ( $key -notin $helpTokensKeys ) {
-
-                $tokenErrors += $key
-
-            }
-
-        }
-
-        if ($tokenErrors.Count -ge 1) {
-            throw "Found extra, non-specified, token(s): $tokenErrors"
-        }
-
-    }
-    catch {
-
-        throw $_.Exception.Message
-
-    }
 
 }
 
@@ -887,7 +806,7 @@ function Test-HelpTokensCountIsValid {
         Check that the help tokens count is valid by making sure that they appear between Min and Max times
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
@@ -906,9 +825,11 @@ function Test-HelpTokensCountIsValid {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
 
         }
         else {
@@ -979,7 +900,7 @@ function Test-HelpTokensParamsMatch {
         Checks to see whether the parameters in the param block and in the help PARAMETER statements exist in both locations
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .PARAMETER ParameterVariables
         A object containing the parameters from the param block
@@ -1076,7 +997,7 @@ function Test-HelpTokensTextIsValid {
         Check that the Help Tokens text is valid by making sure that they its not empty
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpTokensTextIsValid -HelpTokens $HelpTokens
@@ -1134,20 +1055,20 @@ function Test-ImportModuleIsValid {
         .DESCRIPTION
         Test that the Import-Module commands contain a -Name parameter, and one of RequiredVersion, MinimumVersion or MaximumVersion
 
-        .PARAMETER ParsedFile
+        .PARAMETER ParsedContent
         An object containing the source file parsed into its Tokenizer components
 
         .PARAMETER ImportModuleTokens
-        An object containing the Import-Module calls found
+        An object containing the Import-Module tokens found
 
         .EXAMPLE
-        TestImportModuleIsValid -ParsedFile $parsedFile -ImportModuleTokens $importModuleTokens
+        TestImportModuleIsValid -ParsedContent $ParsedContent -ImportModuleTokens $importModuleTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFile,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [System.Object[]]$ImportModuleTokens
     )
@@ -1160,10 +1081,15 @@ function Test-ImportModuleIsValid {
         foreach ($token in $importModuleTokens) {
 
             # Get the full details of the command
-            $importModuleStatement = Get-TokenComponent -ParsedFileContent $ParsedFile -StartLine $token.StartLine
+            $importModuleStatement = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $token.StartLine
 
             # Get the name of the module to be imported (for logging only)
-            $name = ($importModuleStatement | Where-Object { $_.Type -eq "String" } | Select-Object -First 1).Content
+            $name = ($importModuleStatement | Where-Object { $_.Type -eq "CommandArgument" } | Select-Object -First 1).Content
+            if ($null -eq $name) {
+
+                $name = ($importModuleStatement | Where-Object { $_.Type -eq "String" } | Select-Object -First 1).Content
+
+            }
 
             # if the -Name parameter is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and $_.Content -eq "-Name" })) {
@@ -1237,6 +1163,149 @@ function Test-ParameterVariablesHaveType {
         if ($variableErrors.Count -ge 1) {
 
             throw $variableErrors
+        }
+
+    }
+    catch {
+
+        throw $_.Exception.Message
+
+    }
+
+}
+
+function Test-RequiredToken {
+    <#
+        .SYNOPSIS
+        Check that help tokens contain required tokens
+
+        .DESCRIPTION
+        Check that the help comments contain tokens that are specified in the external verification data file
+
+        .PARAMETER HelpTokens
+        A array of tokens containing the tokens of the Help Comment
+
+        .EXAMPLE
+        Test-RequiredToken -HelpTokens $HelpTokens
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Exception], [System.Void])]
+    param (
+        [parameter(Mandatory = $true)]
+        [HashTable]$HelpTokens
+    )
+
+    try {
+
+        $module = Get-Module -Name PSQualityCheck
+
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
+
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
+
+        }
+        else {
+
+            throw "Unable to load Checks\HelpElementRules.psd1"
+
+        }
+
+        $tokenErrors = @()
+
+        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
+
+            $token = $helpElementRules."$order"
+
+            if ($token.Key -notin $HelpTokens.Keys ) {
+
+                if ($token.Required -eq $true) {
+
+                    $tokenErrors += $token.Key
+
+                }
+
+            }
+
+        }
+
+        if ($tokenErrors.Count -ge 1) {
+            throw "Missing required token(s): $tokenErrors"
+        }
+
+    }
+    catch {
+
+        throw $_.Exception.Message
+
+    }
+
+}
+
+function Test-UnspecifiedToken {
+    <#
+        .SYNOPSIS
+        Check that help tokens do not contain unspecified tokens
+
+        .DESCRIPTION
+        Check that the help comments do not contain tokens that are not specified in the external verification data file
+
+        .PARAMETER HelpTokens
+        A array of tokens containing the tokens of the Help Comment
+
+        .EXAMPLE
+        Test-UnspecifiedToken -HelpTokens $HelpTokens
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Exception], [System.Void])]
+    param (
+        [parameter(Mandatory = $true)]
+        [HashTable]$HelpTokens
+    )
+
+    try {
+
+        $module = Get-Module -Name PSQualityCheck
+
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
+
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
+
+        }
+        else {
+
+            throw "Unable to load Checks\HelpElementRules.psd1"
+
+        }
+
+        $tokenErrors = @()
+        $helpTokensKeys = @()
+
+        # Create an array of the help element rules elements
+        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
+
+            $token = $helpElementRules."$order"
+
+            $helpTokensKeys += $token.key
+
+        }
+
+        # search through the found tokens and match them against the rules
+        foreach ($key in $HelpTokens.Keys) {
+
+            if ( $key -notin $helpTokensKeys ) {
+
+                $tokenErrors += $key
+
+            }
+
+        }
+
+        if ($tokenErrors.Count -ge 1) {
+            throw "Found extra, non-specified, token(s): $tokenErrors"
         }
 
     }
