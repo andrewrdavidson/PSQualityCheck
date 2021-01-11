@@ -1,31 +1,29 @@
 Describe "Convert-Help.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'Help'; 'Type' = 'String' }
+    ) {
 
-        $mandatoryParameters = @(
-            'HelpComment'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Convert-Help"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
-
-            It "should $parameter not belong to a parameter set" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].ParameterSets.Keys | Should -Be '__AllParameterSets'
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should HelpComment type be string" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Convert-Help').Parameters['HelpComment'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+        }
+
+        It "should $Name type be $Type" {
+
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 
@@ -37,7 +35,7 @@ Describe "Convert-Help.Tests" {
 
             {
 
-                Convert-Help -HelpComment $null
+                Convert-Help -Help $null
 
             } | Should -Throw
 
@@ -48,7 +46,7 @@ Describe "Convert-Help.Tests" {
             {
                 $helpComment = '##InvalidHelp##'
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
             } | Should -Throw
 
@@ -59,42 +57,37 @@ Describe "Convert-Help.Tests" {
             {
                 $helpComment = ''
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
             } | Should -Throw
 
         }
 
-        $helpTokens = @(
-            '.SYNOPSIS'
-            '.DESCRIPTION'
-            '.PARAMETER'
-            '.EXAMPLE'
-            '.INPUTS'
-            '.OUTPUTS'
-            '.NOTES'
-            '.LINK'
-            '.COMPONENT'
-            '.ROLE'
-            '.FUNCTIONALITY'
-            '.FORWARDHELPTARGETNAME'
-            '.FORWARDHELPCATEGORY'
-            '.REMOTEHELPRUNSPACE'
-            '.EXTERNALHELP'
-        )
+        It "should find <token> in help" -ForEach @(
+            @{ 'Token' = '.SYNOPSIS' }
+            @{ 'Token' = '.DESCRIPTION' }
+            @{ 'Token' = '.PARAMETER' }
+            @{ 'Token' = '.EXAMPLE' }
+            @{ 'Token' = '.INPUTS' }
+            @{ 'Token' = '.OUTPUTS' }
+            @{ 'Token' = '.NOTES' }
+            @{ 'Token' = '.LINK' }
+            @{ 'Token' = '.COMPONENT' }
+            @{ 'Token' = '.ROLE' }
+            @{ 'Token' = '.FUNCTIONALITY' }
+            @{ 'Token' = '.FORWARDHELPTARGETNAME' }
+            @{ 'Token' = '.FORWARDHELPCATEGORY' }
+            @{ 'Token' = '.REMOTEHELPRUNSPACE' }
+            @{ 'Token' = '.EXTERNALHELP' }
+        ) {
 
-        foreach ($token in $helpTokens) {
+            $helpComment = "<#
+                            $($token)
+                            #>"
 
-            It "should find $token in help" -TestCases @{ 'token' = $token } {
+            $help = Convert-Help -Help $helpComment
 
-                $helpComment = "<#
-                                $($token)
-                                #>"
-
-                $help = Convert-Help -HelpComment $helpComment
-
-                $help.ContainsKey($token) | Should -BeTrue
-            }
+            $help.ContainsKey($token) | Should -BeTrue
 
         }
 
@@ -104,7 +97,7 @@ Describe "Convert-Help.Tests" {
                             .PARAMETER Path
                             #>"
 
-            $help = Convert-Help -HelpComment $helpComment
+            $help = Convert-Help -Help $helpComment
 
             $help.ContainsKey(".PARAMETER") | Should -BeTrue
 
@@ -119,7 +112,7 @@ Describe "Convert-Help.Tests" {
                             .PARAMETER Source
                             #>"
 
-            $help = Convert-Help -HelpComment $helpComment
+            $help = Convert-Help -Help $helpComment
 
             $help.ContainsKey(".PARAMETER") | Should -BeTrue
 
@@ -136,7 +129,7 @@ Describe "Convert-Help.Tests" {
                             Function -Source
                             #>"
 
-            $help = Convert-Help -HelpComment $helpComment
+            $help = Convert-Help -Help $helpComment
 
             $help.ContainsKey(".EXAMPLE") | Should -BeTrue
 
@@ -150,7 +143,7 @@ Describe "Convert-Help.Tests" {
                             .DUMMY
                             #>"
 
-            $help = Convert-Help -HelpComment $helpComment
+            $help = Convert-Help -Help $helpComment
 
             $help.ContainsKey(".DUMMY") | Should -BeFalse
 
@@ -163,7 +156,7 @@ Describe "Convert-Help.Tests" {
                             .NOTES
                             #>"
 
-            $help = Convert-Help -HelpComment $helpComment
+            $help = Convert-Help -Help $helpComment
 
             $help.ContainsKey(".DUMMY") | Should -BeFalse
             $help.ContainsKey(".NOTES") | Should -BeTrue
@@ -178,7 +171,7 @@ Describe "Convert-Help.Tests" {
 
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
 
@@ -193,7 +186,7 @@ Describe "Convert-Help.Tests" {
                                 .SYNOPSIS
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
 
@@ -213,7 +206,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly "The SYNOPSIS property"
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -235,7 +228,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly ""
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -256,7 +249,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly $null
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -278,7 +271,7 @@ Describe "Convert-Help.Tests" {
 
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly ""
                 $help.".DESCRIPTION".Text | Should -BeExactly ""
@@ -297,7 +290,7 @@ Describe "Convert-Help.Tests" {
                                 .PARAMETER Path
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly $null
                 $help.".DESCRIPTION".Text | Should -BeExactly $null
@@ -319,7 +312,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -HelpComment $helpComment
+                $help = Convert-Help -Help $helpComment
 
                 $help.".SYNOPSIS".LineNumber | Should -BeExactly 1
                 $help.".DESCRIPTION".LineNumber | Should -BeExactly 3

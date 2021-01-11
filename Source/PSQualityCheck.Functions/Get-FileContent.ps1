@@ -19,54 +19,96 @@ function Get-FileContent {
         [string]$Path
     )
 
-    $fileContent = Get-Content -Path $Path
+    try {
 
-    $parserErrors = $null
+        $fileContent = Get-Content -Path $Path
 
-    # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
-    if ([string]::IsNullOrEmpty($fileContent)) {
-        $parsedFileFunctions = @()
-    }
-    else {
-        $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
-    }
+        $parserErrors = $null
 
-    # Create an array of where each reference of the keyword 'function' is
-    $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
+        # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
+        if ([string]::IsNullOrEmpty($fileContent)) {
+            $parsedFileFunctions = @()
+        }
+        else {
+            $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
+        }
 
-    if ($parsedFunctions) {
+        # Create an array of where each reference of the keyword 'function' is
+        $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-        foreach ($function in $parsedFunctions) {
+        if ($parsedFunctions.Count -gt 1) {
+            throw "Too many functions in file, file is invalid"
+        }
 
-            $startLine = ($function.StartLine)
+        if ($parsedFunctions.Count -eq 1) {
 
-            for ($line = $fileContent.Count; $line -gt $function.StartLine; $line--) {
+            if ($fileContent.Count -gt 1) {
 
-                if ($fileContent[$line] -like "}") {
+                foreach ($function in $parsedFunctions) {
 
-                    $endLine = $line
-                    break
+                    $startLine = ($function.StartLine)
+
+                    for ($line = $fileContent.Count; $line -gt $function.StartLine; $line--) {
+
+                        if ($fileContent[$line] -like "*}*") {
+
+                            $endLine = $line
+                            break
+
+                        }
+
+                    }
+
+                    # Output the lines of the function to the FunctionOutputFile
+                    for ($line = $startLine; $line -lt $endLine; $line++) {
+
+                        $parsedFileContent += $fileContent[$line]
+
+                        if ($line -ne ($fileContent.Count - 1)) {
+                            $parsedFileContent += "`r`n"
+                        }
+
+                    }
 
                 }
 
             }
+            else {
 
-            # Output the lines of the function to the FunctionOutputFile
-            for ($line = $startLine; $line -lt $endLine; $line++) {
-                $parsedFileContent += $fileContent[$line]
-                $parsedFileContent += "`n"
+                # if there is only one line then the content should be on the line between { and }
+                [int]$startBracket = $fileContent.IndexOf('{')
+                [int]$endBracket = $fileContent.LastIndexOf('}')
+
+                $parsedFileContent = $fileContent.substring($startBracket + 1, $endBracket - 1 - $startBracket)
+
+            }
+        }
+        else {
+
+            if ($fileContent.Count -gt 1) {
+
+                for ($line = 0; $line -lt $fileContent.Count; $line++) {
+
+                    $parsedFileContent += $fileContent[$line]
+
+                    if ($line -ne ($fileContent.Count - 1)) {
+                        $parsedFileContent += "`r`n"
+                    }
+
+                }
+
+            }
+            else {
+
+                $parsedFileContent = $fileContent
+
             }
 
         }
 
     }
-    else {
-
-        for ($line = 0; $line -lt $fileContent.Count; $line++) {
-            $parsedFileContent += $fileContent[$line]
-            $parsedFileContent += "`n"
-        }
-
+    catch {
+        throw
     }
 
     return $parsedFileContent

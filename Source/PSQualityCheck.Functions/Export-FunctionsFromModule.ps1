@@ -24,83 +24,95 @@ function Export-FunctionsFromModule {
         [string]$ExtractPath
     )
 
-    # Get the file properties of our module
-    $fileProperties = (Get-Item -LiteralPath $Path)
-    $moduleName = $fileProperties.BaseName
+    try {
+        # Get the file properties of our module
+        $fileProperties = (Get-Item -LiteralPath $Path)
 
-    # Generate a new temporary output path for our extracted functions
-    $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
-    New-Item $FunctionOutputPath -ItemType 'Directory'
+        if ($fileProperties.Extension -ne ".psm1") {
+            throw "Passed file does not appear to be a PowerShell module"
+        }
 
-    # Get the plain content of the module file
-    $ModuleFileContent = Get-Content -Path $Path -ErrorAction Stop
+        $moduleName = $fileProperties.BaseName
 
-    # Parse the PowerShell module using PSParser
-    $ParserErrors = $null
-    $ParsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($ModuleFileContent, [ref]$ParserErrors)
+        # Get the plain content of the module file
+        $ModuleFileContent = Get-Content -Path $Path -ErrorAction Stop
 
-    # Create an array of where each reference of the keyword 'function' is
-    $ParsedFunctions = ($ParsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
+        # Parse the PowerShell module using PSParser
+        $ParserErrors = $null
+        $ParsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($ModuleFileContent, [ref]$ParserErrors)
 
-    # Initialise the $parsedFunction tracking variable
-    $parsedFunction = 0
+        # Create an array of where each reference of the keyword 'function' is
+        $ParsedFunctions = ($ParsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-    if ($ParsedFunctions.Count -ge 1) {
+        # Initialise the $parsedFunction tracking variable
+        $parsedFunction = 0
 
-        foreach ($Function in $ParsedFunctions) {
+        if ($ParsedFunctions.Count -ge 1) {
 
-            # Counter for the array $ParsedFunction to help find the 'next' function
-            $parsedFunction++
+            # Generate a new temporary output path for our extracted functions
+            $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
 
-            # Get the name of the current function
-            # Cheat: Simply getting all properties with the same line number as the 'function' statement
-            $FunctionProperties = $ParsedFileFunctions | Where-Object { $_.StartLine -eq $Function.StartLine }
-            $FunctionName = ($FunctionProperties | Where-Object { $_.Type -eq "CommandArgument" }).Content
+            if (-not (Test-Path -Path $FunctionOutputPath)) {
+                New-Item $FunctionOutputPath -ItemType 'Directory'
+            }
 
-            # Establish the Start and End lines for the function in the main module file
-            if ($parsedFunction -eq $ParsedFunctions.Count) {
+            foreach ($Function in $ParsedFunctions) {
 
-                # This is the last function in the module so set the last line of this function to be the last line in the module file
+                # Counter for the array $ParsedFunction to help find the 'next' function
+                $parsedFunction++
 
-                $StartLine = ($Function.StartLine)
-                for ($line = $ModuleFileContent.Count; $line -gt $Function.StartLine; $line--) {
-                    if ($ModuleFileContent[$line] -like "}") {
-                        $EndLine = $line
-                        break
+                # Get the name of the current function
+                # Cheat: Simply getting all properties with the same line number as the 'function' statement
+                $FunctionProperties = $ParsedFileFunctions | Where-Object { $_.StartLine -eq $Function.StartLine }
+                $FunctionName = ($FunctionProperties | Where-Object { $_.Type -eq "CommandArgument" }).Content
+
+                # Establish the Start and End lines for the function in the main module file
+                if ($parsedFunction -eq $ParsedFunctions.Count) {
+
+                    # This is the last function in the module so set the last line of this function to be the last line in the module file
+
+                    $StartLine = ($Function.StartLine)
+                    for ($line = $ModuleFileContent.Count; $line -gt $Function.StartLine; $line--) {
+                        if ($ModuleFileContent[$line] -like "}") {
+                            $EndLine = $line
+                            break
+                        }
                     }
                 }
-            }
-            else {
+                else {
 
-                $StartLine = ($Function.StartLine)
+                    $StartLine = ($Function.StartLine)
 
-                # EndLine needs to be where the last } is
-                for ($line = $ParsedFunctions[$parsedFunction].StartLine; $line -gt $Function.StartLine; $line--) {
-                    if ($ModuleFileContent[$line] -like "}") {
-                        $EndLine = $line
-                        break
+                    # EndLine needs to be where the last } is
+                    for ($line = $ParsedFunctions[$parsedFunction].StartLine; $line -gt $Function.StartLine; $line--) {
+                        if ($ModuleFileContent[$line] -like "}") {
+                            $EndLine = $line
+                            break
+                        }
                     }
+
+                }
+
+                # Setup the FunctionOutputFile for the function file
+                $FunctionOutputFileName = "{0}\{1}{2}" -f $FunctionOutputPath, $FunctionName, ".ps1"
+
+                # If the file doesn't exist create an empty file so that we can Add-Content to it
+                if (-not (Test-Path -Path $FunctionOutputFileName)) {
+                    Out-File -FilePath $FunctionOutputFileName
+                }
+
+                # Output the lines of the function to the FunctionOutputFile
+                for ($line = $StartLine; $line -lt $EndLine; $line++) {
+                    Add-Content -Path $FunctionOutputFileName -Value $ModuleFileContent[$line]
                 }
 
             }
-
-            # Setup the FunctionOutputFile for the function file
-            $FunctionOutputFileName = "{0}\{1}{2}" -f $FunctionOutputPath, $FunctionName, ".ps1"
-
-            # If the file doesn't exist create an empty file so that we can Add-Content to it
-            if (-not (Test-Path -Path $FunctionOutputFileName)) {
-                Out-File -FilePath $FunctionOutputFileName
-            }
-
-            # Output the lines of the function to the FunctionOutputFile
-            for ($line = $StartLine; $line -lt $EndLine; $line++) {
-                Add-Content -Path $FunctionOutputFileName -Value $ModuleFileContent[$line]
-            }
-
+        }
+        else {
+            throw "File contains no functions"
         }
     }
-    else {
-        Write-Warning "Module contains no functions, skipping"
+    catch {
+        throw
     }
-
 }

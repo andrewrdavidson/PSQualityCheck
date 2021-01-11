@@ -6,17 +6,17 @@ function Convert-Help {
         .DESCRIPTION
         Convert the help comment into an object containing all the elements from the help comment
 
-        .PARAMETER HelpComment
+        .PARAMETER Help
         A string containing the Help Comment
 
         .EXAMPLE
-        $helpObject = Convert-Help -HelpComment $helpComment
+        $helpObject = Convert-Help -Help $Help
     #>
     [CmdletBinding()]
     [OutputType([HashTable], [System.Exception])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$HelpComment
+        [string]$Help
     )
 
     # These are the possible Help Comment elements that the script will look for
@@ -41,8 +41,8 @@ function Convert-Help {
     try {
 
         if (-not(
-                $HelpComment.StartsWith("<#") -and
-                $HelpComment.EndsWith("#>")
+                $Help.StartsWith("<#") -and
+                $Help.EndsWith("#>")
             )) {
             throw "Help does not appear to be a comment block"
         }
@@ -66,7 +66,7 @@ function Convert-Help {
         '.EXTERNALHELP'
 
         # Split the single comment string into it's line components
-        $commentArray = ($HelpComment -split '\n').Trim()
+        $commentArray = ($Help -split '\n').Trim()
 
         # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
@@ -91,10 +91,10 @@ function Convert-Help {
                     # previous element to the found text so far, then reset it
 
                     $lastElement = @($foundElements[$lastHelpElement])
-                    $lastElement[$lastElement.Count - 1].Text = $help
+                    $lastElement[$lastElement.Count - 1].Text = $helpData
                     $foundElements[$lastHelpElement] = $lastElement
 
-                    $help = $null
+                    $helpData = $null
                 }
 
                 # this should be an array of HashTables {LineNumber, Name & Text}
@@ -124,7 +124,7 @@ function Convert-Help {
 
                 if ($numFound -ge 1 -and $line -lt ($commentArray.Count - 1)) {
 
-                    $help += $commentArray[$line]
+                    $helpData += $commentArray[$line]
 
                 }
 
@@ -135,7 +135,7 @@ function Convert-Help {
         if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
             # process the very last one
             $currentElement = @($foundElements[$lastHelpElement])
-            $currentElement[$currentElement.Count - 1].Text = $help
+            $currentElement[$currentElement.Count - 1].Text = $helpData
             $foundElements[$lastHelpElement] = $currentElement
         }
 

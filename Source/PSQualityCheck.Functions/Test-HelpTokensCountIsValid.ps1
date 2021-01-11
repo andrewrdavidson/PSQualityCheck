@@ -7,7 +7,7 @@ function Test-HelpTokensCountIsValid {
         Check that the help tokens count is valid by making sure that they appear between Min and Max times
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
         Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
@@ -26,9 +26,11 @@ function Test-HelpTokensCountIsValid {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
 
         }
         else {

@@ -6,7 +6,7 @@ function Get-TokenMarker {
         .DESCRIPTION
         Gets single token from the tokenized output matching the passed Type and Content
 
-        .PARAMETER ParsedFileContent
+        .PARAMETER ParsedContent
         A string array containing the Tokenized data
 
         .PARAMETER Type
@@ -16,13 +16,13 @@ function Get-TokenMarker {
         The token content (or value) to be found
 
         .EXAMPLE
-        $token = Get-TokenMarker -ParsedFileContent $ParsedFileContent -Type $Type -Content $Content
+        $token = Get-TokenMarker -ParsedContent $ParsedContent -Type $Type -Content $Content
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param (
         [parameter(Mandatory = $true)]
-        [System.Object[]]$ParsedFileContent,
+        [System.Object[]]$ParsedContent,
         [parameter(Mandatory = $true)]
         [string]$Type,
         [parameter(Mandatory = $true)]
@@ -34,7 +34,7 @@ function Get-TokenMarker {
     $Type = $Type
     $Content = $Content
 
-    $token = @($ParsedFileContent | Where-Object { $_.Type -eq $Type -and $_.Content -eq $Content })
+    $token = @($ParsedContent | Where-Object { $_.Type -eq $Type -and $_.Content -eq $Content })
 
     return $token
 

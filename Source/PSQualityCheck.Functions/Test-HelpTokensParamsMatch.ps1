@@ -7,7 +7,7 @@ function Test-HelpTokensParamsMatch {
         Checks to see whether the parameters in the param block and in the help PARAMETER statements exist in both locations
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .PARAMETER ParameterVariables
         A object containing the parameters from the param block

@@ -1,4 +1,4 @@
-function Test-HelpForRequiredTokens {
+function Test-RequiredToken {
     <#
         .SYNOPSIS
         Check that help tokens contain required tokens
@@ -7,10 +7,10 @@ function Test-HelpForRequiredTokens {
         Check that the help comments contain tokens that are specified in the external verification data file
 
         .PARAMETER HelpTokens
-        A string containing the text of the Help Comment
+        A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
-        Test-HelpForRequiredTokens -HelpTokens $HelpTokens
+        Test-RequiredToken -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -23,9 +23,11 @@ function Test-HelpForRequiredTokens {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
 
         }
         else {

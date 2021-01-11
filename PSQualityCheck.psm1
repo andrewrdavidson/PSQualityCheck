@@ -90,10 +90,10 @@ function Invoke-PSQualityCheck {
     Set-StrictMode -Version Latest
 
     # External Modules
-    Import-Module -Name "Pester" -MinimumVersion "5.1.0" -Force
-    Import-Module -Name "PSScriptAnalyzer" -MinimumVersion "1.19.1" -Force
+    Import-Module -Name 'Pester' -MinimumVersion '5.1.0' -Force
+    Import-Module -Name 'PSScriptAnalyzer' -MinimumVersion '1.19.1' -Force
 
-    $modulePath = (Get-Module -Name PSQualityCheck).ModuleBase
+    $modulePath = (Get-Module -Name 'PSQualityCheck').ModuleBase
 
     # Analyse the incoming Path and File parameters and produce a list of Modules and Scripts
 
@@ -111,8 +111,8 @@ function Invoke-PSQualityCheck {
             # Test whether the item is a directory (also tells us if it exists)
             if (Test-Path -Path $item -PathType Container) {
 
-                $scriptsToTest += Get-FileList -Path $item -Extension ".ps1"
-                $modulesToTest += Get-FileList -Path $item -Extension ".psm1"
+                $scriptsToTest += Get-FileList -Path $item -Extension '.ps1'
+                $modulesToTest += Get-FileList -Path $item -Extension '.psm1'
 
             }
             else {
@@ -165,7 +165,7 @@ function Invoke-PSQualityCheck {
     $configuration = [PesterConfiguration]::Default
     $configuration.Run.Exit = $false
     $configuration.CodeCoverage.Enabled = $false
-    $configuration.Output.Verbosity = "Detailed"
+    $configuration.Output.Verbosity = 'Detailed'
     $configuration.Run.PassThru = $true
     $configuration.Should.ErrorAction = 'Stop'
 
@@ -180,12 +180,12 @@ function Invoke-PSQualityCheck {
         $extractPath = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath (New-Guid).Guid
 
         # Run the Module tests on all the valid module files found
-        $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Module.Tests.ps1") -Data @{ Source = $modulesToTest }
+        $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Tests.ps1') -Data @{ Source = $modulesToTest }
         $configuration.Run.Container = $container1
         $moduleResults = Invoke-Pester -Configuration $configuration
 
         # Extract all the functions from the modules into individual .ps1 files ready for testing
-        $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Function-Extraction.Tests.ps1") -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
+        $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Function-Extraction.Tests.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
         $configuration.Run.Container = $container2
         $extractionResults = Invoke-Pester -Configuration $configuration
 
@@ -193,7 +193,7 @@ function Invoke-PSQualityCheck {
         $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
         # Run the Script tests against all the extracted functions .ps1 files
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Script.Tests.ps1") -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
         $configuration.Run.Container = $container3
         $extractedScriptResults = Invoke-Pester -Configuration $configuration
 
@@ -202,7 +202,7 @@ function Invoke-PSQualityCheck {
     if ($scriptsToTest.Count -ge 1) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath "Checks\Script.Tests.ps1") -Data @{ Source = $scriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
         $configuration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $configuration
 
@@ -290,7 +290,7 @@ function Invoke-PSQualityCheck {
             'Skipped' = $skipped
         }
 
-        # This works on PS5
+        # This works on PS5 and PS7
         $qualityCheckResults | ForEach-Object {
             [PSCustomObject]@{
                 'Test' = $_.Test

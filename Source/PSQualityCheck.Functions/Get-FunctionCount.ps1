@@ -7,28 +7,28 @@ function Get-FunctionCount {
         Return the count of functions in the Module and Manifest and whether they appear in their counterpart.
         e.g. Whether the functions in the manifest appear in the module and vice versa
 
-        .PARAMETER ModuleFile
+        .PARAMETER ModulePath
         A string containing the Module filename
 
-        .PARAMETER ManifestFile
+        .PARAMETER ManifestPath
         A string containing the Manifest filename
 
         .EXAMPLE
-        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModuleFile $moduleFile -ManifestFile $manifestFile
+        ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -ModulePath $ModulePath -ManifestPath $ManifestPath
 
     #>
     [CmdletBinding()]
     [OutputType([Int[]])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$ModuleFile,
+        [string]$ModulePath,
         [parameter(Mandatory = $true)]
-        [string]$ManifestFile
+        [string]$ManifestPath
     )
 
     try {
-        if (Test-Path -Path $ManifestFile) {
-            $ExportedCommands = (Test-ModuleManifest -Path $ManifestFile -ErrorAction Stop).ExportedCommands
+        if (Test-Path -Path $ManifestPath) {
+            $ExportedCommands = (Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop).ExportedCommands
             $ExportedCommandsCount = $ExportedCommands.Count
         }
         else {
@@ -41,8 +41,8 @@ function Get-FunctionCount {
     }
 
     try {
-        if (Test-Path -Path $ModuleFile) {
-            ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModuleFile
+        if (Test-Path -Path $ModulePath) {
+            ($ParsedModule, $ParserErrors) = Get-ParsedFile -Path $ModulePath
         }
         else {
             throw "Module file doesn't exist"

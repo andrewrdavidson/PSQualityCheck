@@ -1,31 +1,82 @@
 Describe "Get-ParsedContent.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'Content'; 'Type' = 'String' }
+    ) {
 
-        $mandatoryParameters = @(
-            'Content'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Get-ParsedContent"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Get-ParsedContent').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Get-ParsedContent').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should Content type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Get-ParsedContent').Parameters['Content'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+        }
+
+        It "should $Name type be $Type" {
+
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 
     }
 
     Context "Function tests" {
+
+        BeforeAll {
+
+            $parsedFileContent = @(
+                @{
+                    "Content" = "function"
+                    "Type" = "Keyword"
+                    "Start" = 0
+                    "Length" = 8
+                    "StartLine" = 1
+                    "StartColumn" = 1
+                    "EndLine" = 1
+                    "EndColumn" = 9
+                },
+                @{
+                    "Content" = "Get-FileContent"
+                    "Type" = "CommandArgument"
+                    "Start" = 9
+                    "Length" = 15
+                    "StartLine" = 1
+                    "StartColumn" = 10
+                    "EndLine" = 1
+                    "EndColumn" = 25
+                },
+                @{
+                    "Content" = "{"
+                    "Type" = "GroupStart"
+                    "Start" = 25
+                    "Length" = 1
+                    "StartLine" = 1
+                    "StartColumn" = 26
+                    "EndLine" = 1
+                    "EndColumn" = 27
+                },
+                @{
+                    "Content" = "}"
+                    "Type" = "GroupEnd"
+                    "Start" = 26
+                    "Length" = 1
+                    "StartLine" = 1
+                    "StartColumn" = 27
+                    "EndLine" = 1
+                    "EndColumn" = 28
+                }
+            )
+
+        }
 
         It "should throw when passing null parameters" {
 
@@ -36,51 +87,7 @@ Describe "Get-ParsedContent.Tests" {
             } | Should -Throw
 
         }
-
-        $parsedFileContent = @(
-            @{
-                "Content" = "function"
-                "Type" = "Keyword"
-                "Start" = 0
-                "Length" = 8
-                "StartLine" = 1
-                "StartColumn" = 1
-                "EndLine" = 1
-                "EndColumn" = 9
-            },
-            @{
-                "Content" = "Get-FileContent"
-                "Type" = "CommandArgument"
-                "Start" = 9
-                "Length" = 15
-                "StartLine" = 1
-                "StartColumn" = 10
-                "EndLine" = 1
-                "EndColumn" = 25
-            },
-            @{
-                "Content" = "{"
-                "Type" = "GroupStart"
-                "Start" = 25
-                "Length" = 1
-                "StartLine" = 1
-                "StartColumn" = 26
-                "EndLine" = 1
-                "EndColumn" = 27
-            },
-            @{
-                "Content" = "}"
-                "Type" = "GroupEnd"
-                "Start" = 26
-                "Length" = 1
-                "StartLine" = 1
-                "StartColumn" = 27
-                "EndLine" = 1
-                "EndColumn" = 28
-            }
-        )
-
-        It "should return correct parse tokens for content" -TestCases @{ 'ParsedFileContent' = $parsedFileContent } {
+        It "should return correct parse tokens for content" {
 
             $fileContent = "function Get-FileContent {}"
 
@@ -105,8 +112,7 @@ Describe "Get-ParsedContent.Tests" {
 
         }
 
-
-        It "should not return matching parse tokens for mismatching content" -TestCases @{ 'ParsedFileContent' = $parsedFileContent } {
+        It "should not return matching parse tokens for mismatching content" {
 
             $fileContent = "function Get-Content {}"
 

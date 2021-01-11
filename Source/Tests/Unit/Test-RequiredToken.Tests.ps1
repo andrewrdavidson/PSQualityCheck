@@ -1,11 +1,11 @@
-Describe "Test-HelpTokensCountIsValid.Tests" {
+Describe "Test-RequiredToken.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpTokensCountIsValid"
+            $commandletUnderTest = "Test-RequiredToken"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -97,13 +97,13 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
             {
 
-                Test-HelpTokensCountIsValid -HelpTokens $null
+                Test-RequiredToken -HelpTokens $null
 
             } | Should -Throw
 
         }
 
-        It "should not throw when checking required help tokens count" {
+        It "should not throw when checking required help tokens" {
 
             {
                 $helpTokens = @{
@@ -114,9 +114,30 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
                             "Text" = ""
                         }
                     )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = ""
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = ""
+                        }
+                    )
+                    '.EXAMPLE' = @(
+                        @{
+                            "Name" = ""
+                            "LineNumber" = 7
+                            "Text" = "This is example text"
+                        }
+                    )
                 }
 
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -124,50 +145,10 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
         }
 
-        It "should throw when required help token is out of min/max range" {
+        It "should not throw when checking required help tokens plus optional help tokens" {
 
             {
-                $helpTokens = @{
-                    '.SYNOPSIS' = @(
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 1
-                            "Text" = ""
-                        },
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 2
-                            "Text" = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 3
-                            "Text" = ""
-                        }
-                    )
-                    '.PARAMETER' = @(
-                        @{
-                            "Name" = "Path"
-                            "LineNumber" = 5
-                            "Text" = ""
-                        }
-                    )
-                }
 
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
-
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
-
-            } | Should -Throw
-
-        }
-
-
-        It "should not throw when optional help token is out of min/max range" {
-
-            {
                 $helpTokens = @{
                     '.SYNOPSIS' = @(
                         @{
@@ -188,6 +169,13 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
                             "Name" = "Path"
                             "LineNumber" = 5
                             "Text" = ""
+                        }
+                    )
+                    '.EXAMPLE' = @(
+                        @{
+                            "Name" = ""
+                            "LineNumber" = 7
+                            "Text" = "This is example text"
                         }
                     )
                     '.NOTES' = @(
@@ -195,20 +183,51 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
                             "Name" = ""
                             "LineNumber" = 10
                             "Text" = "This is a note"
-                        },
-                        @{
-                            "Name" = ""
-                            "LineNumber" = 10
-                            "Text" = "This is a note"
                         }
                     )
+
                 }
 
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
             } | Should -Not -Throw
+
+        }
+
+        It "should throw when required help token is missing" {
+
+            {
+                $helpTokens = @{
+                    '.SYNOPSIS' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 1
+                            "Text" = ""
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name" = $null
+                            "LineNumber" = 3
+                            "Text" = ""
+                        }
+                    )
+                    '.PARAMETER' = @(
+                        @{
+                            "Name" = "Path"
+                            "LineNumber" = 5
+                            "Text" = ""
+                        }
+                    )
+                }
+
+                Test-RequiredToken -HelpTokens $helpTokens
+
+                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+
+            } | Should -Throw
 
         }
 

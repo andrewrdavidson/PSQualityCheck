@@ -1,4 +1,4 @@
-function Get-ScriptParameters {
+function Get-ScriptParameter {
     <#
         .SYNOPSIS
         Get a list of the parameters in the param block
@@ -10,7 +10,7 @@ function Get-ScriptParameters {
         A string containing the text of the script
 
         .EXAMPLE
-        $parameterVariables = Get-ScriptParameters -Content $Content
+        $parameterVariables = Get-ScriptParameter -Content $Content
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [HashTable])]
@@ -22,6 +22,10 @@ function Get-ScriptParameters {
     try {
 
         $parsedScript = [System.Management.Automation.Language.Parser]::ParseInput($Content, [ref]$null, [ref]$null)
+
+        if ([string]::IsNullOrEmpty($parsedScript.ParamBlock)) {
+            throw "No parameters found"
+        }
 
         [string]$paramBlock = $parsedScript.ParamBlock
 
