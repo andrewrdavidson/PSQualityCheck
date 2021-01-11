@@ -6,30 +6,56 @@ param(
     [string]$ExtractPath
 )
 
-Describe "Function Extraction" {
+BeforeDiscovery {
 
-    if ( Test-Path -Path $ExtractPath ) {
-        Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
-        Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
-    }
+    $moduleFiles = @()
 
-    New-Item -Path $ExtractPath -ItemType 'Directory'
+    $Source | ForEach-Object {
 
-    foreach ($moduleFile in $Source) {
+        $fileProperties = (Get-Item -Path $_)
 
-        Context "Module : $moduleFile" {
-
-            It "function extraction should complete" -TestCases @{ 'moduleFile' = $moduleFile } {
-
-                {
-
-                    Export-FunctionsFromModule -Path $moduleFile -ExtractPath $ExtractPath
-
-                } | Should -Not -Throw
-
-            }
+        $moduleFiles += @{
+            'FullName' = $_
+            'Name' = $fileProperties.Name
+            'Directory' = $fileProperties.Directory
 
         }
 
     }
+
+}
+
+Describe "Function Extraction" {
+
+    Context "Script: <_.Name> at <_.Directory>" -ForEach $moduleFiles {
+
+        BeforeAll {
+
+            if ( Test-Path -Path $ExtractPath ) {
+                Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
+                Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
+            }
+
+            New-Item -Path $ExtractPath -ItemType 'Directory'
+
+        }
+
+        BeforeEach {
+
+            $moduleFile = $_.FullName
+
+        }
+
+        It "function extraction should complete" {
+
+            {
+
+                Export-FunctionsFromModule -Path $moduleFile -ExtractPath $ExtractPath
+
+            } | Should -Not -Throw
+
+        }
+
+    }
+
 }

@@ -3,70 +3,79 @@ param(
     [string[]]$Source
 )
 
+BeforeDiscovery {
+
+    $moduleFiles = @()
+
+    $Source | ForEach-Object {
+
+        $fileProperties = (Get-Item -Path $_)
+
+        $moduleFiles += @{
+            'FullName' = $_
+            'Name' = $fileProperties.Name
+            'Directory' = $fileProperties.Directory
+
+        }
+
+    }
+
+}
+
 Describe "Module Tests" {
 
-    # TODO: Investigate whether the foreach can be put in the testcases block?
-    foreach ($moduleFile in $Source) {
+    Context "Script: <_.Name> at <_.Directory>" -ForEach $moduleFiles {
 
-        Context "Module : $moduleFile" {
+        BeforeEach {
 
-            $manifestFile = [Io.Path]::ChangeExtension($moduleFile, 'psd1')
-
-            It "Module should exist" -TestCases @{ 'moduleFile' = $moduleFile } {
-
-                $moduleFile | Should -Exist
-
-            }
-
-            It "Manifest should exist" -TestCases @{ 'manifestFile' = $manifestFile } {
-
-                $manifestFile | Should -Exist
-
-            }
-
-            It "Manifest should be valid" -TestCases @{ 'manifestFile' = $manifestFile } {
-
-                $manifest = Test-ModuleManifest -Path $manifestFile -ErrorAction SilentlyContinue
-
-                $manifest | Should -BeOfType [System.Management.Automation.PSModuleInfo]
-
-            }
+            $moduleFile = $_.FullName
+            $manifestFile = [Io.Path]::ChangeExtension($_.FullName, 'psd1')
 
             ($ExportedCommandsCount, $CommandFoundInModuleCount, $CommandInModuleCount, $CommandFoundInManifestCount) = Get-FunctionCount -Module $moduleFile -Manifest $manifestFile
 
-            It "Manifest should export Functions" -TestCases @{
-                'ExportedCommandsCount' = $ExportedCommandsCount
-            } {
+        }
 
-                ($ExportedCommandsCount) | Should -BeGreaterOrEqual 1
+        It "Module should exist" {
 
-            }
+            $moduleFile | Should -Exist
 
-            It "Module should have Functions" -TestCases @{
-                'CommandInModuleCount' = $CommandInModuleCount
-            } {
+        }
 
-                ($CommandInModuleCount) | Should -BeGreaterOrEqual 1
+        It "Manifest should exist" {
 
-            }
+            $manifestFile | Should -Exist
 
-            It "all exported Functions from Manifest should exist in the Module" -TestCases @{
-                'ExportedCommandsCount' = $ExportedCommandsCount
-                'CommandFoundInModuleCount' = $CommandFoundInModuleCount
-            } {
+        }
 
-                ($ExportedCommandsCount -eq $CommandFoundInModuleCount -and $ExportedCommandsCount -ge 1) | Should -BeTrue
+        It "Manifest should be valid" {
 
-            }
+            $manifest = Test-ModuleManifest -Path $manifestFile -ErrorAction SilentlyContinue
 
-            It "all Functions in the Module should exist in Manifest " -TestCases @{
-                'CommandInModuleCount' = $CommandInModuleCount
-                'CommandFoundInManifestCount' = $CommandFoundInManifestCount
-            } {
+            $manifest | Should -BeOfType [System.Management.Automation.PSModuleInfo]
 
-                ($CommandInModuleCount -eq $CommandFoundInManifestCount -and $CommandFoundInManifestCount -ge 1 ) | Should -BeTrue
+        }
 
-            }
+        It "Manifest should export Functions" {
+
+            ($ExportedCommandsCount) | Should -BeGreaterOrEqual 1
+
+        }
+
+        It "Module should have Functions" {
+
+            ($CommandInModuleCount) | Should -BeGreaterOrEqual 1
+
+        }
+
+        It "all exported Functions from Manifest should exist in the Module" {
+
+            ($ExportedCommandsCount -eq $CommandFoundInModuleCount -and $ExportedCommandsCount -ge 1) | Should -BeTrue
+
+        }
+
+        It "all Functions in the Module should exist in Manifest " {
+
+            ($CommandInModuleCount -eq $CommandFoundInManifestCount -and $CommandFoundInManifestCount -ge 1 ) | Should -BeTrue
 
         }
 
