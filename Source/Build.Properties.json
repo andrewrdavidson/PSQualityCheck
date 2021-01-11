@@ -28,9 +28,9 @@
     "Tags": [
         "powershell",
         "powershell-module",
-        "tests",
         "quality",
         "quality-check",
+        "tests",
         "pester",
         "pester-tests"
     ]
