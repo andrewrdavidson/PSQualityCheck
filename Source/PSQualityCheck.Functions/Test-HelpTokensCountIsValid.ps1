@@ -26,9 +26,11 @@ function Test-HelpTokensCountIsValid {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
 
         }
         else {
