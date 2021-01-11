@@ -1,25 +1,29 @@
 Describe "Test-HelpForUnspecifiedTokens.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
+    ) {
 
-        $mandatoryParameters = @(
-            'HelpTokens'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Test-HelpForUnspecifiedTokens"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Test-HelpForUnspecifiedTokens').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Test-HelpForUnspecifiedTokens').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should HelpTokens type be HashTable" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Test-HelpForUnspecifiedTokens').Parameters['HelpTokens'].ParameterType.Name | Should -Be 'HashTable'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+        }
+
+        It "should $Name type be $Type" {
+
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 

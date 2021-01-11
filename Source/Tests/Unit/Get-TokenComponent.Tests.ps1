@@ -1,48 +1,36 @@
 Describe "Get-TokenComponent.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -ForEach @(
+        @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
+        @{ 'Name' = 'StartLine'; 'Type' = 'Int32' }
+    ) {
 
-        $mandatoryParameters = @(
-            'ParsedContent'
-            'StartLine'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Get-TokenComponent"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Get-TokenComponent').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Get-TokenComponent').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should ParsedContent type be System.Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Get-TokenComponent').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
         }
 
-        It "should StartLine type be Int" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name type be $Type" {
 
-            (Get-Command -Name 'Get-TokenComponent').Parameters['StartLine'].ParameterType.Name | Should -Be 'Int32'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 
     }
 
     Context "Function tests" {
-
-        It "should throw when passing null parameters" {
-
-            {
-
-                Get-TokenComponent -ParsedContent $null -StartLine $null
-
-            } | Should -Throw
-
-        }
 
         BeforeAll {
             $ParsedContent = @(
@@ -87,6 +75,16 @@ Describe "Get-TokenComponent.Tests" {
                     "EndColumn" = 28
                 }
             )
+        }
+
+        It "should throw when passing null parameters" {
+
+            {
+
+                Get-TokenComponent -ParsedContent $null -StartLine $null
+
+            } | Should -Throw
+
         }
 
         It "should find token where 'StartLine' is valid" {

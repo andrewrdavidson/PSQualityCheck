@@ -1,32 +1,30 @@
 Describe "Get-FunctionCount.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -ForEach @(
+        @{ 'Name' = 'ModulePath'; 'Type' = 'String' }
+        @{ 'Name' = 'ManifestPath'; 'Type' = 'String' }
+    ) {
 
-        $mandatoryParameters = @(
-            'ModulePath'
-            'ManifestPath'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Get-FunctionCount"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Get-FunctionCount').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Get-FunctionCount').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should ModulePath type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Get-FunctionCount').Parameters['ModulePath'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
         }
 
-        It "should ManifestPath type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name type be $Type" {
 
-            (Get-Command -Name 'Get-FunctionCount').Parameters['ManifestPath'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 

@@ -1,32 +1,30 @@
 Describe "Get-FileList.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -ForEach @(
+        @{ 'Name' = 'Path'; 'Type' = 'String' }
+        @{ 'Name' = 'Extension'; 'Type' = 'String' }
+    ) {
 
-        $mandatoryParameters = @(
-            'Path'
-            'Extension'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Get-FileList"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Get-FileList').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Get-FileList').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should Path type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Get-FileList').Parameters['Path'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
         }
 
-        It "should Extension type be String" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name type be $Type" {
 
-            (Get-Command -Name 'Get-FileList').Parameters['Extension'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 

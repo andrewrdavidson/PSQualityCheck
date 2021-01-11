@@ -1,31 +1,29 @@
 Describe "Convert-Help.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'Help'; 'Type' = 'String' }
+    ) {
 
-        $mandatoryParameters = @(
-            'Help'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Convert-Help"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
-
-            It "should $parameter not belong to a parameter set" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Convert-Help').Parameters[$parameter].ParameterSets.Keys | Should -Be '__AllParameterSets'
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should HelpComment type be string" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Convert-Help').Parameters['Help'].ParameterType.Name | Should -Be 'String'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+        }
+
+        It "should $Name type be $Type" {
+
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 
@@ -65,36 +63,31 @@ Describe "Convert-Help.Tests" {
 
         }
 
-        $helpTokens = @(
-            '.SYNOPSIS'
-            '.DESCRIPTION'
-            '.PARAMETER'
-            '.EXAMPLE'
-            '.INPUTS'
-            '.OUTPUTS'
-            '.NOTES'
-            '.LINK'
-            '.COMPONENT'
-            '.ROLE'
-            '.FUNCTIONALITY'
-            '.FORWARDHELPTARGETNAME'
-            '.FORWARDHELPCATEGORY'
-            '.REMOTEHELPRUNSPACE'
-            '.EXTERNALHELP'
-        )
+        It "should find <token> in help" -ForEach @(
+            @{ 'Token' = '.SYNOPSIS' }
+            @{ 'Token' = '.DESCRIPTION' }
+            @{ 'Token' = '.PARAMETER' }
+            @{ 'Token' = '.EXAMPLE' }
+            @{ 'Token' = '.INPUTS' }
+            @{ 'Token' = '.OUTPUTS' }
+            @{ 'Token' = '.NOTES' }
+            @{ 'Token' = '.LINK' }
+            @{ 'Token' = '.COMPONENT' }
+            @{ 'Token' = '.ROLE' }
+            @{ 'Token' = '.FUNCTIONALITY' }
+            @{ 'Token' = '.FORWARDHELPTARGETNAME' }
+            @{ 'Token' = '.FORWARDHELPCATEGORY' }
+            @{ 'Token' = '.REMOTEHELPRUNSPACE' }
+            @{ 'Token' = '.EXTERNALHELP' }
+        ) {
 
-        foreach ($token in $helpTokens) {
+            $helpComment = "<#
+                            $($token)
+                            #>"
 
-            It "should find $token in help" -TestCases @{ 'token' = $token } {
+            $help = Convert-Help -Help $helpComment
 
-                $helpComment = "<#
-                                $($token)
-                                #>"
-
-                $help = Convert-Help -Help $helpComment
-
-                $help.ContainsKey($token) | Should -BeTrue
-            }
+            $help.ContainsKey($token) | Should -BeTrue
 
         }
 

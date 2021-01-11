@@ -1,32 +1,30 @@
 Describe "Test-HelpTokensParamsMatch.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -ForEach @(
+        @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
+        @{ 'Name' = 'ParameterVariables'; 'Type' = 'PSObject' }
+    ) {
 
-        $mandatoryParameters = @(
-            'HelpTokens'
-            'ParameterVariables'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Test-HelpTokensParamsMatch"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should HelpTokens type be HashTable" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters['HelpTokens'].ParameterType.Name | Should -Be 'HashTable'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
         }
 
-        It "should ParameterVariables type be PSCustomObject" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name type be $Type" {
 
-            (Get-Command -Name 'Test-HelpTokensParamsMatch').Parameters['ParameterVariables'].ParameterType.Name | Should -Be 'PSObject'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 

@@ -1,31 +1,29 @@
 Describe "Test-ParameterVariablesHaveType.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'ParameterVariables'; 'Type' = 'HashTable' }
+    ) {
 
-        $mandatoryParameters = @(
-            'ParameterVariables'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Test-ParameterVariablesHaveType"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
-
-            It "should $parameter not belong to a parameter set" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters[$parameter].ParameterSets.Keys | Should -Be '__AllParameterSets'
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should ParameterVariables type be HashTable" {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Test-ParameterVariablesHaveType').Parameters['ParameterVariables'].ParameterType.Name | Should -Be 'HashTable'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+        }
+
+        It "should $Name type be $Type" {
+
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 

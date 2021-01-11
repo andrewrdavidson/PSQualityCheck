@@ -1,32 +1,30 @@
 Describe "Test-ImportModuleIsValid.Tests" {
 
-    Context "Parameter Tests" {
+    Context "Parameter Tests" -Foreach @(
+        @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
+        @{ 'Name' = 'ImportModuleTokens'; 'Type' = 'Object[]' }
+    ) {
 
-        $mandatoryParameters = @(
-            'ParsedContent'
-            'ImportModuleTokens'
-        )
+        BeforeAll {
+            $commandletUnderTest = "Test-ImportModuleIsValid"
+        }
 
-        foreach ($parameter in $mandatoryParameters) {
+        It "should have $Name as a mandatory parameter" {
 
-            It "should have $parameter as a mandatory parameter" -TestCases @{ 'parameter' = $parameter } {
-
-                (Get-Command -Name 'Test-ImportModuleIsValid').Parameters[$parameter].Name | Should -BeExactly $parameter
-                (Get-Command -Name 'Test-ImportModuleIsValid').Parameters[$parameter].Attributes.Mandatory | Should -BeTrue
-
-            }
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
         }
 
-        It "should ParsedContent type be Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name not belong to a parameter set" {
 
-            (Get-Command -Name 'Test-ImportModuleIsValid').Parameters['ParsedContent'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
         }
 
-        It "should ImportModuleTokens type be Object[]" -TestCases @{ 'parameter' = $parameter } {
+        It "should $Name type be $Type" {
 
-            (Get-Command -Name 'Test-ImportModuleIsValid').Parameters['ImportModuleTokens'].ParameterType.Name | Should -Be 'Object[]'
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
         }
 
