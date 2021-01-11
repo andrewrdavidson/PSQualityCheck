@@ -35,7 +35,12 @@ function Test-ImportModuleIsValid {
             $importModuleStatement = Get-TokenComponent -ParsedFileContent $ParsedFile -StartLine $token.StartLine
 
             # Get the name of the module to be imported (for logging only)
-            $name = ($importModuleStatement | Where-Object { $_.Type -eq "String" } | Select-Object -First 1).Content
+            $name = ($importModuleStatement | Where-Object { $_.Type -eq "CommandArgument" } | Select-Object -First 1).Content
+            if ($null -eq $name) {
+
+                $name = ($importModuleStatement | Where-Object { $_.Type -eq "String" } | Select-Object -First 1).Content
+
+            }
 
             # if the -Name parameter is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and $_.Content -eq "-Name" })) {
