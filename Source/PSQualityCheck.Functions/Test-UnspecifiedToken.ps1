@@ -1,4 +1,4 @@
-function Test-HelpForUnspecifiedTokens {
+function Test-UnspecifiedToken {
     <#
         .SYNOPSIS
         Check that help tokens do not contain unspecified tokens
@@ -10,7 +10,7 @@ function Test-HelpForUnspecifiedTokens {
         A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
-        Test-HelpForUnspecifiedTokens -HelpTokens $HelpTokens
+        Test-UnspecifiedToken -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -23,9 +23,11 @@ function Test-HelpForUnspecifiedTokens {
 
         $module = Get-Module -Name PSQualityCheck
 
-        if (Test-Path -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")) {
+        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
 
-            $helpElementRules = (Import-PowerShellDataFile -Path (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1"))
+        if (Test-Path -Path $helpElementRulesPath) {
+
+            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
 
         }
         else {

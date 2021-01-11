@@ -61,7 +61,7 @@ Describe "Script Tests" {
                     throw "No help block found"
                 }
                 $helpTokens = Convert-Help -Help $helpComments.Content
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
             } |
                 Should -Not -Throw
@@ -76,7 +76,7 @@ Describe "Script Tests" {
                     throw "No help block found"
                 }
                 $helpTokens = Convert-Help -Help $helpComments.Content
-                Test-HelpForUnspecifiedTokens -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
             } |
                 Should -Not -Throw
@@ -149,7 +149,7 @@ Describe "Script Tests" {
 
         It "check script param block variables have type" {
 
-            $parameterVariables = Get-ScriptParameters -Content $fileContent
+            $parameterVariables = Get-ScriptParameter -Content $fileContent
 
             if ($parameterVariables.Count -eq 0) {
 
@@ -173,7 +173,7 @@ Describe "Script Tests" {
                 if ([string]::IsNullOrEmpty($helpComments)) {
                     throw "No help block found"
                 }
-                $parameterVariables = Get-ScriptParameters -Content $fileContent
+                $parameterVariables = Get-ScriptParameter -Content $fileContent
                 $helpTokens = Convert-Help -Help $helpComments.Content
 
                 Test-HelpTokensParamsMatch -HelpTokens $helpTokens -ParameterVariables $parameterVariables

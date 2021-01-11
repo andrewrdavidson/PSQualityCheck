@@ -1,11 +1,11 @@
-Describe "Test-HelpForRequiredTokens.Tests" {
+Describe "Test-RequiredToken.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpForRequiredTokens"
+            $commandletUnderTest = "Test-RequiredToken"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -97,7 +97,7 @@ Describe "Test-HelpForRequiredTokens.Tests" {
 
             {
 
-                Test-HelpForRequiredTokens -HelpTokens $null
+                Test-RequiredToken -HelpTokens $null
 
             } | Should -Throw
 
@@ -137,7 +137,7 @@ Describe "Test-HelpForRequiredTokens.Tests" {
                     )
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -188,7 +188,7 @@ Describe "Test-HelpForRequiredTokens.Tests" {
 
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -223,7 +223,7 @@ Describe "Test-HelpForRequiredTokens.Tests" {
                     )
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 

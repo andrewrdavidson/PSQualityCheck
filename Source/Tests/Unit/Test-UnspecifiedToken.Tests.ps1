@@ -1,6 +1,6 @@
-Describe "Test-HelpForUnspecifiedTokens.Tests" {
+Describe "Test-UnspecifiedToken.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
@@ -97,7 +97,7 @@ Describe "Test-HelpForUnspecifiedTokens.Tests" {
 
             {
 
-                Test-HelpForUnspecifiedTokens -HelpTokens $null
+                Test-UnspecifiedToken -HelpTokens $null
 
             } | Should -Throw
 
@@ -137,7 +137,7 @@ Describe "Test-HelpForUnspecifiedTokens.Tests" {
                     )
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -188,7 +188,7 @@ Describe "Test-HelpForUnspecifiedTokens.Tests" {
 
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -209,7 +209,7 @@ Describe "Test-HelpForUnspecifiedTokens.Tests" {
                     )
                 }
 
-                Test-HelpForRequiredTokens -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 

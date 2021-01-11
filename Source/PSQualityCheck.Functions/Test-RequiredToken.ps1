@@ -1,4 +1,4 @@
-function Test-HelpForRequiredTokens {
+function Test-RequiredToken {
     <#
         .SYNOPSIS
         Check that help tokens contain required tokens
@@ -10,7 +10,7 @@ function Test-HelpForRequiredTokens {
         A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
-        Test-HelpForRequiredTokens -HelpTokens $HelpTokens
+        Test-RequiredToken -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
