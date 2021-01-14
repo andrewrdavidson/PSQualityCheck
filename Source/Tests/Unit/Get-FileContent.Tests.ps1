@@ -1,6 +1,6 @@
 Describe "Get-FileContent.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'Path'; 'Type' = 'String' }
     ) {
 

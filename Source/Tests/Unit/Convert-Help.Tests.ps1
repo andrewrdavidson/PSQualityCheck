@@ -1,6 +1,6 @@
 Describe "Convert-Help.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'Help'; 'Type' = 'String' }
     ) {
 
@@ -63,7 +63,7 @@ Describe "Convert-Help.Tests" {
 
         }
 
-        It "should find <token> in help" -ForEach @(
+        It "should find <token> in help" -Foreach @(
             @{ 'Token' = '.SYNOPSIS' }
             @{ 'Token' = '.DESCRIPTION' }
             @{ 'Token' = '.PARAMETER' }

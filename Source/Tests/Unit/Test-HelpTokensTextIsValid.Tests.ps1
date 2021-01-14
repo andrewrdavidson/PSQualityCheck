@@ -1,6 +1,6 @@
 Describe "Test-HelpTokensTextIsValid.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 

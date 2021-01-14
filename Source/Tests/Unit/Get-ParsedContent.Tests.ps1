@@ -1,6 +1,6 @@
 Describe "Get-ParsedContent.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'Content'; 'Type' = 'String' }
     ) {
 

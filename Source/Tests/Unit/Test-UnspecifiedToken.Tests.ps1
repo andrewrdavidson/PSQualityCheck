@@ -1,11 +1,11 @@
 Describe "Test-UnspecifiedToken.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpForUnspecifiedTokens"
+            $commandletUnderTest = "Test-UnspecifiedToken"
         }
 
         It "should have $Name as a mandatory parameter" {

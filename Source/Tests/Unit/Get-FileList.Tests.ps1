@@ -1,8 +1,9 @@
 Describe "Get-FileList.Tests" {
 
     Context "Parameter Tests" -ForEach @(
-        @{ 'Name' = 'Path'; 'Type' = 'String' }
-        @{ 'Name' = 'Extension'; 'Type' = 'String' }
+        @{ 'Name' = 'Path'; 'Type' = 'String'; 'MandatoryFlag' = $true }
+        @{ 'Name' = 'Extension'; 'Type' = 'String'; 'MandatoryFlag' = $true }
+        @{ 'Name' = 'Recurse'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false }
     ) {
 
         BeforeAll {
@@ -12,7 +13,7 @@ Describe "Get-FileList.Tests" {
         It "should have $Name as a mandatory parameter" {
 
             (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeExactly $MandatoryFlag
 
         }
 

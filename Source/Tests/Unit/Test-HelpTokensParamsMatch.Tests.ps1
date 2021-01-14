@@ -1,6 +1,6 @@
 Describe "Test-HelpTokensParamsMatch.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
         @{ 'Name' = 'ParameterVariables'; 'Type' = 'PSObject' }
     ) {

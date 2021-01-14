@@ -5,6 +5,7 @@ Describe "Invoke-PSQualityCheck.Tests" {
         @{ 'Name' = 'File'; 'Type' = 'String[]'; 'MandatoryFlag' = $true; 'ParameterSet' = 'File' }
         @{ 'Name' = 'SonarQubeRulesPath'; 'Type' = 'String'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
         @{ 'Name' = 'ShowCheckResults'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
+        @{ 'Name' = 'Recurse'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false; 'ParameterSet' = 'Path' }
     ) {
 
         BeforeAll {
@@ -18,7 +19,7 @@ Describe "Invoke-PSQualityCheck.Tests" {
 
         }
 
-        It "should $Name not belong to a parameter set" {
+        It "should $Name belong to a $ParameterSet parameter set" {
 
             (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be $ParameterSet
 

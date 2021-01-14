@@ -1,6 +1,6 @@
 Describe "Test-ImportModuleIsValid.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
         @{ 'Name' = 'ImportModuleTokens'; 'Type' = 'Object[]' }
     ) {
