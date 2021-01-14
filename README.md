@@ -83,13 +83,21 @@ Copy the files to **one** of the available module folders:
 
 then run using the examples below as a guide:
 
-#### Check the folder C:\Scripts and all subfolders beneath it:
+#### Check the folder C:\Scripts:
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
-#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders:
+#### Check the folder C:\Scripts and all subfolders beneath it:
+
+`Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse`
+
+#### Check the folders C:\Scripts and C:\MoreScripts':
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
+
+#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders:
+
+`Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts') -Recurse`
 
 #### Check the file C:\Scripts\Script.ps1:
 
