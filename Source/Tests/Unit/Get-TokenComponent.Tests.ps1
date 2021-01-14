@@ -1,6 +1,6 @@
 Describe "Get-TokenComponent.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
         @{ 'Name' = 'StartLine'; 'Type' = 'Int32' }
     ) {

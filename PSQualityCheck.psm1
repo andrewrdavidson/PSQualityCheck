@@ -12,6 +12,9 @@ function Invoke-PSQualityCheck {
         .PARAMETER File
         A string array containing testable files
 
+        .PARAMETER Recurse
+        A switch specifying whether or not to recursively search the path specified
+
         .PARAMETER SonarQubeRulesPath
         A path the the external PSScriptAnalyzer rules for SonarQube
 
@@ -22,6 +25,11 @@ function Invoke-PSQualityCheck {
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
         This will call the quality checks on single path
+
+        .EXAMPLE
+        Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse
+
+        This will call the quality checks on single path and sub folders
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')
@@ -81,6 +89,9 @@ function Invoke-PSQualityCheck {
         [Parameter(Mandatory = $true, ParameterSetName = "File")]
         [String[]]$File,
 
+        [Parameter(Mandatory = $false, ParameterSetName = "Path")]
+        [switch]$Recurse,
+
         [Parameter(Mandatory = $false)]
         [String]$SonarQubeRulesPath,
 
@@ -111,8 +122,15 @@ function Invoke-PSQualityCheck {
             # Test whether the item is a directory (also tells us if it exists)
             if (Test-Path -Path $item -PathType Container) {
 
-                $scriptsToTest += Get-FileList -Path $item -Extension '.ps1'
-                $modulesToTest += Get-FileList -Path $item -Extension '.psm1'
+                $getFileListSplat = @{
+                    'Path' = $item
+                }
+                if ($PSBoundParameters.ContainsKey('Recurse')) {
+                    $getFileListSplat.Add('Recurse', $true)
+                }
+
+                $scriptsToTest += Get-FileList @getFileListSplat -Extension '.ps1'
+                $modulesToTest += Get-FileList @getFileListSplat -Extension '.psm1'
 
             }
             else {

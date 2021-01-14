@@ -1,6 +1,6 @@
 Describe "Export-FunctionsFromModule.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'Path'; 'Type' = 'String' }
         @{ 'Name' = 'ExtractPath'; 'Type' = 'String' }
     ) {

@@ -1,11 +1,11 @@
-Describe "Get-ScriptParameters.Tests" {
+Describe "Get-ScriptParameter.Tests" {
 
     Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Content'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-ScriptParameters"
+            $commandletUnderTest = "Get-ScriptParameter"
         }
 
         It "should have $Name as a mandatory parameter" {

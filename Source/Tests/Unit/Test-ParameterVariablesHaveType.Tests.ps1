@@ -1,6 +1,6 @@
 Describe "Test-ParameterVariablesHaveType.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'ParameterVariables'; 'Type' = 'HashTable' }
     ) {
 

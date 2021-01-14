@@ -1,6 +1,6 @@
 Describe "Get-FunctionCount.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'ModulePath'; 'Type' = 'String' }
         @{ 'Name' = 'ManifestPath'; 'Type' = 'String' }
     ) {

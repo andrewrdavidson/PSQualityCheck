@@ -400,8 +400,14 @@ function Get-FileList {
         .PARAMETER Extension
         A string containing the extension
 
+        .PARAMETER Recurse
+        A switch specifying whether or not to recursively search the path specified
+
         .EXAMPLE
         $files = Get-FileList -Path 'c:\folder' -Extension ".ps1"
+
+        .EXAMPLE
+        $files = Get-FileList -Path 'c:\folder' -Extension ".ps1" -Recurse
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
@@ -409,7 +415,9 @@ function Get-FileList {
         [parameter(Mandatory = $true)]
         [string]$Path,
         [parameter(Mandatory = $true)]
-        [string]$Extension
+        [string]$Extension,
+        [parameter(Mandatory = $false)]
+        [switch]$Recurse
     )
 
     $Extension = $Extension
@@ -418,8 +426,16 @@ function Get-FileList {
 
     if (Test-Path -Path $Path) {
 
+        $gciSplat = @{
+            'Path' = $Path
+            'Exclude' = "*.Tests.*"
+        }
+        if ($PSBoundParameters.ContainsKey('Recurse')) {
+            $gciSplat.Add('Recurse', $true)
+        }
+
         # Get the list of files
-        $SelectedFilesArray = Get-ChildItem -Path $Path -Recurse -Exclude "*.Tests.*" | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName
+        $SelectedFilesArray = Get-ChildItem @gciSplat | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName
         # Convert to a string array of filenames
         $SelectedFilesArray | ForEach-Object { $FileNameArray += [string]$_.FullName }
 

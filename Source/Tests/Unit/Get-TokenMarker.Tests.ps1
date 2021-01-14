@@ -1,6 +1,6 @@
 Describe "Get-TokenMarker.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
         @{ 'Name' = 'Type'; 'Type' = 'String' }
         @{ 'Name' = 'Content'; 'Type' = 'String' }
