@@ -21,6 +21,15 @@ function Invoke-PSQualityCheck {
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
 
+        .PARAMETER ExportCheckResults
+        Exports the Check results at the end of processing to file
+
+        .PARAMETER Passthru
+        Returns the Check results objects back to the caller
+
+        .PARAMETER PesterConfiguration
+        A Pester configuration object to allow configuration of Pester
+
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
@@ -82,7 +91,7 @@ function Invoke-PSQualityCheck {
 
     #>
     [CmdletBinding()]
-    [OutputType([System.Void], [HashTable])]
+    [OutputType([System.Void], [HashTable], [System.Object[]])]
     param (
         [Parameter(Mandatory = $true, ParameterSetName = "Path")]
         [String[]]$Path,
@@ -95,7 +104,14 @@ function Invoke-PSQualityCheck {
         [Parameter(Mandatory = $false)]
         [String]$SonarQubeRulesPath,
 
-        [switch]$ShowCheckResults
+        [switch]$ShowCheckResults,
+
+        [switch]$ExportCheckResults,
+
+        [switch]$Passthru,
+
+        [Parameter(Mandatory = $false)]
+        [System.Object]$PesterConfiguration
     )
 
     Set-StrictMode -Version Latest
@@ -179,13 +195,20 @@ function Invoke-PSQualityCheck {
 
     }
 
-    # Default Pester Parameters
-    $configuration = [PesterConfiguration]::Default
-    $configuration.Run.Exit = $false
-    $configuration.CodeCoverage.Enabled = $false
-    $configuration.Output.Verbosity = 'Detailed'
-    $configuration.Run.PassThru = $true
-    $configuration.Should.ErrorAction = 'Stop'
+    if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
+
+        # left here so that we can over-ride passed in object with values we require
+
+    }
+    else {
+        # Default Pester Parameters
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Exit = $false
+        $PesterConfiguration.CodeCoverage.Enabled = $false
+        $PesterConfiguration.Output.Verbosity = 'Detailed'
+        $PesterConfiguration.Run.PassThru = $true
+        $PesterConfiguration.Should.ErrorAction = 'Stop'
+    }
 
     $moduleResults = $null
     $extractionResults = $null
@@ -199,21 +222,21 @@ function Invoke-PSQualityCheck {
 
         # Run the Module tests on all the valid module files found
         $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Tests.ps1') -Data @{ Source = $modulesToTest }
-        $configuration.Run.Container = $container1
-        $moduleResults = Invoke-Pester -Configuration $configuration
+        $PesterConfiguration.Run.Container = $container1
+        $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
 
         # Extract all the functions from the modules into individual .ps1 files ready for testing
         $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Function-Extraction.Tests.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
-        $configuration.Run.Container = $container2
-        $extractionResults = Invoke-Pester -Configuration $configuration
+        $PesterConfiguration.Run.Container = $container2
+        $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
         # Get a list of the 'extracted' function scripts .ps1 files
         $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
         # Run the Script tests against all the extracted functions .ps1 files
         $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
-        $configuration.Run.Container = $container3
-        $extractedScriptResults = Invoke-Pester -Configuration $configuration
+        $PesterConfiguration.Run.Container = $container3
+        $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
     }
 
@@ -221,8 +244,8 @@ function Invoke-PSQualityCheck {
 
         # Run the Script tests against all the valid script files found
         $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
-        $configuration.Run.Container = $container3
-        $scriptResults = Invoke-Pester -Configuration $configuration
+        $PesterConfiguration.Run.Container = $container3
+        $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
     }
 
@@ -322,6 +345,26 @@ function Invoke-PSQualityCheck {
 
         # This works on PS7 not on PS5
         # $qualityCheckResults | Select-Object Name, 'Files Tested', Total, Passed, Failed, Skipped | Format-Table -AutoSize
+
+    }
+
+    if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
+
+        $moduleResults | Export-Clixml -Path "moduleResults.xml"
+        $extractionResults | Export-Clixml -Path "extractionResults.xml"
+        $scriptsToTest | Export-Clixml -Path "scriptsToTest.xml"
+        $extractedScriptResults | Export-Clixml -Path "extractedScriptResults.xml"
+
+    }
+
+    if ($PSBoundParameters.ContainsKey('Passthru')) {
+
+        if ($PesterConfiguration.Run.PassThru.Value -eq $true) {
+            return $moduleResults, $extractionResults, $scriptsToTest, $extractedScriptResults
+        }
+        else {
+            Write-Error "Unable to pass back result objects. Passthru not enabled in Pester Configuration object"
+        }
 
     }
 
