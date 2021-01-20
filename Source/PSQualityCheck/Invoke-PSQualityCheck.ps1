@@ -21,6 +21,12 @@ function Invoke-PSQualityCheck {
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
 
+        .PARAMETER ExportCheckResults
+        Exports the Check results at the end of processing to file
+
+        .PARAMETER Passthru
+        Returns the Check results objects back to the caller
+
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
@@ -82,7 +88,7 @@ function Invoke-PSQualityCheck {
 
     #>
     [CmdletBinding()]
-    [OutputType([System.Void], [HashTable])]
+    [OutputType([System.Void], [HashTable], [System.Object[]])]
     param (
         [Parameter(Mandatory = $true, ParameterSetName = "Path")]
         [String[]]$Path,
@@ -95,7 +101,11 @@ function Invoke-PSQualityCheck {
         [Parameter(Mandatory = $false)]
         [String]$SonarQubeRulesPath,
 
-        [switch]$ShowCheckResults
+        [switch]$ShowCheckResults,
+
+        [switch]$ExportCheckResults,
+
+        [switch]$Passthru
     )
 
     Set-StrictMode -Version Latest
@@ -322,6 +332,21 @@ function Invoke-PSQualityCheck {
 
         # This works on PS7 not on PS5
         # $qualityCheckResults | Select-Object Name, 'Files Tested', Total, Passed, Failed, Skipped | Format-Table -AutoSize
+
+    }
+
+    if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
+
+        $moduleResults | ConvertTo-Json | Out-File "moduleResults.json"
+        $extractionResults | ConvertTo-Json | Out-File "extractionResults.json"
+        $scriptsToTest | ConvertTo-Json | Out-File "scriptsToTest.json"
+        $extractedScriptResults | ConvertTo-Json | Out-File "extractedScriptResults.json"
+
+    }
+
+    if ($PSBoundParameters.ContainsKey('Passthru')) {
+
+        return $moduleResults, $extractionResults, $scriptsToTest, $extractedScriptResults
 
     }
 
