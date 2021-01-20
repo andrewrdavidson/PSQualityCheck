@@ -146,7 +146,9 @@ A quick description of the available Pester tests
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
+|None|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.1.0|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |None|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![PowerShell 7.1.0 - Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![PowerShell 5.1 - Further Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
