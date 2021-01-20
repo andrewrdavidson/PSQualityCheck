@@ -15,8 +15,8 @@ function Invoke-PSQualityCheck {
         .PARAMETER Recurse
         A switch specifying whether or not to recursively search the path specified
 
-        .PARAMETER SonarQubeRulesPath
-        A path the the external PSScriptAnalyzer rules for SonarQube
+        .PARAMETER ScriptAnalyzerRulesPath
+        A path the the external PSScriptAnalyzer rules
 
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
@@ -67,9 +67,9 @@ function Invoke-PSQualityCheck {
         This will call the quality checks with multiple files. Files can be either scripts or modules
 
         .EXAMPLE
-        Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'
+        Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'
 
-        This will call the quality checks with single file and the extra PSScriptAnalyzer rules used by SonarQube
+        This will call the quality checks with single file and the extra PSScriptAnalyzer rules
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults
@@ -102,7 +102,7 @@ function Invoke-PSQualityCheck {
         [switch]$Recurse,
 
         [Parameter(Mandatory = $false)]
-        [String]$SonarQubeRulesPath,
+        [String[]]$ScriptAnalyzerRulesPath,
 
         [switch]$ShowCheckResults,
 
@@ -234,7 +234,7 @@ function Invoke-PSQualityCheck {
         $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
         # Run the Script tests against all the extracted functions .ps1 files
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
@@ -243,7 +243,7 @@ function Invoke-PSQualityCheck {
     if ($scriptsToTest.Count -ge 1) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 

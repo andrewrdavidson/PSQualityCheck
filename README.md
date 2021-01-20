@@ -83,35 +83,35 @@ Copy the files to **one** of the available module folders:
 
 then run using the examples below as a guide:
 
-#### Check the folder C:\Scripts:
+#### Check the folder C:\Scripts
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts'`
 
-#### Check the folder C:\Scripts and all subfolders beneath it:
+#### Check the folder C:\Scripts and all subfolders beneath it
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse`
 
-#### Check the folders C:\Scripts and C:\MoreScripts':
+#### Check the folders C:\Scripts and C:\MoreScripts'
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
 
-#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders:
+#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
 
 `Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts') -Recurse`
 
-#### Check the file C:\Scripts\Script.ps1:
+#### Check the file C:\Scripts\Script.ps1
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'`
 
-#### Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1:
+#### Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1
 
 `Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1', 'C:\Scripts\Script.ps1')`
 
-#### Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules used by SonarQube:
+#### Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules
 
-`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'`
+`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'`
 
-#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed:
+#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
 
