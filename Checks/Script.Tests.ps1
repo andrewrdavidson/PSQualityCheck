@@ -2,8 +2,8 @@ param(
     [parameter(Mandatory = $true)]
     [string[]]$Source,
 
-    [parameter(Mandatory = $false)]
-    [string]$SonarQubeRules
+    [parameter(Mandatory = $true)]
+    [string[]]$ScriptAnalyzerRulesPath
 )
 
 BeforeDiscovery {
@@ -23,17 +23,37 @@ BeforeDiscovery {
 
     }
 
+    if ( -not ($ScriptAnalyzerRulesPath -is [Array])) {
+        $ScriptAnalyzerRulesPath = @($ScriptAnalyzerRulesPath)
+    }
+
+    $rulesPath = @()
+
+    $ScriptAnalyzerRulesPath | ForEach-Object {
+
+        $rulesPath += @{
+            'Path' = $_
+
+        }
+
+    }
+
 }
 
 Describe "Script Tests" {
 
-    Context "Script: <_.Name> at <_.Directory>" -ForEach $scriptFiles {
+    Context "Script: <File.Name> at <File.Directory>" -Foreach $scriptFiles {
+
+        BeforeAll {
+
+            $file = $_
+
+        }
 
         BeforeEach {
 
-            $scriptFile = $_.FullName
-
-            $fileContent = Get-FileContent -Path $_.FullName
+            $scriptFile = $file.FullName
+            $fileContent = Get-FileContent -Path $file.FullName
 
             if (-not([string]::IsNullOrEmpty($fileContent))) {
                 ($ParsedFile, $ErrorCount) = Get-ParsedContent -Content $fileContent
@@ -198,21 +218,23 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains no PSScriptAnalyser SonarQube rule failures" {
+        It "check script contains no PSScriptAnalyser rule failures '<_.Path>" -TestCases $rulesPath {
 
-            if ( [string]::IsNullOrEmpty($SonarQubeRules) ) {
+            param($Path)
 
-                Set-ItResult -Inconclusive -Because "No SonarQube PSScriptAnalyzer rules folder specified"
+            if ( [string]::IsNullOrEmpty($Path)) {
 
-            }
-
-            if ( -not (Test-Path -Path $SonarQubeRules -ErrorAction SilentlyContinue)) {
-
-                Set-ItResult -Inconclusive -Because "SonarQube PSScriptAnalyzer rules not found"
+                Set-ItResult -Inconclusive -Because "Empty ScriptAnalyzerRulesPath '$Path'"
 
             }
 
-            $AnalyserFailures = @(Invoke-ScriptAnalyzer -Path $scriptFile -CustomRulePath $SonarQubeRules)
+            if ( -not (Test-Path -Path $Path -ErrorAction SilentlyContinue)) {
+
+                Set-ItResult -Inconclusive -Because "ScriptAnalyzerRulesPath path '$Path' not found"
+
+            }
+
+            $AnalyserFailures = @(Invoke-ScriptAnalyzer -Path $scriptFile -CustomRulePath $Path)
 
             $AnalyserFailures | ForEach-Object { $_.Message } | Should -BeNullOrEmpty
 

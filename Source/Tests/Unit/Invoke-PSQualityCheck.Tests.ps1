@@ -1,9 +1,9 @@
 Describe "Invoke-PSQualityCheck.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Path'; 'Type' = 'String[]'; 'MandatoryFlag' = $true; 'ParameterSet' = 'Path' }
         @{ 'Name' = 'File'; 'Type' = 'String[]'; 'MandatoryFlag' = $true; 'ParameterSet' = 'File' }
-        @{ 'Name' = 'SonarQubeRulesPath'; 'Type' = 'String'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
+        @{ 'Name' = 'ScriptAnalyzerRulesPath'; 'Type' = 'String[]'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
         @{ 'Name' = 'ShowCheckResults'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
         @{ 'Name' = 'ExportCheckResults'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
         @{ 'Name' = 'Passthru'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false; 'ParameterSet' = '__AllParameterSets' }
