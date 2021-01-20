@@ -337,10 +337,10 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
 
-        $moduleResults | ConvertTo-Json | Out-File "moduleResults.json"
-        $extractionResults | ConvertTo-Json | Out-File "extractionResults.json"
-        $scriptsToTest | ConvertTo-Json | Out-File "scriptsToTest.json"
-        $extractedScriptResults | ConvertTo-Json | Out-File "extractedScriptResults.json"
+        $moduleResults | Export-Clixml -Path "moduleResults.xml"
+        $extractionResults | Export-Clixml -Path "extractionResults.xml"
+        $scriptsToTest | Export-Clixml -Path "scriptsToTest.xml"
+        $extractedScriptResults | Export-Clixml -Path "extractedScriptResults.xml"
 
     }
 
