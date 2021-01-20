@@ -24,7 +24,7 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 **Commits**
 
-[![commits since 1.1.0](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.0/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.0)
+[![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.1)
 
 #### Issues
 
@@ -138,6 +138,7 @@ A quick description of the available Pester tests
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
+|7.1.1|1.1.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
 |7.1.0|1.1.0|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)</p>|
 |5.1|1.1.0|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
 
