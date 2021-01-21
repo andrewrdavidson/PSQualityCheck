@@ -18,7 +18,7 @@
     },
     "HelpInfoURI": "https://github.com/andrewrdavidson/PSQualityCheck/wiki",
     "LicenseUri": "https://github.com/andrewrdavidson/PSQualityCheck/blob/main/LICENSE",
-    "ModuleVersion": "1.1.1",
+    "ModuleVersion": "1.2.0",
     "NestedModules": {
         "PSQualityCheck": "PSQualityCheck.Functions.psd1",
         "PSQualityCheck.Functions": null

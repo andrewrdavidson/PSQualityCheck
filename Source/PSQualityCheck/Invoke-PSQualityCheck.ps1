@@ -15,8 +15,8 @@ function Invoke-PSQualityCheck {
         .PARAMETER Recurse
         A switch specifying whether or not to recursively search the path specified
 
-        .PARAMETER SonarQubeRulesPath
-        A path the the external PSScriptAnalyzer rules for SonarQube
+        .PARAMETER ScriptAnalyzerRulesPath
+        A path the the external PSScriptAnalyzer rules
 
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
@@ -29,6 +29,12 @@ function Invoke-PSQualityCheck {
 
         .PARAMETER PesterConfiguration
         A Pester configuration object to allow configuration of Pester
+
+        .PARAMETER Include
+        An array of test tags to run
+
+        .PARAMETER Exclude
+        An array of test tags to not run
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
@@ -67,9 +73,9 @@ function Invoke-PSQualityCheck {
         This will call the quality checks with multiple files. Files can be either scripts or modules
 
         .EXAMPLE
-        Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -SonarQubeRulesPath 'C:\SonarQubeRules'
+        Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'
 
-        This will call the quality checks with single file and the extra PSScriptAnalyzer rules used by SonarQube
+        This will call the quality checks with single file and the extra PSScriptAnalyzer rules
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults
@@ -102,7 +108,7 @@ function Invoke-PSQualityCheck {
         [switch]$Recurse,
 
         [Parameter(Mandatory = $false)]
-        [String]$SonarQubeRulesPath,
+        [String[]]$ScriptAnalyzerRulesPath,
 
         [switch]$ShowCheckResults,
 
@@ -111,7 +117,14 @@ function Invoke-PSQualityCheck {
         [switch]$Passthru,
 
         [Parameter(Mandatory = $false)]
-        [System.Object]$PesterConfiguration
+        [System.Object]$PesterConfiguration,
+
+        [Parameter(Mandatory = $false)]
+        [String[]]$Include,
+
+        [Parameter(Mandatory = $false)]
+        [String[]]$Exclude
+
     )
 
     Set-StrictMode -Version Latest
@@ -127,7 +140,11 @@ function Invoke-PSQualityCheck {
     $scriptsToTest = @()
     $modulesToTest = @()
 
+    Write-Verbose "Starting" -Verbose
+
     if ($PSBoundParameters.ContainsKey('Path')) {
+
+        Write-Verbose 'Found Path in $PSBoundParameters' -Verbose
 
         if ($Path -isnot [string[]]) {
             $Path = @($Path)
@@ -160,6 +177,8 @@ function Invoke-PSQualityCheck {
     }
 
     if ($PSBoundParameters.ContainsKey('File')) {
+
+        Write-Verbose 'Found File in $PSBoundParameters' -Verbose
 
         if ($File -isnot [string[]]) {
             $File = @($File)
@@ -210,6 +229,102 @@ function Invoke-PSQualityCheck {
         $PesterConfiguration.Should.ErrorAction = 'Stop'
     }
 
+    # Get the list of test tags from the checks files
+    if ($PSBoundParameters.ContainsKey('Include') -or
+        $PSBoundParameters.ContainsKey('Exclude')) {
+
+        Write-Verbose 'Getting Tags' -Verbose
+
+        ($moduleTags, $scriptTags) = Get-TagList
+        $moduleTagsToInclude = @()
+        $moduleTagsToExclude = @()
+        $scriptTagsToInclude = @()
+        $scriptTagsToExclude = @()
+        $runModuleCheck = $false
+        $runScriptCheck = $false
+
+        Write-Verbose "Got ModuleTags: $ModuleTags" -Verbose
+        Write-Verbose "Got scriptTags: $scriptTags" -Verbose
+
+    }
+    else {
+        $runModuleCheck = $true
+        $runScriptCheck = $true
+    }
+
+    if ($PSBoundParameters.ContainsKey('Include')) {
+
+        Write-Verbose 'Processing -Include' -Verbose
+        if ($Include -eq 'All') {
+            $moduleTagsToInclude = $moduleTags
+            $scriptTagsToInclude = $scriptTags
+            $runModuleCheck = $true
+            $runScriptCheck = $true
+        }
+        else {
+            # Validate tests to include from $Include
+            $Include | ForEach-Object {
+                if ($_ -in $moduleTags) {
+                    $moduleTagsToInclude += $_
+                    $runModuleCheck = $true
+                    #* To satisfy PSScriptAnalyzer
+                    $runModuleCheck = $runModuleCheck
+                    $runScriptCheck = $runScriptCheck
+                }
+            }
+            $Include | ForEach-Object {
+                if ($_ -in $scriptTags) {
+                    $scriptTagsToInclude += $_
+                    $runScriptCheck = $true
+                    #* To satisfy PSScriptAnalyzer
+                    $runModuleCheck = $runModuleCheck
+                    $runScriptCheck = $runScriptCheck
+                }
+            }
+        }
+        $PesterConfiguration.Filter.Tag = $moduleTagsToInclude + $scriptTagsToInclude
+
+    }
+
+    if ($PSBoundParameters.ContainsKey('Exclude')) {
+
+        Write-Verbose 'Processing -Exclude' -Verbose
+        # Validate tests to exclude from $Exclude
+        $Exclude | ForEach-Object {
+            if ($_ -in $moduleTags) {
+                $moduleTagsToExclude += $_
+                $runModuleCheck = $true
+                #* To satisfy PSScriptAnalyzer
+                $runModuleCheck = $runModuleCheck
+                $runScriptCheck = $runScriptCheck
+            }
+        }
+        $Exclude | ForEach-Object {
+            if ($_ -in $scriptTags) {
+                $scriptTagsToExclude += $_
+                $runScriptCheck = $true
+                #* To satisfy PSScriptAnalyzer
+                $runModuleCheck = $runModuleCheck
+                $runScriptCheck = $runScriptCheck
+            }
+        }
+        $PesterConfiguration.Filter.ExcludeTag = $moduleTagsToExclude + $scriptTagsToExclude
+
+    }
+
+    # Need to work out which of the checks files can be run
+    if ($PSBoundParameters.ContainsKey('Include') -or
+        $PSBoundParameters.ContainsKey('Exclude')) {
+
+        Write-Verbose "moduleTagsToInclude $moduleTagsToInclude" -Verbose
+        Write-Verbose "scriptTagsToInclude $scriptTagsToInclude" -Verbose
+        Write-Verbose "moduleTagsToExclude $moduleTagsToExclude" -Verbose
+        Write-Verbose "scriptTagsToExclude $scriptTagsToExclude" -Verbose
+
+    }
+    Write-Verbose "runModuleCheck $runModuleCheck" -Verbose
+    Write-Verbose "runScriptCheck $runScriptCheck" -Verbose
+
     $moduleResults = $null
     $extractionResults = $null
     $extractedScriptResults = $null
@@ -220,30 +335,37 @@ function Invoke-PSQualityCheck {
         # Location of files extracted from any passed modules
         $extractPath = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath (New-Guid).Guid
 
-        # Run the Module tests on all the valid module files found
-        $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Tests.ps1') -Data @{ Source = $modulesToTest }
-        $PesterConfiguration.Run.Container = $container1
-        $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
+        if ($runModuleCheck -eq $true) {
 
-        # Extract all the functions from the modules into individual .ps1 files ready for testing
-        $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Function-Extraction.Tests.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
-        $PesterConfiguration.Run.Container = $container2
-        $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
+            # Run the Module tests on all the valid module files found
+            $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Tests.ps1') -Data @{ Source = $modulesToTest }
+            $PesterConfiguration.Run.Container = $container1
+            $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
 
-        # Get a list of the 'extracted' function scripts .ps1 files
-        $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
+            # Extract all the functions from the modules into individual .ps1 files ready for testing
+            $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Function-Extraction.Tests.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
+            $PesterConfiguration.Run.Container = $container2
+            $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
-        # Run the Script tests against all the extracted functions .ps1 files
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
-        $PesterConfiguration.Run.Container = $container3
-        $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
+        }
+
+        if ($runScriptCheck -eq $true -and (Test-Path -Path $extractPath -ErrorAction SilentlyContinue)) {
+
+            # Get a list of the 'extracted' function scripts .ps1 files
+            $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
+
+            # Run the Script tests against all the extracted functions .ps1 files
+            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
+            $PesterConfiguration.Run.Container = $container3
+            $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
+        }
 
     }
 
-    if ($scriptsToTest.Count -ge 1) {
+    if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; SonarQubeRules = $SonarQubeRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
@@ -369,3 +491,4 @@ function Invoke-PSQualityCheck {
     }
 
 }
+

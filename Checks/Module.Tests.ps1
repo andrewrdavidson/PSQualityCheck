@@ -22,9 +22,9 @@ BeforeDiscovery {
 
 }
 
-Describe "Module Tests" {
+Describe "Module Tests" -Tag "Module" {
 
-    Context "Script: <_.Name> at <_.Directory>" -ForEach $moduleFiles {
+    Context "Script: <_.Name> at <_.Directory>" -Foreach $moduleFiles {
 
         BeforeEach {
 
@@ -35,19 +35,19 @@ Describe "Module Tests" {
 
         }
 
-        It "Module should exist" {
+        It "Module should exist" -Tag "ModuleShouldExist" {
 
             $moduleFile | Should -Exist
 
         }
 
-        It "Manifest should exist" {
+        It "Manifest should exist" -Tag "ManifestShouldExist" {
 
             $manifestFile | Should -Exist
 
         }
 
-        It "Manifest should be valid" {
+        It "Manifest should be valid" -Tag "ValidManifest" {
 
             $manifest = Test-ModuleManifest -Path $manifestFile -ErrorAction SilentlyContinue
 
@@ -55,25 +55,25 @@ Describe "Module Tests" {
 
         }
 
-        It "Manifest should export Functions" {
+        It "Manifest should export Functions" -Tag "ModuleShouldExportFunctions" {
 
             ($ExportedCommandsCount) | Should -BeGreaterOrEqual 1
 
         }
 
-        It "Module should have Functions" {
+        It "Module should have Functions" -Tag "ModuleShouldHaveFunctions" {
 
             ($CommandInModuleCount) | Should -BeGreaterOrEqual 1
 
         }
 
-        It "all exported Functions from Manifest should exist in the Module" {
+        It "all exported Functions from Manifest should exist in the Module" -Tag "FunctionsFromManifestExistInModule" {
 
             ($ExportedCommandsCount -eq $CommandFoundInModuleCount -and $ExportedCommandsCount -ge 1) | Should -BeTrue
 
         }
 
-        It "all Functions in the Module should exist in Manifest " {
+        It "all Functions in the Module should exist in Manifest " -Tag "FunctionsFromModuleExistInManifest" {
 
             ($CommandInModuleCount -eq $CommandFoundInManifestCount -and $CommandFoundInManifestCount -ge 1 ) | Should -BeTrue
 
