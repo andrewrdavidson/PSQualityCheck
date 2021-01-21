@@ -99,6 +99,8 @@ then run using the examples below as a guide:
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Include "ValidSyntax"`
 
+Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
+
 #### Check the folder C:\Scripts and all subfolders beneath it and exclude "ValidSyntax" test
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Exclude "ValidSyntax"`
@@ -119,7 +121,7 @@ output below uses sample data:
 
 ## Pester Tests
 
-A quick description of the available Pester tests
+A quick description of the available Pester tests with their tags:
 
 * [Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
 * [Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
