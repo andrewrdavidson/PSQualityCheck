@@ -8,17 +8,17 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 ## Releases
 
-#### PowerShell Gallery
+### PowerShell Gallery
 
 [![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![downloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
 
-#### GitHub
+### GitHub
 
-**Release Version**
+#### Release Version
 
 [![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?sort=semver)](https://github.com/andrewrdavidson/PSQualityCheck/releases?sort=semver) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
 
-**Development**
+#### Development
 
 [![devtag](https://img.shields.io/badge/branch-1.2.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.2.0)
 [![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.1)
@@ -27,11 +27,11 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 [![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
 
-### Plans
+## Plans
 
 If you want to see the plans and the progress of the steps within, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
 
-### History
+## History
 
 Is available here [Release History](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-History)
 
