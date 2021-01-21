@@ -18,12 +18,9 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 [![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?sort=semver)](https://github.com/andrewrdavidson/PSQualityCheck/releases?sort=semver) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
 
-#### Development/Preview Release
+#### Development
 
-[![github pre-release tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?include_prereleases)](https://img.shields.io/github/v/release/andrewrdavidson/PSQualityCheck?include_prereleases)
-
-#### Commits
-
+[![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
 [![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.1)
 
 #### Issues
