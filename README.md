@@ -59,22 +59,6 @@ From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
 
-### Manual Installation
-
-Copy the files to **one** of the available module folders:
-
-#### For PowerShell 5.x
-
-* `C:\Users\<username>\Documents\WindowsPowerShell\Modules\PSQualityCheck`
-
-* `C:\Program Files\WindowsPowerShell\Modules\PSQualityCheck`
-
-#### For PowerShell 7.x
-
-* `C:\Users\<username>\Documents\PowerShell\Modules\PSQualityCheck`
-
-* `C:\Program Files\PowerShell\7\Modules\PSQualityCheck`
-
 ## Usage
 
 #### Import the module
@@ -111,6 +95,14 @@ then run using the examples below as a guide:
 
 `Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'`
 
+#### Check the folder C:\Scripts and all subfolders beneath it and run only the "ValidSyntax" test
+
+`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Include "ValidSyntax"`
+
+#### Check the folder C:\Scripts and all subfolders beneath it and exclude "ValidSyntax" test
+
+`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Exclude "ValidSyntax"`
+
 #### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
@@ -138,17 +130,20 @@ A quick description of the available Pester tests
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
+|7.1.1|1.2.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
 |7.1.1|1.1.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
-|7.1.0|1.1.0|<p>![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)</p>|
+|7.1.0|1.1.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)|
 |5.1|1.1.0|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
 
 #### RuleSet/PSQualityCheck/PowerShell version testing matrix
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
+|None|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.1.0|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |None|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![PowerShell 7.1.0 - Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![PowerShell 5.1 - Further Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
