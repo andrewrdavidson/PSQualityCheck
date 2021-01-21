@@ -40,7 +40,7 @@ BeforeDiscovery {
 
 }
 
-Describe "Script Tests" {
+Describe "Script Tests" -Tag "Script" {
 
     Context "Script: <File.Name> at <File.Directory>" -Foreach $scriptFiles {
 
@@ -66,13 +66,13 @@ Describe "Script Tests" {
 
         }
 
-        It "check script has valid PowerShell syntax" {
+        It "check script has valid PowerShell syntax" -Tag "ValidSyntax" {
 
             $ErrorCount | Should -Be 0
 
         }
 
-        It "check help must contain required elements" {
+        It "check help must contain required elements" -Tag "HelpMustContainRequiredElements" {
 
             {
 
@@ -87,7 +87,8 @@ Describe "Script Tests" {
                 Should -Not -Throw
 
         }
-        It "check help must not contain unspecified elements" {
+
+        It "check help must not contain unspecified elements" -Tag "HelpMustContainUnspecifiedElements" {
 
             {
 
@@ -103,7 +104,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check help elements text is not empty" {
+        It "check help elements text is not empty" -Tag "HelpElementsNotEmpty" {
 
             {
 
@@ -118,7 +119,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check help elements Min/Max counts are valid" {
+        It "check help elements Min/Max counts are valid" -Tag "HelpElementsMinMaxCount" {
 
             {
 
@@ -133,7 +134,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains [CmdletBinding] attribute" {
+        It "check script contains [CmdletBinding] attribute" -Tag "ContainsCmdletBinding" {
 
             $cmdletBindingCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Attribute" -Content "CmdletBinding")).Count
 
@@ -141,7 +142,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains [OutputType] attribute" {
+        It "check script contains [OutputType] attribute" -Tag "ContainsOutputType" {
 
             $outputTypeCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Attribute" -Content "OutputType")).Count
 
@@ -149,7 +150,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check script [OutputType] attribute is not empty" {
+        It "check script [OutputType] attribute is not empty" -Tag "OutputTypeNotEmpty" {
 
             $outputTypeToken = (Get-Token -ParsedContent $ParsedFile -Type "Attribute" -Content "OutputType")
 
@@ -159,15 +160,16 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains param attribute" {
+        # Note: Disabled because I'm questioning the validity of the rule. So many function haven't got a need for params
+        # It "check script contains param attribute"  -Tag "ContainsParam" {
 
-            $paramCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Keyword" -Content "param")).Count
+        #     $paramCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Keyword" -Content "param")).Count
 
-            $paramCount | Should -Be 1
+        #     $paramCount | Should -Be 1
 
-        }
+        # }
 
-        It "check script param block variables have type" {
+        It "check script param block variables have type" -Tag "ParamVariablesHaveType" {
 
             $parameterVariables = Get-ScriptParameter -Content $fileContent
 
@@ -185,7 +187,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check .PARAMETER help matches variables in param block" {
+        It "check .PARAMETER help matches variables in param block" -Tag "HelpMatchesParamVariables" {
 
             {
 
@@ -202,15 +204,17 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains no PSScriptAnalyzer suppressions" {
+        It "check script contains no PSScriptAnalyzer suppressions" -Tag "NoScriptAnalyzerSuppressions" {
 
             $suppressCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Attribute" -Content "Diagnostics.CodeAnalysis.SuppressMessageAttribute")).Count
+            $suppressCount | Should -Be 0
 
+            $suppressCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Attribute" -Content "Diagnostics.CodeAnalysis.SuppressMessage")).Count
             $suppressCount | Should -Be 0
 
         }
 
-        It "check script contains no PSScriptAnalyzer failures" {
+        It "check script contains no PSScriptAnalyzer failures" -Tag "NoScriptAnalyzerFailures" {
 
             $AnalyserFailures = @(Invoke-ScriptAnalyzer -Path $scriptFile)
 
@@ -218,7 +222,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check script contains no PSScriptAnalyser rule failures '<_.Path>" -TestCases $rulesPath {
+        It "check script contains no PSScriptAnalyser rule failures '<_.Path>" -Tag "NoScriptAnalyzerExtraRulesFailures" -TestCases $rulesPath {
 
             param($Path)
 
@@ -240,7 +244,7 @@ Describe "Script Tests" {
 
         }
 
-        It "check Import-Module statements have valid format" {
+        It "check Import-Module statements have valid format" -Tag "ValidImportModuleStatements" {
 
             $importModuleTokens = @($ParsedFile | Where-Object { $_.Type -eq "Command" -and $_.Content -eq "Import-Module" })
 
