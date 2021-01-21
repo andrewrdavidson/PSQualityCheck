@@ -2,7 +2,7 @@ param(
     [parameter(Mandatory = $true)]
     [string[]]$Source,
 
-    [parameter(Mandatory = $true)]
+    [parameter(Mandatory = $false)]
     [string[]]$ScriptAnalyzerRulesPath
 )
 
@@ -42,7 +42,7 @@ BeforeDiscovery {
 
 Describe "Script Tests" -Tag "Script" {
 
-    Context "Script: <File.Name> at <File.Directory>" -Foreach $scriptFiles {
+    Context "Script: <File.Name> at <File.Directory>" -ForEach $scriptFiles {
 
         BeforeAll {
 
