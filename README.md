@@ -105,6 +105,8 @@ Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQuali
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Exclude "ValidSyntax"`
 
+Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
+
 #### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed
 
 `Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
@@ -128,7 +130,7 @@ A quick description of the available Pester tests with their tags:
 
 ## Tests
 
-#### PowerShell version/PSQualityCheck/Operating System testing matrix
+### PowerShell version/PSQualityCheck/Operating System testing matrix
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
@@ -137,7 +139,7 @@ A quick description of the available Pester tests with their tags:
 |7.1.0|1.1.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)|
 |5.1|1.1.0|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
 
-#### RuleSet/PSQualityCheck/PowerShell version testing matrix
+### RuleSet/PSQualityCheck/PowerShell version testing matrix
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
