@@ -27,11 +27,11 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 [![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
 
-### Plans
+## Plans
 
 If you want to see the plans and the progress of the steps within, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
 
-### History
+## History
 
 Is available here [Release History](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-History)
 
