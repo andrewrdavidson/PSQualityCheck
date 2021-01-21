@@ -21,7 +21,7 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 #### Development
 
 [![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
-[![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.1)
+[![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.0)
 
 #### Issues
 
