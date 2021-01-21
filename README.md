@@ -8,21 +8,21 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 ## Releases
 
-#### PowerShell Gallery
+### PowerShell Gallery
 
 [![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![downloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
 
-#### GitHub
+### GitHub
 
-**Release Version**
+#### Release Version
 
 [![github tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?sort=semver)](https://github.com/andrewrdavidson/PSQualityCheck/releases?sort=semver) [![release date](https://img.shields.io/github/release-date/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/releases)
 
-**Development/Preview Release**
+#### Development/Preview Release
 
 [![github pre-release tag](https://img.shields.io/github/v/tag/andrewrdavidson/psqualitycheck?include_prereleases)](https://img.shields.io/github/v/release/andrewrdavidson/PSQualityCheck?include_prereleases)
 
-**Commits**
+#### Commits
 
 [![commits since 1.1.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.1.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.1.1)
 
