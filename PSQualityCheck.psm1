@@ -36,6 +36,9 @@ function Invoke-PSQualityCheck {
         .PARAMETER Exclude
         An array of test tags to not run
 
+        .PARAMETER ProjectPath
+        A path to the root of a Project
+
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
@@ -104,7 +107,7 @@ function Invoke-PSQualityCheck {
         [Parameter(Mandatory = $true, ParameterSetName = "File")]
         [String[]]$File,
         [Parameter(Mandatory = $true, ParameterSetName = "ProjectPath")]
-        [String[]]$ProjectPath,
+        [String]$ProjectPath,
 
         [Parameter(Mandatory = $false, ParameterSetName = "Path")]
         [switch]$Recurse,
@@ -142,9 +145,22 @@ function Invoke-PSQualityCheck {
     $scriptsToTest = @()
     $modulesToTest = @()
 
-    if ($PSBoundParameters.ContainsKey('Path') -or $PSBoundParameters.ContainsKey('ProjectPath')) {
+    if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
 
-        Write-Verbose 'Found Path in $PSBoundParameters' -Verbose
+        # left here so that we can over-ride passed in object with values we require
+
+    }
+    else {
+        # Default Pester Parameters
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Exit = $false
+        $PesterConfiguration.CodeCoverage.Enabled = $false
+        $PesterConfiguration.Output.Verbosity = 'Detailed'
+        $PesterConfiguration.Run.PassThru = $true
+        $PesterConfiguration.Should.ErrorAction = 'Stop'
+    }
+
+    if ($PSBoundParameters.ContainsKey('Path') -or $PSBoundParameters.ContainsKey('ProjectPath')) {
 
         if ($PSBoundParameters.ContainsKey('ProjectPath')) {
 
@@ -167,8 +183,19 @@ function Invoke-PSQualityCheck {
             #          -Module
             #          -Module
 
-            $sourcePath = Join-Path -Path $ProjectPath -ChildPath "Source"
-            $Path = Get-ChildItem -Path $sourcePath -Directory -Name
+            if (Test-Path -Path $ProjectPath) {
+
+                $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Project.Tests.ps1') -Data @{ Path = $ProjectPath }
+                $PesterConfiguration.Run.Container = $container1
+                $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
+
+                # setup the rest of the Path based tests
+                $Path = Join-Path -Path $ProjectPath -ChildPath "Source"
+
+            }
+            else {
+                Write-Error "Project Path $ProjectPath does not exist"
+            }
 
         }
 
@@ -237,21 +264,6 @@ function Invoke-PSQualityCheck {
 
         }
 
-    }
-
-    if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
-
-        # left here so that we can over-ride passed in object with values we require
-
-    }
-    else {
-        # Default Pester Parameters
-        $PesterConfiguration = [PesterConfiguration]::Default
-        $PesterConfiguration.Run.Exit = $false
-        $PesterConfiguration.CodeCoverage.Enabled = $false
-        $PesterConfiguration.Output.Verbosity = 'Detailed'
-        $PesterConfiguration.Run.PassThru = $true
-        $PesterConfiguration.Should.ErrorAction = 'Stop'
     }
 
     # Get the list of test tags from the checks files
@@ -497,5 +509,4 @@ function Invoke-PSQualityCheck {
     }
 
 }
-
 
