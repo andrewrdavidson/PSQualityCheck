@@ -18,7 +18,6 @@ BeforeDiscovery {
             'FullName' = $_
             'Name' = $fileProperties.Name
             'Directory' = $fileProperties.Directory
-
         }
 
     }
@@ -33,7 +32,6 @@ BeforeDiscovery {
 
         $rulesPath += @{
             'Path' = $_
-
         }
 
     }
