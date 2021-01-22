@@ -103,6 +103,8 @@ function Invoke-PSQualityCheck {
         [String[]]$Path,
         [Parameter(Mandatory = $true, ParameterSetName = "File")]
         [String[]]$File,
+        [Parameter(Mandatory = $true, ParameterSetName = "ProjectPath")]
+        [String[]]$ProjectPath,
 
         [Parameter(Mandatory = $false, ParameterSetName = "Path")]
         [switch]$Recurse,
@@ -140,11 +142,35 @@ function Invoke-PSQualityCheck {
     $scriptsToTest = @()
     $modulesToTest = @()
 
-    Write-Verbose "Starting" -Verbose
-
-    if ($PSBoundParameters.ContainsKey('Path')) {
+    if ($PSBoundParameters.ContainsKey('Path') -or $PSBoundParameters.ContainsKey('ProjectPath')) {
 
         Write-Verbose 'Found Path in $PSBoundParameters' -Verbose
+
+        if ($PSBoundParameters.ContainsKey('ProjectPath')) {
+
+            # ProjectPath
+            # |
+            # -Source
+            # |     |
+            # |     -Module
+            # |     |     |
+            # |     |     -Public
+            # |     |     -Private
+            # |     -Module
+            # |           |
+            # |           -Public
+            # |           -Private
+            # -Tests
+            #      |
+            #      -Unit
+            #          |
+            #          -Module
+            #          -Module
+
+            $sourcePath = Join-Path -Path $ProjectPath -ChildPath "Source"
+            $Path = Get-ChildItem -Path $sourcePath -Directory -Name
+
+        }
 
         if ($Path -isnot [string[]]) {
             $Path = @($Path)
@@ -158,7 +184,8 @@ function Invoke-PSQualityCheck {
                 $getFileListSplat = @{
                     'Path' = $item
                 }
-                if ($PSBoundParameters.ContainsKey('Recurse')) {
+                if ($PSBoundParameters.ContainsKey('Recurse') -or
+                    $PSBoundParameters.ContainsKey('ProjectPath')) {
                     $getFileListSplat.Add('Recurse', $true)
                 }
 
@@ -177,8 +204,6 @@ function Invoke-PSQualityCheck {
     }
 
     if ($PSBoundParameters.ContainsKey('File')) {
-
-        Write-Verbose 'Found File in $PSBoundParameters' -Verbose
 
         if ($File -isnot [string[]]) {
             $File = @($File)
@@ -233,7 +258,6 @@ function Invoke-PSQualityCheck {
     if ($PSBoundParameters.ContainsKey('Include') -or
         $PSBoundParameters.ContainsKey('Exclude')) {
 
-        Write-Verbose 'Getting Tags' -Verbose
 
         ($moduleTags, $scriptTags) = Get-TagList
         $moduleTagsToInclude = @()
@@ -243,9 +267,6 @@ function Invoke-PSQualityCheck {
         $runModuleCheck = $false
         $runScriptCheck = $false
 
-        Write-Verbose "Got ModuleTags: $ModuleTags" -Verbose
-        Write-Verbose "Got scriptTags: $scriptTags" -Verbose
-
     }
     else {
         $runModuleCheck = $true
@@ -254,7 +275,6 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('Include')) {
 
-        Write-Verbose 'Processing -Include' -Verbose
         if ($Include -eq 'All') {
             $moduleTagsToInclude = $moduleTags
             $scriptTagsToInclude = $scriptTags
@@ -288,7 +308,6 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('Exclude')) {
 
-        Write-Verbose 'Processing -Exclude' -Verbose
         # Validate tests to exclude from $Exclude
         $Exclude | ForEach-Object {
             if ($_ -in $moduleTags) {
@@ -311,19 +330,6 @@ function Invoke-PSQualityCheck {
         $PesterConfiguration.Filter.ExcludeTag = $moduleTagsToExclude + $scriptTagsToExclude
 
     }
-
-    # Need to work out which of the checks files can be run
-    if ($PSBoundParameters.ContainsKey('Include') -or
-        $PSBoundParameters.ContainsKey('Exclude')) {
-
-        Write-Verbose "moduleTagsToInclude $moduleTagsToInclude" -Verbose
-        Write-Verbose "scriptTagsToInclude $scriptTagsToInclude" -Verbose
-        Write-Verbose "moduleTagsToExclude $moduleTagsToExclude" -Verbose
-        Write-Verbose "scriptTagsToExclude $scriptTagsToExclude" -Verbose
-
-    }
-    Write-Verbose "runModuleCheck $runModuleCheck" -Verbose
-    Write-Verbose "runScriptCheck $runScriptCheck" -Verbose
 
     $moduleResults = $null
     $extractionResults = $null

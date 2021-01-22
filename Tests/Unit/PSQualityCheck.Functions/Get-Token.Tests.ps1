@@ -1,6 +1,6 @@
 Describe "Get-Token.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
         @{ 'Name' = 'Type'; 'Type' = 'String' }
         @{ 'Name' = 'Content'; 'Type' = 'String' }
@@ -30,6 +30,8 @@ Describe "Get-Token.Tests" {
         }
 
     }
+
+    # TODO Broken Test, requires Get-TokenMarker and Get-TokenComponent mocking out
 
     Context "Function tests" {
 
