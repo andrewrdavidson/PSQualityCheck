@@ -20,8 +20,8 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 #### Development
 
-[![devtag](https://img.shields.io/badge/branch-1.2.1-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.2.1)
-[![commits since 1.2.0](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.2.0/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.0)
+[![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
+[![commits since 1.2.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.2.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.1)
 
 #### Issues
 
@@ -131,6 +131,7 @@ A quick description of the available Pester tests with their tags:
 
 |PowerShell Version|PSQualityCheck Version|Operating System Result
 |:---|:---|:---|
+|7.1.1|1.2.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
 |7.1.1|1.2.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
 |7.1.1|1.1.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
 |7.1.0|1.1.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)|
@@ -140,10 +141,12 @@ A quick description of the available Pester tests with their tags:
 
 |RuleSet|PSQualityCheck Version|PowerShell Result|
 |:---|:---|:---|
+|None|1.2.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |None|1.1.0|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
 |None|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
+|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.2.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
 |[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
