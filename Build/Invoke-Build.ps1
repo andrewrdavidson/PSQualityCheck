@@ -5,19 +5,22 @@
     .DESCRIPTION
     Build the PSMoxu module and its sub-modules
 
+    .PARAMETER BuildProperties
+    A string containing the name of the build properties file
+
     .EXAMPLE
     Invoke-Build.ps1 -BuildProperties "Build.Properties.json"
 #>
 [CmdletBinding()]
 [OutputType([System.Void])]
 param (
-    $BuildProperties = "Build.Properties.json"
+    [string]$Properties = "Build.Properties.json"
 )
 
 # Build the Moxu modules
 Write-Verbose "Loading Build Properties"
 try {
-    $buildProperties = Get-Content -Path $BuildProperties | ConvertFrom-Json
+    $buildProperties = Get-Content -Path $Properties | ConvertFrom-Json
 }
 catch {
     throw "Error loading the Build Properties file"
@@ -56,6 +59,7 @@ Write-Verbose "Build Location: $builtModuleLocation"
 $PSQualityCheckSplat = @{}
 if (-not ([string]::IsNullOrEmpty($buildProperties.Support.PSQualityCheck.ScriptAnalyzerRulesPath))) {
     $PSQualityCheckSplat.Add("ScriptAnalyzerRulesPath", $buildProperties.Support.PSQualityCheck.ScriptAnalyzerRulesPath)
+    Write-Verbose "Adding ScriptAnalyzer Rules: $($buildProperties.Support.PSQualityCheck.ScriptAnalyzerRulesPath)"
 }
 
 $PesterConfiguration = [PesterConfiguration]::Default
@@ -225,7 +229,7 @@ foreach ($module in $buildProperties.Module.Version.PSObject.Properties) {
 foreach ($manifest in $manifestsToTest) {
     try {
         Write-Verbose "Testing Manifest $manifest"
-        $result = Test-ModuleManifest -Path $manifest
+        $null = Test-ModuleManifest -Path $manifest
         Write-Verbose "Pass"
     }
     catch {
