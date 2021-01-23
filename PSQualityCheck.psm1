@@ -20,12 +20,14 @@ function Invoke-PSQualityCheck {
 
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
+        Note: this cannot be used with -Passthru
 
         .PARAMETER ExportCheckResults
         Exports the Check results at the end of processing to file
 
         .PARAMETER Passthru
         Returns the Check results objects back to the caller
+        Note: this cannot be used with -ShowCheckResults
 
         .PARAMETER PesterConfiguration
         A Pester configuration object to allow configuration of Pester
@@ -35,6 +37,9 @@ function Invoke-PSQualityCheck {
 
         .PARAMETER Exclude
         An array of test tags to not run
+
+        .PARAMETER ProjectPath
+        A path to the root of a Project
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
@@ -103,6 +108,8 @@ function Invoke-PSQualityCheck {
         [String[]]$Path,
         [Parameter(Mandatory = $true, ParameterSetName = "File")]
         [String[]]$File,
+        [Parameter(Mandatory = $true, ParameterSetName = "ProjectPath")]
+        [String]$ProjectPath,
 
         [Parameter(Mandatory = $false, ParameterSetName = "Path")]
         [switch]$Recurse,
@@ -135,16 +142,58 @@ function Invoke-PSQualityCheck {
 
     $modulePath = (Get-Module -Name 'PSQualityCheck').ModuleBase
 
-    # Analyse the incoming Path and File parameters and produce a list of Modules and Scripts
+    # Validate any incoming parameters for clashes
+    if ($PSBoundParameters.ContainsKey('ShowCheckResults') -and $PSBoundParameters.ContainsKey('Passthru')) {
+
+        Write-Error "-ShowCheckResults and -Passthru cannot be used at the same time"
+        break
+
+    }
 
     $scriptsToTest = @()
     $modulesToTest = @()
 
-    Write-Verbose "Starting" -Verbose
+    $projectResults = $null
+    $moduleResults = $null
+    $extractionResults = $null
+    $extractedScriptResults = $null
+    $scriptResults = $null
 
-    if ($PSBoundParameters.ContainsKey('Path')) {
+    if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
 
-        Write-Verbose 'Found Path in $PSBoundParameters' -Verbose
+        # left here so that we can over-ride passed in object with values we require
+
+    }
+    else {
+        # Default Pester Parameters
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Exit = $false
+        $PesterConfiguration.CodeCoverage.Enabled = $false
+        $PesterConfiguration.Output.Verbosity = 'Detailed'
+        $PesterConfiguration.Run.PassThru = $true
+        $PesterConfiguration.Should.ErrorAction = 'Stop'
+    }
+
+    # Analyse the incoming Path and File parameters and produce a list of Modules and Scripts
+    if ($PSBoundParameters.ContainsKey('Path') -or $PSBoundParameters.ContainsKey('ProjectPath')) {
+
+        if ($PSBoundParameters.ContainsKey('ProjectPath')) {
+
+            if (Test-Path -Path $ProjectPath) {
+
+                $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Project.Tests.ps1') -Data @{ Path = $ProjectPath }
+                $PesterConfiguration.Run.Container = $container1
+                $projectResults = Invoke-Pester -Configuration $PesterConfiguration
+
+                # setup the rest of the Path based tests
+                $Path = Join-Path -Path $ProjectPath -ChildPath "Source"
+
+            }
+            else {
+                Write-Error "Project Path $ProjectPath does not exist"
+            }
+
+        }
 
         if ($Path -isnot [string[]]) {
             $Path = @($Path)
@@ -158,7 +207,8 @@ function Invoke-PSQualityCheck {
                 $getFileListSplat = @{
                     'Path' = $item
                 }
-                if ($PSBoundParameters.ContainsKey('Recurse')) {
+                if ($PSBoundParameters.ContainsKey('Recurse') -or
+                    $PSBoundParameters.ContainsKey('ProjectPath')) {
                     $getFileListSplat.Add('Recurse', $true)
                 }
 
@@ -177,8 +227,6 @@ function Invoke-PSQualityCheck {
     }
 
     if ($PSBoundParameters.ContainsKey('File')) {
-
-        Write-Verbose 'Found File in $PSBoundParameters' -Verbose
 
         if ($File -isnot [string[]]) {
             $File = @($File)
@@ -214,26 +262,10 @@ function Invoke-PSQualityCheck {
 
     }
 
-    if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
-
-        # left here so that we can over-ride passed in object with values we require
-
-    }
-    else {
-        # Default Pester Parameters
-        $PesterConfiguration = [PesterConfiguration]::Default
-        $PesterConfiguration.Run.Exit = $false
-        $PesterConfiguration.CodeCoverage.Enabled = $false
-        $PesterConfiguration.Output.Verbosity = 'Detailed'
-        $PesterConfiguration.Run.PassThru = $true
-        $PesterConfiguration.Should.ErrorAction = 'Stop'
-    }
-
     # Get the list of test tags from the checks files
     if ($PSBoundParameters.ContainsKey('Include') -or
         $PSBoundParameters.ContainsKey('Exclude')) {
 
-        Write-Verbose 'Getting Tags' -Verbose
 
         ($moduleTags, $scriptTags) = Get-TagList
         $moduleTagsToInclude = @()
@@ -243,9 +275,6 @@ function Invoke-PSQualityCheck {
         $runModuleCheck = $false
         $runScriptCheck = $false
 
-        Write-Verbose "Got ModuleTags: $ModuleTags" -Verbose
-        Write-Verbose "Got scriptTags: $scriptTags" -Verbose
-
     }
     else {
         $runModuleCheck = $true
@@ -254,7 +283,6 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('Include')) {
 
-        Write-Verbose 'Processing -Include' -Verbose
         if ($Include -eq 'All') {
             $moduleTagsToInclude = $moduleTags
             $scriptTagsToInclude = $scriptTags
@@ -288,7 +316,6 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('Exclude')) {
 
-        Write-Verbose 'Processing -Exclude' -Verbose
         # Validate tests to exclude from $Exclude
         $Exclude | ForEach-Object {
             if ($_ -in $moduleTags) {
@@ -311,24 +338,6 @@ function Invoke-PSQualityCheck {
         $PesterConfiguration.Filter.ExcludeTag = $moduleTagsToExclude + $scriptTagsToExclude
 
     }
-
-    # Need to work out which of the checks files can be run
-    if ($PSBoundParameters.ContainsKey('Include') -or
-        $PSBoundParameters.ContainsKey('Exclude')) {
-
-        Write-Verbose "moduleTagsToInclude $moduleTagsToInclude" -Verbose
-        Write-Verbose "scriptTagsToInclude $scriptTagsToInclude" -Verbose
-        Write-Verbose "moduleTagsToExclude $moduleTagsToExclude" -Verbose
-        Write-Verbose "scriptTagsToExclude $scriptTagsToExclude" -Verbose
-
-    }
-    Write-Verbose "runModuleCheck $runModuleCheck" -Verbose
-    Write-Verbose "runScriptCheck $runScriptCheck" -Verbose
-
-    $moduleResults = $null
-    $extractionResults = $null
-    $extractedScriptResults = $null
-    $scriptResults = $null
 
     if ($modulesToTest.Count -ge 1) {
 
@@ -360,6 +369,13 @@ function Invoke-PSQualityCheck {
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
         }
 
+        # Tidy up and temporary paths that have been used
+
+        if ( Test-Path -Path $ExtractPath -ErrorAction SilentlyContinue) {
+            Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
+            Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
+        }
+
     }
 
     if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
@@ -371,23 +387,42 @@ function Invoke-PSQualityCheck {
 
     }
 
+    # Show/Export results in the various formats
+
     if ($PSBoundParameters.ContainsKey('ShowCheckResults')) {
 
         $qualityCheckResults = @()
         $filesTested = $total = $passed = $failed = $skipped = 0
+
+        if ($null -ne $projectResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = 'Project Tests'
+                'Files Tested' = 0
+                'Total' = ($projectResults.TotalCount - $projectResults.NotRunCount)
+                'Passed' = $projectResults.PassedCount
+                'Failed' = $projectResults.FailedCount
+                'Skipped' = $projectResults.SkippedCount
+            }
+            $filesTested += 0
+            $total += ($projectResults.TotalCount - $projectResults.NotRunCount)
+            $passed += $projectResults.PassedCount
+            $failed += $projectResults.FailedCount
+            $skipped += $projectResults.SkippedCount
+        }
 
         if ($null -ne $moduleResults) {
             $qualityCheckResults +=
             @{
                 'Test' = 'Module Tests'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = $moduleResults.TotalCount
+                'Total' = ($moduleResults.TotalCount - $moduleResults.NotRunCount)
                 'Passed' = $moduleResults.PassedCount
                 'Failed' = $moduleResults.FailedCount
                 'Skipped' = $moduleResults.SkippedCount
             }
             $filesTested += $ModulesToTest.Count
-            $total += $moduleResults.TotalCount
+            $total += ($moduleResults.TotalCount - $moduleResults.NotRunCount)
             $passed += $moduleResults.PassedCount
             $failed += $moduleResults.FailedCount
             $skipped += $moduleResults.SkippedCount
@@ -398,12 +433,12 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = 'Extracting functions'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = $extractionResults.TotalCount
+                'Total' = ($extractionResults.TotalCount - $extractionResults.NotRunCount)
                 'Passed' = $extractionResults.PassedCount
                 'Failed' = $extractionResults.FailedCount
                 'Skipped' = $extractionResults.SkippedCount
             }
-            $total += $extractionResults.TotalCount
+            $total += ($extractionResults.TotalCount - $extractionResults.NotRunCount)
             $passed += $extractionResults.PassedCount
             $failed += $extractionResults.FailedCount
             $skipped += $extractionResults.SkippedCount
@@ -414,13 +449,13 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = 'Extracted function script tests'
                 'Files Tested' = $extractedScriptsToTest.Count
-                'Total' = $extractedScriptResults.TotalCount
+                'Total' = ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
                 'Passed' = $extractedScriptResults.PassedCount
                 'Failed' = $extractedScriptResults.FailedCount
                 'Skipped' = $extractedScriptResults.SkippedCount
             }
             $filesTested += $extractedScriptsToTest.Count
-            $total += $extractedScriptResults.TotalCount
+            $total += ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
             $passed += $extractedScriptResults.PassedCount
             $failed += $extractedScriptResults.FailedCount
             $skipped += $extractedScriptResults.SkippedCount
@@ -431,13 +466,13 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = "Script Tests"
                 'Files Tested' = $scriptsToTest.Count
-                'Total' = $scriptResults.TotalCount
+                'Total' = ($scriptResults.TotalCount - $scriptResults.NotRunCount)
                 'Passed' = $scriptResults.PassedCount
                 'Failed' = $scriptResults.FailedCount
                 'Skipped' = $scriptResults.SkippedCount
             }
             $filesTested += $scriptsToTest.Count
-            $total += $scriptResults.TotalCount
+            $total += ($scriptResults.TotalCount - $scriptResults.NotRunCount)
             $passed += $scriptResults.PassedCount
             $failed += $scriptResults.FailedCount
             $skipped += $scriptResults.SkippedCount
@@ -472,9 +507,10 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
 
+        $projectResults | Export-Clixml -Path "projectResults.xml"
         $moduleResults | Export-Clixml -Path "moduleResults.xml"
         $extractionResults | Export-Clixml -Path "extractionResults.xml"
-        $scriptsToTest | Export-Clixml -Path "scriptsToTest.xml"
+        $scriptResults | Export-Clixml -Path "scriptsToTest.xml"
         $extractedScriptResults | Export-Clixml -Path "extractedScriptResults.xml"
 
     }
@@ -482,7 +518,17 @@ function Invoke-PSQualityCheck {
     if ($PSBoundParameters.ContainsKey('Passthru')) {
 
         if ($PesterConfiguration.Run.PassThru.Value -eq $true) {
-            return $moduleResults, $extractionResults, $scriptsToTest, $extractedScriptResults
+
+            $resultObject = @{
+                'project' = $projectResults
+                'module' = $moduleResults
+                'extraction' = $extractionResults
+                'script' = $scriptResults
+                'extractedscript' = $extractedScriptResults
+            }
+
+            return $resultObject
+
         }
         else {
             Write-Error "Unable to pass back result objects. Passthru not enabled in Pester Configuration object"

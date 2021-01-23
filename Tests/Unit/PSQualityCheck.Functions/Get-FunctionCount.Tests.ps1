@@ -1,6 +1,6 @@
 Describe "Get-FunctionCount.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'ModulePath'; 'Type' = 'String' }
         @{ 'Name' = 'ManifestPath'; 'Type' = 'String' }
     ) {
@@ -30,6 +30,8 @@ Describe "Get-FunctionCount.Tests" {
 
     }
 
+    # TODO Broken Test, requires Get-ParsedFile and Get-ParsedContent mocking out
+
     Context "Function tests" {
 
         BeforeAll {
@@ -43,7 +45,7 @@ Describe "Get-FunctionCount.Tests" {
 
             {
 
-                Get-ParsedFile -FunctionCount $null -ManifestPath $null
+                Get-FunctionCount -Module $null -Manifest $null
 
             } | Should -Throw
 
@@ -51,7 +53,9 @@ Describe "Get-FunctionCount.Tests" {
 
         It "should find one function with matching module and manifest" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function Get-FileContent {
+                Write-Host
+            }"
             Set-Content -Path $ModulePath -Value $fileContent
 
             New-ModuleManifest -Path $ManifestPath -FunctionsToExport @('Get-FileContent')

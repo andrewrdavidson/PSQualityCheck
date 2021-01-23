@@ -25,11 +25,19 @@ $configuration.Run.PassThru = $false
 $configuration.Should.ErrorAction = 'Stop'
 
 # Dot load all the module ready to test
-Get-ChildItem -Path "..\PSQualityCheck.Functions" -Filter *.ps1 | ForEach-Object {
+Get-ChildItem -Path "..\Source\PSQualityCheck.Functions\Public" -Filter *.ps1 | ForEach-Object {
     . $_.FullName
 }
 
-Get-ChildItem -Path "..\PSQualityCheck" -Filter *.ps1 | ForEach-Object {
+Get-ChildItem -Path "..\Source\PSQualityCheck.Functions\Private" -Filter *.ps1 | ForEach-Object {
+    . $_.FullName
+}
+
+Get-ChildItem -Path "..\Source\PSQualityCheck\Public" -Filter *.ps1 | ForEach-Object {
+    . $_.FullName
+}
+
+Get-ChildItem -Path "..\Source\PSQualityCheck\Private" -Filter *.ps1 | ForEach-Object {
     . $_.FullName
 }
 
