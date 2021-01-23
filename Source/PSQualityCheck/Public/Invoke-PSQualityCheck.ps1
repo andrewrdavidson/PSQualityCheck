@@ -339,11 +339,6 @@ function Invoke-PSQualityCheck {
 
     }
 
-    $moduleResults = $null
-    $extractionResults = $null
-    $extractedScriptResults = $null
-    $scriptResults = $null
-
     if ($modulesToTest.Count -ge 1) {
 
         # Location of files extracted from any passed modules
