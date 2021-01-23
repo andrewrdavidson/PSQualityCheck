@@ -23,22 +23,18 @@ BeforeDiscovery {
 
     }
 
+    if ( Test-Path -Path $ExtractPath ) {
+        Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
+        Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
+    }
+
+    New-Item -Path $ExtractPath -ItemType 'Directory'
+
 }
 
 Describe "Function Extraction" {
 
     Context "Script: <_.Name> at <_.Directory>" -ForEach $moduleFiles {
-
-        BeforeAll {
-
-            if ( Test-Path -Path $ExtractPath ) {
-                Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
-                Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
-            }
-
-            New-Item -Path $ExtractPath -ItemType 'Directory'
-
-        }
 
         BeforeEach {
 
