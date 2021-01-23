@@ -369,6 +369,13 @@ function Invoke-PSQualityCheck {
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
         }
 
+        # Tidy up and temporary paths that have been used
+
+        if ( Test-Path -Path $ExtractPath -ErrorAction SilentlyContinue) {
+            Get-ChildItem -Path $ExtractPath -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse
+            Remove-Item $ExtractPath -Force -ErrorAction SilentlyContinue
+        }
+
     }
 
     if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
