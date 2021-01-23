@@ -40,7 +40,7 @@ BeforeDiscovery {
 
 Describe "Script Tests" -Tag "Script" {
 
-    Context "Script: <File.Name> at <File.Directory>" -ForEach $scriptFiles {
+    Context "Script: <File.Name> at <File.Directory>" -Foreach $scriptFiles {
 
         BeforeAll {
 
