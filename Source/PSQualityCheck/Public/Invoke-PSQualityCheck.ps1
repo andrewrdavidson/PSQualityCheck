@@ -518,7 +518,17 @@ function Invoke-PSQualityCheck {
     if ($PSBoundParameters.ContainsKey('Passthru')) {
 
         if ($PesterConfiguration.Run.PassThru.Value -eq $true) {
-            return $moduleResults, $extractionResults, $scriptsToTest, $extractedScriptResults
+
+            $resultObject = @{
+                'project' = $projectResults
+                'module' = $moduleResults
+                'extraction' = $extractionResults
+                'script' = $scriptResults
+                'extractedscript' = $extractedScriptResults
+            }
+
+            return $resultObject
+
         }
         else {
             Write-Error "Unable to pass back result objects. Passthru not enabled in Pester Configuration object"
