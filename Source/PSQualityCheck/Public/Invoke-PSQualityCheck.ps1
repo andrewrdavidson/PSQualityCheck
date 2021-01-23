@@ -387,23 +387,42 @@ function Invoke-PSQualityCheck {
 
     }
 
+    # Show/Export results in the various formats
+
     if ($PSBoundParameters.ContainsKey('ShowCheckResults')) {
 
         $qualityCheckResults = @()
         $filesTested = $total = $passed = $failed = $skipped = 0
+
+        if ($null -ne $projectResults) {
+            $qualityCheckResults +=
+            @{
+                'Test' = 'Project Tests'
+                'Files Tested' = 0
+                'Total' = ($projectResults.TotalCount - $projectResults.NotRunCount)
+                'Passed' = $projectResults.PassedCount
+                'Failed' = $projectResults.FailedCount
+                'Skipped' = $projectResults.SkippedCount
+            }
+            $filesTested += 0
+            $total += ($projectResults.TotalCount - $projectResults.NotRunCount)
+            $passed += $projectResults.PassedCount
+            $failed += $projectResults.FailedCount
+            $skipped += $projectResults.SkippedCount
+        }
 
         if ($null -ne $moduleResults) {
             $qualityCheckResults +=
             @{
                 'Test' = 'Module Tests'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = $moduleResults.TotalCount
+                'Total' = ($moduleResults.TotalCount - $moduleResults.NotRunCount)
                 'Passed' = $moduleResults.PassedCount
                 'Failed' = $moduleResults.FailedCount
                 'Skipped' = $moduleResults.SkippedCount
             }
             $filesTested += $ModulesToTest.Count
-            $total += $moduleResults.TotalCount
+            $total += ($moduleResults.TotalCount - $moduleResults.NotRunCount)
             $passed += $moduleResults.PassedCount
             $failed += $moduleResults.FailedCount
             $skipped += $moduleResults.SkippedCount
@@ -414,12 +433,12 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = 'Extracting functions'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = $extractionResults.TotalCount
+                'Total' = ($extractionResults.TotalCount - $extractionResults.NotRunCount)
                 'Passed' = $extractionResults.PassedCount
                 'Failed' = $extractionResults.FailedCount
                 'Skipped' = $extractionResults.SkippedCount
             }
-            $total += $extractionResults.TotalCount
+            $total += ($extractionResults.TotalCount - $extractionResults.NotRunCount)
             $passed += $extractionResults.PassedCount
             $failed += $extractionResults.FailedCount
             $skipped += $extractionResults.SkippedCount
@@ -430,13 +449,13 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = 'Extracted function script tests'
                 'Files Tested' = $extractedScriptsToTest.Count
-                'Total' = $extractedScriptResults.TotalCount
+                'Total' = ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
                 'Passed' = $extractedScriptResults.PassedCount
                 'Failed' = $extractedScriptResults.FailedCount
                 'Skipped' = $extractedScriptResults.SkippedCount
             }
             $filesTested += $extractedScriptsToTest.Count
-            $total += $extractedScriptResults.TotalCount
+            $total += ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
             $passed += $extractedScriptResults.PassedCount
             $failed += $extractedScriptResults.FailedCount
             $skipped += $extractedScriptResults.SkippedCount
@@ -447,13 +466,13 @@ function Invoke-PSQualityCheck {
             @{
                 'Test' = "Script Tests"
                 'Files Tested' = $scriptsToTest.Count
-                'Total' = $scriptResults.TotalCount
+                'Total' = ($scriptResults.TotalCount - $scriptResults.NotRunCount)
                 'Passed' = $scriptResults.PassedCount
                 'Failed' = $scriptResults.FailedCount
                 'Skipped' = $scriptResults.SkippedCount
             }
             $filesTested += $scriptsToTest.Count
-            $total += $scriptResults.TotalCount
+            $total += ($scriptResults.TotalCount - $scriptResults.NotRunCount)
             $passed += $scriptResults.PassedCount
             $failed += $scriptResults.FailedCount
             $skipped += $scriptResults.SkippedCount
@@ -488,9 +507,10 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
 
+        $projectResults | Export-Clixml -Path "projectResults.xml"
         $moduleResults | Export-Clixml -Path "moduleResults.xml"
         $extractionResults | Export-Clixml -Path "extractionResults.xml"
-        $scriptsToTest | Export-Clixml -Path "scriptsToTest.xml"
+        $scriptResults | Export-Clixml -Path "scriptsToTest.xml"
         $extractedScriptResults | Export-Clixml -Path "extractedScriptResults.xml"
 
     }
