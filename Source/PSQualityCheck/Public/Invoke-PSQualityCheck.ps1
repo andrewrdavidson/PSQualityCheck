@@ -142,10 +142,22 @@ function Invoke-PSQualityCheck {
 
     $modulePath = (Get-Module -Name 'PSQualityCheck').ModuleBase
 
-    # Analyse the incoming Path and File parameters and produce a list of Modules and Scripts
+    # Validate any incoming parameters for clashes
+    if ($PSBoundParameters.ContainsKey('ShowCheckResults') -and $PSBoundParameters.ContainsKey('Passthru')) {
+
+        Write-Error "-ShowCheckResults and -Passthru cannot be used at the same time"
+        break
+
+    }
 
     $scriptsToTest = @()
     $modulesToTest = @()
+
+    $projectResults = $null
+    $moduleResults = $null
+    $extractionResults = $null
+    $extractedScriptResults = $null
+    $scriptResults = $null
 
     if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
 
