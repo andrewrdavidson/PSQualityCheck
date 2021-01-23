@@ -20,12 +20,14 @@ function Invoke-PSQualityCheck {
 
         .PARAMETER ShowCheckResults
         Show a summary of the Check results at the end of processing
+        Note: this cannot be used with -Passthru
 
         .PARAMETER ExportCheckResults
         Exports the Check results at the end of processing to file
 
         .PARAMETER Passthru
         Returns the Check results objects back to the caller
+        Note: this cannot be used with -ShowCheckResults
 
         .PARAMETER PesterConfiguration
         A Pester configuration object to allow configuration of Pester
@@ -160,34 +162,16 @@ function Invoke-PSQualityCheck {
         $PesterConfiguration.Should.ErrorAction = 'Stop'
     }
 
+    # Analyse the incoming Path and File parameters and produce a list of Modules and Scripts
     if ($PSBoundParameters.ContainsKey('Path') -or $PSBoundParameters.ContainsKey('ProjectPath')) {
 
         if ($PSBoundParameters.ContainsKey('ProjectPath')) {
-
-            # ProjectPath
-            # |
-            # -Source
-            # |     |
-            # |     -Module
-            # |     |     |
-            # |     |     -Public
-            # |     |     -Private
-            # |     -Module
-            # |           |
-            # |           -Public
-            # |           -Private
-            # -Tests
-            #      |
-            #      -Unit
-            #          |
-            #          -Module
-            #          -Module
 
             if (Test-Path -Path $ProjectPath) {
 
                 $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Project.Tests.ps1') -Data @{ Path = $ProjectPath }
                 $PesterConfiguration.Run.Container = $container1
-                $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
+                $projectResults = Invoke-Pester -Configuration $PesterConfiguration
 
                 # setup the rest of the Path based tests
                 $Path = Join-Path -Path $ProjectPath -ChildPath "Source"
