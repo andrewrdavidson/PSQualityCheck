@@ -60,6 +60,6 @@ From the PSGallery:
 
 See the [Usage](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Usage) page
 
-## Tests
+## Tests Results
 
-[Test Results](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Test-Results)
+See the [Test Results](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Test-Results) page
