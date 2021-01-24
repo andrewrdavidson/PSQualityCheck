@@ -50,8 +50,6 @@ Optional items:
 
 ## Installation
 
-### Preferred Method
-
 From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
