@@ -23,10 +23,6 @@ For more information please see the wiki here [Wiki](https://github.com/andrewrd
 [![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
 [![commits since 1.2.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.2.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.1)
 
-#### Issues
-
-[![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
-
 ## Plans
 
 If you want to see the plans and the progress of the steps within, click [Release Plans](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Release-Plan)
