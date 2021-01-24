@@ -58,65 +58,7 @@ From the PSGallery:
 
 ## Usage
 
-#### Import the module
-
-`Import-Module -Name PSQualityCheck`
-
-then run using the examples below as a guide:
-
-#### Check the folder C:\Scripts
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts'`
-
-#### Check the folder C:\Scripts and all subfolders beneath it
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse`
-
-#### Check the folders C:\Scripts and C:\MoreScripts'
-
-`Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
-
-#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
-
-`Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts') -Recurse`
-
-#### Check the file C:\Scripts\Script.ps1
-
-`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'`
-
-#### Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1
-
-`Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1', 'C:\Scripts\Script.ps1')`
-
-#### Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules
-
-`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'`
-
-#### Check the folder C:\Scripts and all subfolders beneath it and run only the "ValidSyntax" test
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Include "ValidSyntax"`
-
-Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
-#### Check the folder C:\Scripts and all subfolders beneath it and exclude "ValidSyntax" test
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Exclude "ValidSyntax"`
-
-Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
-#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
-
-output below uses sample data:
-
-    Test                            Files Tested Total Passed Failed Skipped
-    ----                            ------------ ----- ------ ------ -------
-    Module Tests                               3    21     20      1       0
-    Extracting functions                       3     3      3      0       0
-    Extracted function script tests           13   195     64    114      17
-    Script Tests                              17   255     78    152      25
-    Total                                     33   474    165    267      42
+See the [Usage](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Usage) page
 
 ## Pester Tests
 
