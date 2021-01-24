@@ -60,13 +60,6 @@ From the PSGallery:
 
 See the [Usage](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Usage) page
 
-## Pester Tests
-
-A quick description of the available Pester tests with their tags:
-
-* [Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
-* [Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
 ## Tests
 
 [Test Results](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Test-Results)
