@@ -177,7 +177,7 @@ function Invoke-PSQualityCheck {
     }
     else {
 
-        $helpRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
+        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath "Checks\HelpRules.psd1")
 
     }
 
