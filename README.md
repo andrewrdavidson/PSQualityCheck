@@ -10,7 +10,7 @@ For more information please see the wiki here [Wiki](https://github.com/andrewrd
 
 ### PowerShell Gallery
 
-[![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck) [![downloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck)
+[![psgallery version](https://img.shields.io/powershellgallery/v/psqualitycheck)](https://www.powershellgallery.com/packages/PSQualityCheck/1.3.0) [![downloads](https://img.shields.io/powershellgallery/dt/PSQualityCheck)](https://www.powershellgallery.com/packages/PSQualityCheck/1.3.0)
 
 ### GitHub
 
