@@ -4,7 +4,7 @@
 
 This is a PowerShell module which runs a series of Pester 5 tests to validate code quality. It uses a combination of Pester tests, PSScriptAnalyzer and a set of quality standards to ensure consistent quality on PowerShell scripts and modules.
 
-The quality standards are summarised here: [Quality Standards Summary](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Standards)
+For more information please see the wiki here [Wiki](https://github.com/andrewrdavidson/PSQualityCheck/wiki)
 
 ## Releases
 
@@ -20,12 +20,8 @@ The quality standards are summarised here: [Quality Standards Summary](https://g
 
 #### Development
 
-[![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
-[![commits since 1.2.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.2.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.1)
-
-#### Issues
-
-[![open issues](https://img.shields.io/github/issues-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aopen+is%3Aissue) [![closed](https://img.shields.io/github/issues-closed-raw/andrewrdavidson/psqualitycheck)](https://github.com/andrewrdavidson/PSQualityCheck/issues?q=is%3Aissue+is%3Aclosed)
+[![devtag](https://img.shields.io/badge/branch-1.4.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.4.0)
+[![commits since 1.3.0](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.3.0/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.3.0)
 
 ## Plans
 
@@ -50,104 +46,14 @@ Optional items:
 
 ## Installation
 
-### Preferred Method
-
 From the PSGallery:
 
 `Install-Module -Name PSQualityCheck`
 
 ## Usage
 
-#### Import the module
+See the [Usage](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Usage) page
 
-`Import-Module -Name PSQualityCheck`
+## Tests Results
 
-then run using the examples below as a guide:
-
-#### Check the folder C:\Scripts
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts'`
-
-#### Check the folder C:\Scripts and all subfolders beneath it
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse`
-
-#### Check the folders C:\Scripts and C:\MoreScripts'
-
-`Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')`
-
-#### Check the folders C:\Scripts and C:\MoreScripts' and all subfolders beneath both folders
-
-`Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts') -Recurse`
-
-#### Check the file C:\Scripts\Script.ps1
-
-`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'`
-
-#### Check the files C:\Scripts\Script1.ps1, C:\Scripts\Script2.ps1
-
-`Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1', 'C:\Scripts\Script.ps1')`
-
-#### Check the file C:\Scripts\Script.ps1 including the extra PSScriptAnalyzer rules
-
-`Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'`
-
-#### Check the folder C:\Scripts and all subfolders beneath it and run only the "ValidSyntax" test
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Include "ValidSyntax"`
-
-Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
-#### Check the folder C:\Scripts and all subfolders beneath it and exclude "ValidSyntax" test
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults -Exclude "ValidSyntax"`
-
-Tags are available [For Module Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests) and [For Script Tests](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
-#### Check the folder C:\Scripts and all subfolders beneath it and display a summary of the checks performed
-
-`Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults`
-
-output below uses sample data:
-
-    Test                            Files Tested Total Passed Failed Skipped
-    ----                            ------------ ----- ------ ------ -------
-    Module Tests                               3    21     20      1       0
-    Extracting functions                       3     3      3      0       0
-    Extracted function script tests           13   195     64    114      17
-    Script Tests                              17   255     78    152      25
-    Total                                     33   474    165    267      42
-
-## Pester Tests
-
-A quick description of the available Pester tests with their tags:
-
-* [Module Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Module-Tests)
-* [Script Test Details](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Script-Tests)
-
-## Tests
-
-### PowerShell version/PSQualityCheck/Operating System testing matrix
-
-|PowerShell Version|PSQualityCheck Version|Operating System Result
-|:---|:---|:---|
-|7.1.1|1.2.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
-|7.1.1|1.2.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
-|7.1.1|1.1.1|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen)|
-|7.1.0|1.1.0|![Windows 10 - Pass](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen) ![Ubuntu 20.04 - Pass](https://img.shields.io/badge/ubuntu%2020.04-pass-brightgreen)|
-|5.1|1.1.0|![Windows 10 - Fail](https://img.shields.io/badge/windows%2010-pass-brightgreen) ![Server 2019 - Pass](https://img.shields.io/badge/server%202019-pass-brightgreen) ![Server 2016 - Pass](https://img.shields.io/badge/server%202016-pass-brightgreen)|n/a|
-
-### RuleSet/PSQualityCheck/PowerShell version testing matrix
-
-|RuleSet|PSQualityCheck Version|PowerShell Result|
-|:---|:---|:---|
-|None|1.2.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|None|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|None|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|None|1.1.0|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
-|None|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.2.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.2.0|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.1.1|![PowerShell 7.1.1 - Pass](https://img.shields.io/badge/powershell%207.1.1-pass-brightgreen)|
-|[indented-automation](https://github.com/indented-automation/ScriptAnalyzerRules)<br/>(used by SonarQube)|1.0.10|![PowerShell 7.1.0 - Pass](https://img.shields.io/badge/powershell%207.1.0-pass-brightgreen) ![PowerShell 5.1 - Pass](https://img.shields.io/badge/powershell%205.1-pass-brightgreen)|
-|[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)<br/>(used by VSCode)|1.0.9|![PowerShell 7.1.0 - Fail](https://img.shields.io/badge/powershell%207.1.0-fail-red) ![PowerShell 5.1 - Further Testing To Be Performed](https://img.shields.io/badge/powershell%205.1-not%20run-lightgrey)|
+See the [Test Results](https://github.com/andrewrdavidson/PSQualityCheck/wiki/Test-Results) page
