@@ -20,8 +20,8 @@ For more information please see the wiki here [Wiki](https://github.com/andrewrd
 
 #### Development
 
-[![devtag](https://img.shields.io/badge/branch-1.3.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.3.0)
-[![commits since 1.2.1](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.2.1/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.2.1)
+[![devtag](https://img.shields.io/badge/branch-1.4.0-blue)](https://github.com/andrewrdavidson/PSQualityCheck/tree/release-1.4.0)
+[![commits since 1.3.0](https://img.shields.io/github/commits-since/andrewrdavidson/psqualitycheck/1.3.0/main?include_prereleases)](https://github.com/andrewrdavidson/PSQualityCheck/releases/1.3.0)
 
 ## Plans
 

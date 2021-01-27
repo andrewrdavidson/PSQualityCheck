@@ -19,30 +19,20 @@ function Test-HelpTokensCountIsValid {
     [OutputType([System.Exception], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [HashTable]$HelpTokens
+        [HashTable]$HelpTokens,
+
+        [parameter(Mandatory = $true)]
+        [string]$HelpRulesPath
     )
 
     try {
 
-        $module = Get-Module -Name PSQualityCheck
-
-        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
-
-        if (Test-Path -Path $helpElementRulesPath) {
-
-            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
-
-        }
-        else {
-
-            throw "Unable to load Checks\HelpElementRules.psd1"
-
-        }
+        $helpRules = Import-PowerShellDataFile -Path $HelpRulesPath
 
         # create a HashTable for tracking whether the element has been found
         $tokenFound = @{}
-        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
-            $token = $helpElementRules."$order".Key
+        for ($order = 1; $order -le $HelpRules.Count; $order++) {
+            $token = $HelpRules."$order".Key
             $tokenFound[$token] = $false
         }
 
@@ -52,9 +42,9 @@ function Test-HelpTokensCountIsValid {
         foreach ($key in $HelpTokens.Keys) {
 
             # loop through all the help element rules
-            for ($order = 1; $order -le $helpElementRules.Count; $order++) {
+            for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-                $token = $helpElementRules."$order"
+                $token = $HelpRules."$order"
 
                 # if the found token matches against a rule
                 if ( $token.Key -eq $key ) {

@@ -20,7 +20,7 @@
         "FileList": {
             "PSQualityCheck": null,
             "PSQualityCheck.Functions": [
-                "Checks\\HelpElementRules.psd1"
+                "Checks\\HelpRules.psd1"
             ]
         },
         "GUID": {
@@ -46,8 +46,8 @@
             "pester-tests"
         ],
         "Version": {
-            "PSQualityCheck": "1.2.1",
-            "PSQualityCheck.Functions": "1.2.1"
+            "PSQualityCheck": "1.3.0",
+            "PSQualityCheck.Functions": "1.3.0"
         }
     }
 }

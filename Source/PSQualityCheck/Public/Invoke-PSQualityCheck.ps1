@@ -41,6 +41,9 @@ function Invoke-PSQualityCheck {
         .PARAMETER ProjectPath
         A path to the root of a Project
 
+        .PARAMETER HelpRulesPath
+        A path to the HelpRules parameter file
+
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
@@ -130,7 +133,10 @@ function Invoke-PSQualityCheck {
         [String[]]$Include,
 
         [Parameter(Mandatory = $false)]
-        [String[]]$Exclude
+        [String[]]$Exclude,
+
+        [Parameter(Mandatory = $false)]
+        [String]$HelpRulesPath
 
     )
 
@@ -158,6 +164,22 @@ function Invoke-PSQualityCheck {
     $extractionResults = $null
     $extractedScriptResults = $null
     $scriptResults = $null
+
+    if ($PSBoundParameters.ContainsKey('HelpRulesPath')) {
+
+        if ( -not (Test-Path -Path $HelpRulesPath)) {
+
+            Write-Error "-HelpRulesPath does not exist"
+            break
+
+        }
+
+    }
+    else {
+
+        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath "Checks\HelpRules.psd1")
+
+    }
 
     if ($PSBoundParameters.ContainsKey('PesterConfiguration') -and $PesterConfiguration -is [PesterConfiguration]) {
 
@@ -364,7 +386,7 @@ function Invoke-PSQualityCheck {
             $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
             # Run the Script tests against all the extracted functions .ps1 files
-            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
+            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
             $PesterConfiguration.Run.Container = $container3
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
         }

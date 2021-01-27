@@ -3,7 +3,11 @@ param(
     [string[]]$Source,
 
     [parameter(Mandatory = $false)]
-    [string[]]$ScriptAnalyzerRulesPath
+    [string[]]$ScriptAnalyzerRulesPath,
+
+    [parameter(Mandatory = $false)]
+    [string]$HelpRulesPath
+
 )
 
 BeforeDiscovery {
@@ -40,7 +44,7 @@ BeforeDiscovery {
 
 Describe "Script Tests" -Tag "Script" {
 
-    Context "Script: <File.Name> at <File.Directory>" -Foreach $scriptFiles {
+    Context "Script: <File.Name> at <File.Directory>" -ForEach $scriptFiles {
 
         BeforeAll {
 
@@ -79,7 +83,7 @@ Describe "Script Tests" -Tag "Script" {
                     throw "No help block found"
                 }
                 $helpTokens = Convert-Help -Help $helpComments.Content
-                Test-RequiredToken -HelpTokens $helpTokens
+                Test-RequiredToken -HelpTokens $helpTokens -HelpRulesPath $HelpRulesPath
 
             } |
                 Should -Not -Throw
@@ -95,7 +99,7 @@ Describe "Script Tests" -Tag "Script" {
                     throw "No help block found"
                 }
                 $helpTokens = Convert-Help -Help $helpComments.Content
-                Test-UnspecifiedToken -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens -HelpRulesPath $HelpRulesPath
 
             } |
                 Should -Not -Throw
@@ -126,7 +130,7 @@ Describe "Script Tests" -Tag "Script" {
                     throw "No help block found"
                 }
                 $helpTokens = Convert-Help -Help $helpComments.Content
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
+                Test-HelpTokensCountIsValid -HelpTokens $helpTokens -HelpRulesPath $HelpRulesPath
 
             } | Should -Not -Throw
 
