@@ -16,40 +16,30 @@ function Test-UnspecifiedToken {
     [OutputType([System.Exception], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [HashTable]$HelpTokens
+        [HashTable]$HelpTokens,
+
+        [parameter(Mandatory = $true)]
+        [string]$HelpRulesPath
     )
 
     try {
 
-        $module = Get-Module -Name PSQualityCheck
-
-        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
-
-        if (Test-Path -Path $helpElementRulesPath) {
-
-            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
-
-        }
-        else {
-
-            throw "Unable to load Checks\HelpElementRules.psd1"
-
-        }
+        $helpRules = Import-PowerShellDataFile -Path $HelpRulesPath
 
         $tokenErrors = @()
         $helpTokensKeys = @()
 
         # Create an array of the help element rules elements
-        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
+        for ($order = 1; $order -le $helpRules.Count; $order++) {
 
-            $token = $helpElementRules."$order"
+            $token = $helpRules."$order"
 
             $helpTokensKeys += $token.key
 
         }
 
         # search through the found tokens and match them against the rules
-        foreach ($key in $HelpTokens.Keys) {
+        foreach ($key in $helpTokens.Keys) {
 
             if ( $key -notin $helpTokensKeys ) {
 

@@ -16,31 +16,21 @@ function Test-RequiredToken {
     [OutputType([System.Exception], [System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [HashTable]$HelpTokens
+        [HashTable]$HelpTokens,
+
+        [parameter(Mandatory = $true)]
+        [string]$HelpRulesPath
     )
 
     try {
 
-        $module = Get-Module -Name PSQualityCheck
-
-        $helpElementRulesPath = (Join-Path -Path $module.ModuleBase -ChildPath "Checks\HelpElementRules.psd1")
-
-        if (Test-Path -Path $helpElementRulesPath) {
-
-            $helpElementRules = Import-PowerShellDataFile -Path $helpElementRulesPath
-
-        }
-        else {
-
-            throw "Unable to load Checks\HelpElementRules.psd1"
-
-        }
+        $helpRules = Import-PowerShellDataFile -Path $HelpRulesPath
 
         $tokenErrors = @()
 
-        for ($order = 1; $order -le $helpElementRules.Count; $order++) {
+        for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-            $token = $helpElementRules."$order"
+            $token = $HelpRules."$order"
 
             if ($token.Key -notin $HelpTokens.Keys ) {
 
