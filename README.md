@@ -43,7 +43,7 @@ Optional items:
 
 * Extra PSScriptAnalyzer rules (used by SonarQube) are available here:<br/>[https://github.com/indented-automation/ScriptAnalyzerRules](https://github.com/indented-automation/ScriptAnalyzerRules)
 * Extra PSScriptAnalyzer rules (used by VSCode) are available here:<br/>[https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/Tests/Engine/CommunityAnalyzerRules)
-* InjectionHunter rules are available here:<br/>[https://www.powershellgallery.com/packages/InjectionHunter/1.0.0/Content/InjectionHunter.psm1](https://www.powershellgallery.com/packages/InjectionHunter/1.0.0/Content/InjectionHunter.psm1)<br/>
+* InjectionHunter rules are available here:<br/>[https://www.powershellgallery.com/packages/InjectionHunter](https://www.powershellgallery.com/packages/InjectionHunter)<br/>
 [https://github.com/matt2005/InjectionHunter](https://github.com/matt2005/InjectionHunter)
 
 ## Installation
