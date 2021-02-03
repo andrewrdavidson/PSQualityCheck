@@ -9,8 +9,11 @@ function Test-HelpTokensCountIsValid {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
+        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
 
         .NOTES
         This function will only check the Min/Max counts of required help tokens
@@ -29,30 +32,26 @@ function Test-HelpTokensCountIsValid {
 
         $helpRules = Import-PowerShellDataFile -Path $HelpRulesPath
 
-        # create a HashTable for tracking whether the element has been found
         $tokenFound = @{}
         for ($order = 1; $order -le $HelpRules.Count; $order++) {
-            $token = $HelpRules."$order".Key
+            $helpRuleIndex = [string]$order
+            $token = $HelpRules.$helpRuleIndex.Key
             $tokenFound[$token] = $false
         }
 
         $tokenErrors = @()
 
-        # loop through all the found tokens
         foreach ($key in $HelpTokens.Keys) {
 
-            # loop through all the help element rules
             for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-                $token = $HelpRules."$order"
+                $helpRuleIndex = [string]$order
+                $token = $HelpRules.$helpRuleIndex
 
-                # if the found token matches against a rule
                 if ( $token.Key -eq $key ) {
 
                     $tokenFound[$key] = $true
 
-                    # if the count is not between min and max AND is required
-                    # that's an error
                     if ($HelpTokens.$key.Count -lt $token.MinOccurrences -or
                         $HelpTokens.$key.Count -gt $token.MaxOccurrences -and
                         $token.Required -eq $true) {

@@ -29,7 +29,6 @@ function Test-HelpTokensParamsMatch {
         $foundInHelpErrors = @()
         $foundInParamErrors = @()
 
-        # Loop through each of the parameters from the param block looking for that variable in the PARAMETER help
         foreach ($key in $ParameterVariables.Keys) {
 
             $foundInHelp = $false
@@ -38,7 +37,6 @@ function Test-HelpTokensParamsMatch {
 
                 if ($key -eq $token.Name) {
 
-                    # If we find a match, exit out from the loop
                     $foundInHelp = $true
                     break
 
@@ -54,7 +52,6 @@ function Test-HelpTokensParamsMatch {
 
         }
 
-        # Loop through each of the PARAMETER from the help looking for parameters from the param block
         foreach ($token in $HelpTokens.".PARAMETER") {
 
             $foundInParams = $false
@@ -63,7 +60,6 @@ function Test-HelpTokensParamsMatch {
 
                 if ($key -eq $token.Name) {
 
-                    # If we find a match, exit out from the loop
                     $foundInParams = $true
                     break
 

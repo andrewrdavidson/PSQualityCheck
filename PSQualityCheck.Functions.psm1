@@ -47,7 +47,6 @@ function Convert-Help {
             throw "Help does not appear to be a comment block"
         }
 
-        # an array of string help elements to look for
         $helpElementsToFind =
         '.SYNOPSIS',
         '.DESCRIPTION',
@@ -65,29 +64,25 @@ function Convert-Help {
         '.REMOTEHELPRUNSPACE',
         '.EXTERNALHELP'
 
-        # Split the single comment string into it's line components
         $commentArray = ($Help -split '\n').Trim()
 
-        # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
         $numFound = 0
         $lastHelpElement = $null
 
-        # loop through all the 'lines' of the help comment
         for ($line = 0; $line -lt $commentArray.Count; $line++) {
 
             # get the first 'word' of the help comment. This is required so that we can
             # match '.PARAMETER' since it has a parameter name after it
             $helpElementName = ($commentArray[$line] -split " ")[0]
 
-            # see whether the $helpElements array contains the first 'word'
             if ($helpElementsToFind -contains $helpElementName) {
 
                 $numFound++
 
                 if ($numFound -ge 2) {
 
-                    # of it's the second element then we must set the help comment text of the
+                    # if it's the second element then we must set the help comment text of the
                     # previous element to the found text so far, then reset it
 
                     $lastElement = @($foundElements[$lastHelpElement])
@@ -97,7 +92,8 @@ function Convert-Help {
                     $helpData = $null
                 }
 
-                # this should be an array of HashTables {LineNumber, Name & Text}
+                # this should be an array of HashTables
+                # each hash table will contain the properties LineNumber, Name & Text
                 $currentElement = @($foundElements[$helpElementName])
 
                 $newElement = @{}
@@ -114,7 +110,6 @@ function Convert-Help {
                     $currentElement += $newElement
                 }
 
-                # update the foundItems HashTable with the new found element
                 $foundElements[$helpElementName] = $currentElement
 
                 $lastHelpElement = $helpElementName
@@ -133,7 +128,6 @@ function Convert-Help {
         }
 
         if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
-            # process the very last one
             $currentElement = @($foundElements[$lastHelpElement])
             $currentElement[$currentElement.Count - 1].Text = $helpData
             $foundElements[$lastHelpElement] = $currentElement
@@ -177,7 +171,7 @@ function Export-FunctionsFromModule {
     )
 
     try {
-        # Get the file properties of our module
+
         $fileProperties = (Get-Item -LiteralPath $Path)
 
         if ($fileProperties.Extension -ne ".psm1") {
@@ -186,22 +180,17 @@ function Export-FunctionsFromModule {
 
         $moduleName = $fileProperties.BaseName
 
-        # Get the plain content of the module file
         $ModuleFileContent = Get-Content -Path $Path -ErrorAction Stop
 
-        # Parse the PowerShell module using PSParser
         $ParserErrors = $null
         $ParsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($ModuleFileContent, [ref]$ParserErrors)
 
-        # Create an array of where each reference of the keyword 'function' is
         $ParsedFunctions = ($ParsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-        # Initialise the $parsedFunction tracking variable
         $parsedFunction = 0
 
         if ($ParsedFunctions.Count -ge 1) {
 
-            # Generate a new temporary output path for our extracted functions
             $FunctionOutputPath = Join-Path -Path $ExtractPath -ChildPath $moduleName
 
             if (-not (Test-Path -Path $FunctionOutputPath)) {
@@ -210,18 +199,12 @@ function Export-FunctionsFromModule {
 
             foreach ($Function in $ParsedFunctions) {
 
-                # Counter for the array $ParsedFunction to help find the 'next' function
                 $parsedFunction++
 
-                # Get the name of the current function
-                # Cheat: Simply getting all properties with the same line number as the 'function' statement
                 $FunctionProperties = $ParsedFileFunctions | Where-Object { $_.StartLine -eq $Function.StartLine }
                 $FunctionName = ($FunctionProperties | Where-Object { $_.Type -eq "CommandArgument" }).Content
 
-                # Establish the Start and End lines for the function in the main module file
                 if ($parsedFunction -eq $ParsedFunctions.Count) {
-
-                    # This is the last function in the module so set the last line of this function to be the last line in the module file
 
                     $StartLine = ($Function.StartLine)
                     for ($line = $ModuleFileContent.Count; $line -gt $Function.StartLine; $line--) {
@@ -230,12 +213,12 @@ function Export-FunctionsFromModule {
                             break
                         }
                     }
+
                 }
                 else {
 
                     $StartLine = ($Function.StartLine)
 
-                    # EndLine needs to be where the last } is
                     for ($line = $ParsedFunctions[$parsedFunction].StartLine; $line -gt $Function.StartLine; $line--) {
                         if ($ModuleFileContent[$line] -like "}") {
                             $EndLine = $line
@@ -245,15 +228,12 @@ function Export-FunctionsFromModule {
 
                 }
 
-                # Setup the FunctionOutputFile for the function file
                 $FunctionOutputFileName = "{0}\{1}{2}" -f $FunctionOutputPath, $FunctionName, ".ps1"
 
-                # If the file doesn't exist create an empty file so that we can Add-Content to it
                 if (-not (Test-Path -Path $FunctionOutputFileName)) {
                     Out-File -FilePath $FunctionOutputFileName
                 }
 
-                # Output the lines of the function to the FunctionOutputFile
                 for ($line = $StartLine; $line -lt $EndLine; $line++) {
                     Add-Content -Path $FunctionOutputFileName -Value $ModuleFileContent[$line]
                 }
@@ -296,7 +276,6 @@ function Get-FileContent {
 
         $parserErrors = $null
 
-        # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
         if ([string]::IsNullOrEmpty($fileContent)) {
             $parsedFileFunctions = @()
         }
@@ -304,7 +283,6 @@ function Get-FileContent {
             $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
         }
 
-        # Create an array of where each reference of the keyword 'function' is
         $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
         if ($parsedFunctions.Count -gt 1) {
@@ -330,7 +308,6 @@ function Get-FileContent {
 
                     }
 
-                    # Output the lines of the function to the FunctionOutputFile
                     for ($line = $startLine; $line -lt $endLine; $line++) {
 
                         $parsedFileContent += $fileContent[$line]
@@ -346,7 +323,6 @@ function Get-FileContent {
             }
             else {
 
-                # if there is only one line then the content should be on the line between { and }
                 [int]$startBracket = $fileContent.IndexOf('{')
                 [int]$endBracket = $fileContent.LastIndexOf('}')
 
@@ -434,9 +410,7 @@ function Get-FileList {
             $gciSplat.Add('Recurse', $true)
         }
 
-        # Get the list of files
         $SelectedFilesArray = Get-ChildItem @gciSplat | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName
-        # Convert to a string array of filenames
         $SelectedFilesArray | ForEach-Object { $FileNameArray += [string]$_.FullName }
 
     }
@@ -660,20 +634,17 @@ function Get-ScriptParameter {
 
                 if ($token.Type -eq 'Attribute' -and $token.Content -eq "Parameter") {
 
-                    # break the inner loop because this token doesn't contain a variable for definite
                     break
                 }
 
                 if ($token.Type -eq 'Type') {
 
-                    # Found a type for a parameter
                     $foundType = $token.Content
 
                 }
 
                 if ($token.Type -eq 'Variable') {
 
-                    # Found a variable
                     $parametersFound[$token.Content] = $foundType
                     $foundType = $null
                     break
@@ -681,7 +652,6 @@ function Get-ScriptParameter {
                 }
 
             }
-
 
         }
 
@@ -713,7 +683,6 @@ function Get-TagList {
     param (
     )
 
-    # Get the list of test tags from the checks files
     $moduleTags = @()
     $scriptTags = @()
 
@@ -897,8 +866,11 @@ function Test-HelpTokensCountIsValid {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens
+        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
 
         .NOTES
         This function will only check the Min/Max counts of required help tokens
@@ -917,30 +889,26 @@ function Test-HelpTokensCountIsValid {
 
         $helpRules = Import-PowerShellDataFile -Path $HelpRulesPath
 
-        # create a HashTable for tracking whether the element has been found
         $tokenFound = @{}
         for ($order = 1; $order -le $HelpRules.Count; $order++) {
-            $token = $HelpRules."$order".Key
+            $helpRuleIndex = [string]$order
+            $token = $HelpRules.$helpRuleIndex.Key
             $tokenFound[$token] = $false
         }
 
         $tokenErrors = @()
 
-        # loop through all the found tokens
         foreach ($key in $HelpTokens.Keys) {
 
-            # loop through all the help element rules
             for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-                $token = $HelpRules."$order"
+                $helpRuleIndex = [string]$order
+                $token = $HelpRules.$helpRuleIndex
 
-                # if the found token matches against a rule
                 if ( $token.Key -eq $key ) {
 
                     $tokenFound[$key] = $true
 
-                    # if the count is not between min and max AND is required
-                    # that's an error
                     if ($HelpTokens.$key.Count -lt $token.MinOccurrences -or
                         $HelpTokens.$key.Count -gt $token.MaxOccurrences -and
                         $token.Required -eq $true) {
@@ -1001,7 +969,6 @@ function Test-HelpTokensParamsMatch {
         $foundInHelpErrors = @()
         $foundInParamErrors = @()
 
-        # Loop through each of the parameters from the param block looking for that variable in the PARAMETER help
         foreach ($key in $ParameterVariables.Keys) {
 
             $foundInHelp = $false
@@ -1010,7 +977,6 @@ function Test-HelpTokensParamsMatch {
 
                 if ($key -eq $token.Name) {
 
-                    # If we find a match, exit out from the loop
                     $foundInHelp = $true
                     break
 
@@ -1026,7 +992,6 @@ function Test-HelpTokensParamsMatch {
 
         }
 
-        # Loop through each of the PARAMETER from the help looking for parameters from the param block
         foreach ($token in $HelpTokens.".PARAMETER") {
 
             $foundInParams = $false
@@ -1035,7 +1000,6 @@ function Test-HelpTokensParamsMatch {
 
                 if ($key -eq $token.Name) {
 
-                    # If we find a match, exit out from the loop
                     $foundInParams = $true
                     break
 
@@ -1092,7 +1056,6 @@ function Test-HelpTokensTextIsValid {
 
         $tokenErrors = @()
 
-        # Check that the help blocks aren't empty
         foreach ($key in $HelpTokens.Keys) {
 
             $tokenCount = @($HelpTokens.$key)
@@ -1156,13 +1119,10 @@ function Test-ImportModuleIsValid {
 
         $errString = ""
 
-        # loop through each token found looking for the -Name and one of RequiredVersion, MinimumVersion or MaximumVersion
         foreach ($token in $importModuleTokens) {
 
-            # Get the full details of the command
             $importModuleStatement = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $token.StartLine
 
-            # Get the name of the module to be imported (for logging only)
             $name = ($importModuleStatement | Where-Object { $_.Type -eq "CommandArgument" } | Select-Object -First 1).Content
             if ($null -eq $name) {
 
@@ -1170,14 +1130,12 @@ function Test-ImportModuleIsValid {
 
             }
 
-            # if the -Name parameter is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and $_.Content -eq "-Name" })) {
 
                 $errString += "Import-Module for '$name' : Missing -Name parameter keyword. "
 
             }
 
-            # if one of RequiredVersion, MinimumVersion or MaximumVersion is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and
                         ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" )
                     })) {
@@ -1188,7 +1146,6 @@ function Test-ImportModuleIsValid {
 
         }
 
-        # If there are any problems throw to fail the test
         if (-not ([string]::IsNullOrEmpty($errString))) {
 
             throw $errString
@@ -1264,8 +1221,11 @@ function Test-RequiredToken {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-RequiredToken -HelpTokens $HelpTokens
+        Test-RequiredToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -1285,7 +1245,8 @@ function Test-RequiredToken {
 
         for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-            $token = $HelpRules."$order"
+            $helpRuleIndex = [string]$order
+            $token = $HelpRules.$helpRuleIndex
 
             if ($token.Key -notin $HelpTokens.Keys ) {
 
@@ -1323,8 +1284,11 @@ function Test-UnspecifiedToken {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-UnspecifiedToken -HelpTokens $HelpTokens
+        Test-UnspecifiedToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -1346,7 +1310,8 @@ function Test-UnspecifiedToken {
         # Create an array of the help element rules elements
         for ($order = 1; $order -le $helpRules.Count; $order++) {
 
-            $token = $helpRules."$order"
+            $helpRuleIndex = [string]$order
+            $token = $helpRules.$helpRuleIndex
 
             $helpTokensKeys += $token.key
 

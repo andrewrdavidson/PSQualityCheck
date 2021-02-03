@@ -46,9 +46,7 @@ function Get-FileList {
             $gciSplat.Add('Recurse', $true)
         }
 
-        # Get the list of files
         $SelectedFilesArray = Get-ChildItem @gciSplat | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName
-        # Convert to a string array of filenames
         $SelectedFilesArray | ForEach-Object { $FileNameArray += [string]$_.FullName }
 
     }

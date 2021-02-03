@@ -15,7 +15,6 @@ function Get-TagList {
     param (
     )
 
-    # Get the list of test tags from the checks files
     $moduleTags = @()
     $scriptTags = @()
 

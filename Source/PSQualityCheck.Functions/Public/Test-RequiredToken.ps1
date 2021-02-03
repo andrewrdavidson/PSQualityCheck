@@ -9,8 +9,11 @@ function Test-RequiredToken {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-RequiredToken -HelpTokens $HelpTokens
+        Test-RequiredToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -30,7 +33,8 @@ function Test-RequiredToken {
 
         for ($order = 1; $order -le $HelpRules.Count; $order++) {
 
-            $token = $HelpRules."$order"
+            $helpRuleIndex = [string]$order
+            $token = $HelpRules.$helpRuleIndex
 
             if ($token.Key -notin $HelpTokens.Keys ) {
 

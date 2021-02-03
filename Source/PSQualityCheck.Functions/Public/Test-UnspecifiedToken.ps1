@@ -9,8 +9,11 @@ function Test-UnspecifiedToken {
         .PARAMETER HelpTokens
         A array of tokens containing the tokens of the Help Comment
 
+        .PARAMETER HelpRulesPath
+        Path to the HelpRules file
+
         .EXAMPLE
-        Test-UnspecifiedToken -HelpTokens $HelpTokens
+        Test-UnspecifiedToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]
@@ -29,16 +32,15 @@ function Test-UnspecifiedToken {
         $tokenErrors = @()
         $helpTokensKeys = @()
 
-        # Create an array of the help element rules elements
         for ($order = 1; $order -le $helpRules.Count; $order++) {
 
-            $token = $helpRules."$order"
+            $helpRuleIndex = [string]$order
+            $token = $helpRules.$helpRuleIndex
 
             $helpTokensKeys += $token.key
 
         }
 
-        # search through the found tokens and match them against the rules
         foreach ($key in $helpTokens.Keys) {
 
             if ( $key -notin $helpTokensKeys ) {

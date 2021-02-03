@@ -25,7 +25,6 @@ function Get-FileContent {
 
         $parserErrors = $null
 
-        # If the file content is null (an empty file) then generate an empty parsedFileFunctions array to allow the function to complete
         if ([string]::IsNullOrEmpty($fileContent)) {
             $parsedFileFunctions = @()
         }
@@ -33,7 +32,6 @@ function Get-FileContent {
             $parsedFileFunctions = [System.Management.Automation.PSParser]::Tokenize($fileContent, [ref]$parserErrors)
         }
 
-        # Create an array of where each reference of the keyword 'function' is
         $parsedFunctions = ($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
         if ($parsedFunctions.Count -gt 1) {
@@ -59,7 +57,6 @@ function Get-FileContent {
 
                     }
 
-                    # Output the lines of the function to the FunctionOutputFile
                     for ($line = $startLine; $line -lt $endLine; $line++) {
 
                         $parsedFileContent += $fileContent[$line]
@@ -75,7 +72,6 @@ function Get-FileContent {
             }
             else {
 
-                # if there is only one line then the content should be on the line between { and }
                 [int]$startBracket = $fileContent.IndexOf('{')
                 [int]$endBracket = $fileContent.LastIndexOf('}')
 

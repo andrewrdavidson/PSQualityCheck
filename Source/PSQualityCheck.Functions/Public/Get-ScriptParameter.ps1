@@ -43,20 +43,17 @@ function Get-ScriptParameter {
 
                 if ($token.Type -eq 'Attribute' -and $token.Content -eq "Parameter") {
 
-                    # break the inner loop because this token doesn't contain a variable for definite
                     break
                 }
 
                 if ($token.Type -eq 'Type') {
 
-                    # Found a type for a parameter
                     $foundType = $token.Content
 
                 }
 
                 if ($token.Type -eq 'Variable') {
 
-                    # Found a variable
                     $parametersFound[$token.Content] = $foundType
                     $foundType = $null
                     break
@@ -64,7 +61,6 @@ function Get-ScriptParameter {
                 }
 
             }
-
 
         }
 
