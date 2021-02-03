@@ -5,11 +5,11 @@
     .DESCRIPTION
     Build the PSMoxu module and its sub-modules
 
-    .PARAMETER BuildProperties
+    .PARAMETER Properties
     A string containing the name of the build properties file
 
     .EXAMPLE
-    Invoke-Build.ps1 -BuildProperties "Build.Properties.json"
+    Invoke-Build.ps1 -Properties "Build.Properties.json"
 #>
 [CmdletBinding()]
 [OutputType([System.Void])]
@@ -108,7 +108,7 @@ foreach ($module in $buildProperties.Module.Version.PSObject.Properties) {
 
     # Run the Quality Checks
     Write-Verbose "Invoking PSQualityCheck"
-    Import-Module -Name PSQualityCheck -MinimumVersion "1.2.0"
+    Import-Module -Name PSQualityCheck -MinimumVersion "1.3.0"
 
     foreach ($function in $sourcePublicFiles) {
 
@@ -216,10 +216,11 @@ foreach ($module in $buildProperties.Module.Version.PSObject.Properties) {
 
     try {
         Write-Verbose "Generating Manifest"
+        Write-Verbose ($newModuleManifest | Out-String)
         $manifest = New-ModuleManifest @newModuleManifest
     }
     catch {
-        Write-Error "Error generating manifest $_"
+        Write-Error "Error generating manifest: $_"
     }
 
     $functionsToExport = $null
