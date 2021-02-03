@@ -23,7 +23,6 @@ function Test-HelpTokensTextIsValid {
 
         $tokenErrors = @()
 
-        # Check that the help blocks aren't empty
         foreach ($key in $HelpTokens.Keys) {
 
             $tokenCount = @($HelpTokens.$key)

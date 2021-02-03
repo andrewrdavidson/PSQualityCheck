@@ -28,13 +28,10 @@ function Test-ImportModuleIsValid {
 
         $errString = ""
 
-        # loop through each token found looking for the -Name and one of RequiredVersion, MinimumVersion or MaximumVersion
         foreach ($token in $importModuleTokens) {
 
-            # Get the full details of the command
             $importModuleStatement = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $token.StartLine
 
-            # Get the name of the module to be imported (for logging only)
             $name = ($importModuleStatement | Where-Object { $_.Type -eq "CommandArgument" } | Select-Object -First 1).Content
             if ($null -eq $name) {
 
@@ -42,14 +39,12 @@ function Test-ImportModuleIsValid {
 
             }
 
-            # if the -Name parameter is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and $_.Content -eq "-Name" })) {
 
                 $errString += "Import-Module for '$name' : Missing -Name parameter keyword. "
 
             }
 
-            # if one of RequiredVersion, MinimumVersion or MaximumVersion is not found
             if (-not($importModuleStatement | Where-Object { $_.Type -eq "CommandParameter" -and
                         ( $_.Content -eq "-RequiredVersion" -or $_.Content -eq "-MinimumVersion" -or $_.Content -eq "-MaximumVersion" )
                     })) {
@@ -60,7 +55,6 @@ function Test-ImportModuleIsValid {
 
         }
 
-        # If there are any problems throw to fail the test
         if (-not ([string]::IsNullOrEmpty($errString))) {
 
             throw $errString

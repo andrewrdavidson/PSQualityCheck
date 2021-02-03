@@ -47,7 +47,6 @@ function Convert-Help {
             throw "Help does not appear to be a comment block"
         }
 
-        # an array of string help elements to look for
         $helpElementsToFind =
         '.SYNOPSIS',
         '.DESCRIPTION',
@@ -65,29 +64,25 @@ function Convert-Help {
         '.REMOTEHELPRUNSPACE',
         '.EXTERNALHELP'
 
-        # Split the single comment string into it's line components
         $commentArray = ($Help -split '\n').Trim()
 
-        # initialise an empty HashTable ready for the found help elements to be stored
         $foundElements = @{}
         $numFound = 0
         $lastHelpElement = $null
 
-        # loop through all the 'lines' of the help comment
         for ($line = 0; $line -lt $commentArray.Count; $line++) {
 
             # get the first 'word' of the help comment. This is required so that we can
             # match '.PARAMETER' since it has a parameter name after it
             $helpElementName = ($commentArray[$line] -split " ")[0]
 
-            # see whether the $helpElements array contains the first 'word'
             if ($helpElementsToFind -contains $helpElementName) {
 
                 $numFound++
 
                 if ($numFound -ge 2) {
 
-                    # of it's the second element then we must set the help comment text of the
+                    # if it's the second element then we must set the help comment text of the
                     # previous element to the found text so far, then reset it
 
                     $lastElement = @($foundElements[$lastHelpElement])
@@ -97,7 +92,8 @@ function Convert-Help {
                     $helpData = $null
                 }
 
-                # this should be an array of HashTables {LineNumber, Name & Text}
+                # this should be an array of HashTables
+                # each hash table will contain the properties LineNumber, Name & Text
                 $currentElement = @($foundElements[$helpElementName])
 
                 $newElement = @{}
@@ -114,7 +110,6 @@ function Convert-Help {
                     $currentElement += $newElement
                 }
 
-                # update the foundItems HashTable with the new found element
                 $foundElements[$helpElementName] = $currentElement
 
                 $lastHelpElement = $helpElementName
@@ -133,7 +128,6 @@ function Convert-Help {
         }
 
         if ( -not ([string]::IsNullOrEmpty($lastHelpElement))) {
-            # process the very last one
             $currentElement = @($foundElements[$lastHelpElement])
             $currentElement[$currentElement.Count - 1].Text = $helpData
             $foundElements[$lastHelpElement] = $currentElement
