@@ -369,12 +369,12 @@ function Invoke-PSQualityCheck {
         if ($runModuleCheck -eq $true) {
 
             # Run the Module tests on all the valid module files found
-            $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Tests.ps1') -Data @{ Source = $modulesToTest }
+            $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Checks.ps1') -Data @{ Source = $modulesToTest }
             $PesterConfiguration.Run.Container = $container1
             $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
 
             # Extract all the functions from the modules into individual .ps1 files ready for testing
-            $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Function-Extraction.Tests.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
+            $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Extraction.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
             $PesterConfiguration.Run.Container = $container2
             $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
@@ -386,7 +386,7 @@ function Invoke-PSQualityCheck {
             $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
             # Run the Script tests against all the extracted functions .ps1 files
-            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
+            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Checks.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
             $PesterConfiguration.Run.Container = $container3
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
         }
@@ -403,7 +403,7 @@ function Invoke-PSQualityCheck {
     if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Tests.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Checks.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
