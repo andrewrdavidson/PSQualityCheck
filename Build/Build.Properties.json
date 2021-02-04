@@ -32,7 +32,8 @@
         "NestedModules": {
             "PSQualityCheck": [
                 "PSQualityCheck.Functions.psd1"
-            ]
+            ],
+            "PSQualityCheck.Functions": null
         },
         "PowerShellVersion": "5.0",
         "ProjectUri": "https://github.com/andrewrdavidson/PSQualityCheck",
