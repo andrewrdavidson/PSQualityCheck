@@ -20,8 +20,8 @@ BeforeDiscovery {
         $publicFolder = Join-Path -Path $moduleFolder -ChildPath "Public"
         $unitTestFolder = Join-Path -Path $unitTestPath -ChildPath $module.Name
 
-        $privateModules = Get-ChildItem -Path $privateFolder | Select-Object -Property Name, FullName
-        $publicModules = Get-ChildItem -Path $publicFolder | Select-Object -Property Name, FullName
+        $privateModules = Get-ChildItem -Path $privateFolder | Select-Object -Property Name, BaseName, FullName
+        $publicModules = Get-ChildItem -Path $publicFolder | Select-Object -Property Name, BaseName, FullName
 
         $moduleData += @{
             'Name' = $module.Name
@@ -78,8 +78,9 @@ Describe "Project Test" -Tag "Project" {
 
             It "public script has a unit test" {
 
-                $TestScript = $_
-                $TestScript.FullName | Should -Exist
+                $testFileName = "{0}{1}" -f $_.BaseName, ".Tests.ps1"
+                $TestScript = Join-Path -Path $unitTestFolder -ChildPath $testFileName
+                $TestScript | Should -Exist
 
             }
 
