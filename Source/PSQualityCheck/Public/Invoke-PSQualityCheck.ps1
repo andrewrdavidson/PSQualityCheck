@@ -47,48 +47,48 @@ function Invoke-PSQualityCheck {
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
-        This will call the quality checks on single path
+        This will call the quality Data on single path
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse
 
-        This will call the quality checks on single path and sub folders
+        This will call the quality Data on single path and sub folders
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')
 
-        This will call the quality checks with multiple paths
+        This will call the quality Data with multiple paths
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'
 
-        This will call the quality checks with single script file
+        This will call the quality Data with single script file
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.psm1'
 
-        This will call the quality checks with single module file
+        This will call the quality Data with single module file
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.psd1'
 
-        This will call the quality checks with single datafile file
+        This will call the quality Data with single datafile file
         Note: The datafile test will fail as it is not a file that is accepted for testing
 
         .EXAMPLE
         Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1','C:\Scripts\Script2.ps1')
 
-        This will call the quality checks with multiple files. Files can be either scripts or modules
+        This will call the quality Data with multiple files. Files can be either scripts or modules
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'
 
-        This will call the quality checks with single file and the extra PSScriptAnalyzer rules
+        This will call the quality Data with single file and the extra PSScriptAnalyzer rules
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults
 
-        This will display a summary of the checks performed (example below uses sample data):
+        This will display a summary of the Data performed (example below uses sample data):
 
             Name                            Files Tested Total Passed Failed Skipped
             ----                            ------------ ----- ------ ------ -------
@@ -177,7 +177,7 @@ function Invoke-PSQualityCheck {
     }
     else {
 
-        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath "Checks\HelpRules.psd1")
+        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath "Data\HelpRules.psd1")
 
     }
 
@@ -203,12 +203,26 @@ function Invoke-PSQualityCheck {
 
             if (Test-Path -Path $ProjectPath) {
 
-                $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Project.Tests.ps1') -Data @{ Path = $ProjectPath }
+                $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Project.Checks.ps1') -Data @{ Path = $ProjectPath }
                 $PesterConfiguration.Run.Container = $container1
                 $projectResults = Invoke-Pester -Configuration $PesterConfiguration
 
                 # setup the rest of the Path based tests
-                $Path = Join-Path -Path $ProjectPath -ChildPath "Source"
+                # this needs to include the module/public module/private and scripts folder only, not the data or any other folders
+                $ProjectPath = (Resolve-Path -Path $ProjectPath)
+                $sourceRootPath = (Join-Path -Path $ProjectPath -ChildPath "Source")
+                $scriptPath = (Join-Path -Path $ProjectPath -ChildPath "Scripts")
+                $Path = @($scriptPath)
+
+                # Get the list of Modules
+                $modules = Get-ChildItem -Path $sourceRootPath -Directory
+
+                foreach ($module in $modules) {
+
+                    $Path += (Join-Path -Path $module -ChildPath "Public")
+                    $Path += (Join-Path -Path $module -ChildPath "Private")
+
+                }
 
             }
             else {
@@ -234,8 +248,8 @@ function Invoke-PSQualityCheck {
                     $getFileListSplat.Add('Recurse', $true)
                 }
 
-                $scriptsToTest += Get-FileList @getFileListSplat -Extension '.ps1'
-                $modulesToTest += Get-FileList @getFileListSplat -Extension '.psm1'
+                $scriptsToTest += GetFileList @getFileListSplat -Extension '.ps1'
+                $modulesToTest += GetFileList @getFileListSplat -Extension '.psm1'
 
             }
             else {
@@ -284,12 +298,12 @@ function Invoke-PSQualityCheck {
 
     }
 
-    # Get the list of test tags from the checks files
+    # Get the list of test tags from the Data files
     if ($PSBoundParameters.ContainsKey('Include') -or
         $PSBoundParameters.ContainsKey('Exclude')) {
 
 
-        ($moduleTags, $scriptTags) = Get-TagList
+        ($moduleTags, $scriptTags) = GetTagList
         $moduleTagsToInclude = @()
         $moduleTagsToExclude = @()
         $scriptTagsToInclude = @()
@@ -369,12 +383,12 @@ function Invoke-PSQualityCheck {
         if ($runModuleCheck -eq $true) {
 
             # Run the Module tests on all the valid module files found
-            $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Module.Checks.ps1') -Data @{ Source = $modulesToTest }
+            $container1 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Module.Checks.ps1') -Data @{ Source = $modulesToTest }
             $PesterConfiguration.Run.Container = $container1
             $moduleResults = Invoke-Pester -Configuration $PesterConfiguration
 
             # Extract all the functions from the modules into individual .ps1 files ready for testing
-            $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Extraction.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
+            $container2 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Extraction.ps1') -Data @{ Source = $modulesToTest; ExtractPath = $extractPath }
             $PesterConfiguration.Run.Container = $container2
             $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
@@ -386,7 +400,7 @@ function Invoke-PSQualityCheck {
             $extractedScriptsToTest = Get-ChildItem -Path $extractPath -Include '*.ps1' -Recurse
 
             # Run the Script tests against all the extracted functions .ps1 files
-            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Checks.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
+            $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
             $PesterConfiguration.Run.Container = $container3
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
         }
@@ -403,7 +417,7 @@ function Invoke-PSQualityCheck {
     if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Checks\Script.Checks.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
@@ -419,12 +433,12 @@ function Invoke-PSQualityCheck {
         if ($null -ne $projectResults) {
             $qualityCheckResults +=
             @{
-                'Test' = 'Project Tests'
+                'Test'         = 'Project Tests'
                 'Files Tested' = 0
-                'Total' = ($projectResults.TotalCount - $projectResults.NotRunCount)
-                'Passed' = $projectResults.PassedCount
-                'Failed' = $projectResults.FailedCount
-                'Skipped' = $projectResults.SkippedCount
+                'Total'        = ($projectResults.TotalCount - $projectResults.NotRunCount)
+                'Passed'       = $projectResults.PassedCount
+                'Failed'       = $projectResults.FailedCount
+                'Skipped'      = $projectResults.SkippedCount
             }
             $filesTested += 0
             $total += ($projectResults.TotalCount - $projectResults.NotRunCount)
@@ -436,12 +450,12 @@ function Invoke-PSQualityCheck {
         if ($null -ne $moduleResults) {
             $qualityCheckResults +=
             @{
-                'Test' = 'Module Tests'
+                'Test'         = 'Module Tests'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = ($moduleResults.TotalCount - $moduleResults.NotRunCount)
-                'Passed' = $moduleResults.PassedCount
-                'Failed' = $moduleResults.FailedCount
-                'Skipped' = $moduleResults.SkippedCount
+                'Total'        = ($moduleResults.TotalCount - $moduleResults.NotRunCount)
+                'Passed'       = $moduleResults.PassedCount
+                'Failed'       = $moduleResults.FailedCount
+                'Skipped'      = $moduleResults.SkippedCount
             }
             $filesTested += $ModulesToTest.Count
             $total += ($moduleResults.TotalCount - $moduleResults.NotRunCount)
@@ -453,12 +467,12 @@ function Invoke-PSQualityCheck {
         if ($null -ne $extractionResults) {
             $qualityCheckResults +=
             @{
-                'Test' = 'Extracting functions'
+                'Test'         = 'Extracting functions'
                 'Files Tested' = $ModulesToTest.Count
-                'Total' = ($extractionResults.TotalCount - $extractionResults.NotRunCount)
-                'Passed' = $extractionResults.PassedCount
-                'Failed' = $extractionResults.FailedCount
-                'Skipped' = $extractionResults.SkippedCount
+                'Total'        = ($extractionResults.TotalCount - $extractionResults.NotRunCount)
+                'Passed'       = $extractionResults.PassedCount
+                'Failed'       = $extractionResults.FailedCount
+                'Skipped'      = $extractionResults.SkippedCount
             }
             $total += ($extractionResults.TotalCount - $extractionResults.NotRunCount)
             $passed += $extractionResults.PassedCount
@@ -469,12 +483,12 @@ function Invoke-PSQualityCheck {
         if ($null -ne $extractedScriptResults) {
             $qualityCheckResults +=
             @{
-                'Test' = 'Extracted function script tests'
+                'Test'         = 'Extracted function script tests'
                 'Files Tested' = $extractedScriptsToTest.Count
-                'Total' = ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
-                'Passed' = $extractedScriptResults.PassedCount
-                'Failed' = $extractedScriptResults.FailedCount
-                'Skipped' = $extractedScriptResults.SkippedCount
+                'Total'        = ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
+                'Passed'       = $extractedScriptResults.PassedCount
+                'Failed'       = $extractedScriptResults.FailedCount
+                'Skipped'      = $extractedScriptResults.SkippedCount
             }
             $filesTested += $extractedScriptsToTest.Count
             $total += ($extractedScriptResults.TotalCount - $extractedScriptResults.NotRunCount)
@@ -486,12 +500,12 @@ function Invoke-PSQualityCheck {
         if ($null -ne $scriptResults) {
             $qualityCheckResults +=
             @{
-                'Test' = "Script Tests"
+                'Test'         = "Script Tests"
                 'Files Tested' = $scriptsToTest.Count
-                'Total' = ($scriptResults.TotalCount - $scriptResults.NotRunCount)
-                'Passed' = $scriptResults.PassedCount
-                'Failed' = $scriptResults.FailedCount
-                'Skipped' = $scriptResults.SkippedCount
+                'Total'        = ($scriptResults.TotalCount - $scriptResults.NotRunCount)
+                'Passed'       = $scriptResults.PassedCount
+                'Failed'       = $scriptResults.FailedCount
+                'Skipped'      = $scriptResults.SkippedCount
             }
             $filesTested += $scriptsToTest.Count
             $total += ($scriptResults.TotalCount - $scriptResults.NotRunCount)
@@ -502,23 +516,23 @@ function Invoke-PSQualityCheck {
 
         $qualityCheckResults +=
         @{
-            'Test' = "Total"
+            'Test'         = "Total"
             'Files Tested' = $filesTested
-            'Total' = $total
-            'Passed' = $passed
-            'Failed' = $failed
-            'Skipped' = $skipped
+            'Total'        = $total
+            'Passed'       = $passed
+            'Failed'       = $failed
+            'Skipped'      = $skipped
         }
 
         # This works on PS5 and PS7
         $qualityCheckResults | ForEach-Object {
             [PSCustomObject]@{
-                'Test' = $_.Test
+                'Test'         = $_.Test
                 'Files Tested' = $_.'Files Tested'
-                'Total' = $_.total
-                'Passed' = $_.passed
-                'Failed' = $_.failed
-                'Skipped' = $_.skipped
+                'Total'        = $_.total
+                'Passed'       = $_.passed
+                'Failed'       = $_.failed
+                'Skipped'      = $_.skipped
             }
         } | Format-Table -AutoSize
 
@@ -542,10 +556,10 @@ function Invoke-PSQualityCheck {
         if ($PesterConfiguration.Run.PassThru.Value -eq $true) {
 
             $resultObject = @{
-                'project' = $projectResults
-                'module' = $moduleResults
-                'extraction' = $extractionResults
-                'script' = $scriptResults
+                'project'         = $projectResults
+                'module'          = $moduleResults
+                'extraction'      = $extractionResults
+                'script'          = $scriptResults
                 'extractedscript' = $extractedScriptResults
             }
 
