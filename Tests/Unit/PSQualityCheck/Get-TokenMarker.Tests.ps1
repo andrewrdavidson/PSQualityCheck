@@ -1,13 +1,13 @@
-Describe "Get-TokenMarker.Tests" {
+Describe "GetTokenMarker.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
         @{ 'Name' = 'Type'; 'Type' = 'String' }
         @{ 'Name' = 'Content'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-TokenMarker"
+            $commandletUnderTest = "GetTokenMarker"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -36,56 +36,56 @@ Describe "Get-TokenMarker.Tests" {
         BeforeAll {
             $ParsedContent = @(
                 @{
-                    "Content" = "function"
-                    "Type" = "Keyword"
-                    "Start" = 0
-                    "Length" = 8
-                    "StartLine" = 1
+                    "Content"     = "function"
+                    "Type"        = "Keyword"
+                    "Start"       = 0
+                    "Length"      = 8
+                    "StartLine"   = 1
                     "StartColumn" = 1
-                    "EndLine" = 1
-                    "EndColumn" = 9
+                    "EndLine"     = 1
+                    "EndColumn"   = 9
                 },
                 @{
-                    "Content" = "Get-FileContent"
-                    "Type" = "CommandArgument"
-                    "Start" = 9
-                    "Length" = 15
-                    "StartLine" = 1
+                    "Content"     = "Get-FileContent"
+                    "Type"        = "CommandArgument"
+                    "Start"       = 9
+                    "Length"      = 15
+                    "StartLine"   = 1
                     "StartColumn" = 10
-                    "EndLine" = 1
-                    "EndColumn" = 25
+                    "EndLine"     = 1
+                    "EndColumn"   = 25
                 },
                 @{
-                    "Content" = "{"
-                    "Type" = "GroupStart"
-                    "Start" = 25
-                    "Length" = 1
-                    "StartLine" = 1
+                    "Content"     = "{"
+                    "Type"        = "GroupStart"
+                    "Start"       = 25
+                    "Length"      = 1
+                    "StartLine"   = 1
                     "StartColumn" = 26
-                    "EndLine" = 1
-                    "EndColumn" = 27
+                    "EndLine"     = 1
+                    "EndColumn"   = 27
                 },
                 @{
-                    "Content" = "}"
-                    "Type" = "GroupEnd"
-                    "Start" = 26
-                    "Length" = 1
-                    "StartLine" = 1
+                    "Content"     = "}"
+                    "Type"        = "GroupEnd"
+                    "Start"       = 26
+                    "Length"      = 1
+                    "StartLine"   = 1
                     "StartColumn" = 27
-                    "EndLine" = 1
-                    "EndColumn" = 28
+                    "EndLine"     = 1
+                    "EndColumn"   = 28
                 }
             )
 
             $tokenMatch = @{
-                "Content" = "Get-FileContent"
-                "Type" = "CommandArgument"
-                "Start" = 9
-                "Length" = 15
-                "StartLine" = 1
+                "Content"     = "Get-FileContent"
+                "Type"        = "CommandArgument"
+                "Start"       = 9
+                "Length"      = 15
+                "StartLine"   = 1
                 "StartColumn" = 10
-                "EndLine" = 1
-                "EndColumn" = 25
+                "EndLine"     = 1
+                "EndColumn"   = 25
             }
 
         }
@@ -94,7 +94,7 @@ Describe "Get-TokenMarker.Tests" {
 
             {
 
-                Get-TokenMarker -ParsedContent $null -Type $null -Content $null
+                GetTokenMarker -ParsedContent $null -Type $null -Content $null
 
             } | Should -Throw
 
@@ -102,7 +102,7 @@ Describe "Get-TokenMarker.Tests" {
 
         It "should find 'CommandArgument' type with 'Get-FileContent' value" {
 
-            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Get-FileContent"
+            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Get-FileContent"
 
             Compare-Object -ReferenceObject $token.Values -DifferenceObject $tokenMatch.values | Should -BeNullOrEmpty
 
@@ -110,7 +110,7 @@ Describe "Get-TokenMarker.Tests" {
 
         It "should not find 'Dummy' type with 'Get-FileContent' value" {
 
-            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "Dummy" -Content "Get-FileContent"
+            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "Dummy" -Content "Get-FileContent"
 
             $token | Should -BeNullOrEmpty
 
@@ -118,7 +118,7 @@ Describe "Get-TokenMarker.Tests" {
 
         It "should not find 'CommandArgument' type with 'Dummy' value" {
 
-            $token = Get-TokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Dummy"
+            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Dummy"
 
             $token | Should -BeNullOrEmpty
 
@@ -128,7 +128,7 @@ Describe "Get-TokenMarker.Tests" {
 
             {
 
-                Get-TokenMarker -ParsedContent $ParsedContent -Type $null -Content $null
+                GetTokenMarker -ParsedContent $ParsedContent -Type $null -Content $null
 
             } | Should -Throw
         }

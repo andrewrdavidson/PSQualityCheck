@@ -1,11 +1,11 @@
 Describe "Convert-Help.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Help'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Convert-Help"
+            $commandletUnderTest = "ConvertHelp"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -35,7 +35,7 @@ Describe "Convert-Help.Tests" {
 
             {
 
-                Convert-Help -Help $null
+                ConvertHelp -Help $null
 
             } | Should -Throw
 
@@ -46,7 +46,7 @@ Describe "Convert-Help.Tests" {
             {
                 $helpComment = '##InvalidHelp##'
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
             } | Should -Throw
 
@@ -57,13 +57,13 @@ Describe "Convert-Help.Tests" {
             {
                 $helpComment = ''
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
             } | Should -Throw
 
         }
 
-        It "should find <token> in help" -Foreach @(
+        It "should find <token> in help" -ForEach @(
             @{ 'Token' = '.SYNOPSIS' }
             @{ 'Token' = '.DESCRIPTION' }
             @{ 'Token' = '.PARAMETER' }
@@ -85,7 +85,7 @@ Describe "Convert-Help.Tests" {
                             $($token)
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey($token) | Should -BeTrue
 
@@ -97,7 +97,7 @@ Describe "Convert-Help.Tests" {
                             .PARAMETER Path
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey(".PARAMETER") | Should -BeTrue
 
@@ -112,7 +112,7 @@ Describe "Convert-Help.Tests" {
                             .PARAMETER Source
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey(".PARAMETER") | Should -BeTrue
 
@@ -129,7 +129,7 @@ Describe "Convert-Help.Tests" {
                             Function -Source
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey(".EXAMPLE") | Should -BeTrue
 
@@ -143,7 +143,7 @@ Describe "Convert-Help.Tests" {
                             .DUMMY
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey(".DUMMY") | Should -BeFalse
 
@@ -156,7 +156,7 @@ Describe "Convert-Help.Tests" {
                             .NOTES
                             #>"
 
-            $help = Convert-Help -Help $helpComment
+            $help = ConvertHelp -Help $helpComment
 
             $help.ContainsKey(".DUMMY") | Should -BeFalse
             $help.ContainsKey(".NOTES") | Should -BeTrue
@@ -171,7 +171,7 @@ Describe "Convert-Help.Tests" {
 
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
 
@@ -186,7 +186,7 @@ Describe "Convert-Help.Tests" {
                                 .SYNOPSIS
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 ([string]::IsNullOrEmpty($help.".SYNOPSIS".Text)) | Should -BeTrue
 
@@ -206,7 +206,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly "The SYNOPSIS property"
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -228,7 +228,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly ""
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -249,7 +249,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly $null
                 $help.".DESCRIPTION".Text | Should -BeExactly "The DESCRIPTION property"
@@ -271,7 +271,7 @@ Describe "Convert-Help.Tests" {
 
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly ""
                 $help.".DESCRIPTION".Text | Should -BeExactly ""
@@ -290,7 +290,7 @@ Describe "Convert-Help.Tests" {
                                 .PARAMETER Path
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".Text | Should -BeExactly $null
                 $help.".DESCRIPTION".Text | Should -BeExactly $null
@@ -312,7 +312,7 @@ Describe "Convert-Help.Tests" {
                                 The Path parameter
                                 #>"
 
-                $help = Convert-Help -Help $helpComment
+                $help = ConvertHelp -Help $helpComment
 
                 $help.".SYNOPSIS".LineNumber | Should -BeExactly 1
                 $help.".DESCRIPTION".LineNumber | Should -BeExactly 3

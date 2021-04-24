@@ -1,11 +1,11 @@
-Describe "Test-HelpTokensCountIsValid.Tests" {
+Describe "Test-UnspecifiedToken.Tests" {
 
     Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpTokensCountIsValid"
+            $commandletUnderTest = "Test-UnspecifiedToken"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -33,7 +33,7 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
         BeforeAll {
             New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\checks') -ItemType Directory
+            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
 
             '@{
                 ''1'' = @{
@@ -84,7 +84,7 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
                     MinOccurrences = 0
                     MaxOccurrences = 0
                 }
-            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\checks\HelpElementRules.psd1')
+            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpElementRules.psd1')
         }
 
         BeforeEach {
@@ -97,26 +97,47 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
             {
 
-                Test-HelpTokensCountIsValid -HelpTokens $null
+                Test-UnspecifiedToken -HelpTokens $null
 
             } | Should -Throw
 
         }
 
-        It "should not throw when checking required help tokens count" {
+        It "should not throw when checking required help tokens" {
 
             {
                 $helpTokens = @{
-                    '.SYNOPSIS' = @(
+                    '.SYNOPSIS'    = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 1
-                            "Text" = ""
+                            "Text"       = ""
+                        }
+                    )
+                    '.DESCRIPTION' = @(
+                        @{
+                            "Name"       = $null
+                            "LineNumber" = 3
+                            "Text"       = ""
+                        }
+                    )
+                    '.PARAMETER'   = @(
+                        @{
+                            "Name"       = "Path"
+                            "LineNumber" = 5
+                            "Text"       = ""
+                        }
+                    )
+                    '.EXAMPLE'     = @(
+                        @{
+                            "Name"       = ""
+                            "LineNumber" = 7
+                            "Text"       = "This is example text"
                         }
                     )
                 }
 
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -124,91 +145,75 @@ Describe "Test-HelpTokensCountIsValid.Tests" {
 
         }
 
-        It "should throw when required help token is out of min/max range" {
+        It "should not throw when checking required help tokens plus optional help tokens" {
 
             {
+
                 $helpTokens = @{
-                    '.SYNOPSIS' = @(
+                    '.SYNOPSIS'    = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 1
-                            "Text" = ""
-                        },
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 2
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
                     '.DESCRIPTION' = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 3
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.PARAMETER' = @(
+                    '.PARAMETER'   = @(
                         @{
-                            "Name" = "Path"
+                            "Name"       = "Path"
                             "LineNumber" = 5
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
+                    '.EXAMPLE'     = @(
+                        @{
+                            "Name"       = ""
+                            "LineNumber" = 7
+                            "Text"       = "This is example text"
+                        }
+                    )
+                    '.NOTES'       = @(
+                        @{
+                            "Name"       = ""
+                            "LineNumber" = 10
+                            "Text"       = "This is a note"
+                        }
+                    )
+
                 }
 
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
-
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
-
-            } | Should -Throw
-
-        }
-
-
-        It "should not throw when optional help token is out of min/max range" {
-
-            {
-                $helpTokens = @{
-                    '.SYNOPSIS' = @(
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 1
-                            "Text" = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name" = $null
-                            "LineNumber" = 3
-                            "Text" = ""
-                        }
-                    )
-                    '.PARAMETER' = @(
-                        @{
-                            "Name" = "Path"
-                            "LineNumber" = 5
-                            "Text" = ""
-                        }
-                    )
-                    '.NOTES' = @(
-                        @{
-                            "Name" = ""
-                            "LineNumber" = 10
-                            "Text" = "This is a note"
-                        },
-                        @{
-                            "Name" = ""
-                            "LineNumber" = 10
-                            "Text" = "This is a note"
-                        }
-                    )
-                }
-
-                Test-HelpTokensCountIsValid -HelpTokens $helpTokens
+                Test-UnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
             } | Should -Not -Throw
+
+        }
+
+        It "should throw when unspecified help token is present" {
+
+            {
+                $helpTokens = @{
+                    '.DUMMY' = @(
+                        @{
+                            "Name"       = $null
+                            "LineNumber" = 1
+                            "Text"       = ""
+                        }
+                    )
+                }
+
+                Test-UnspecifiedToken -HelpTokens $helpTokens
+
+                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+
+            } | Should -Throw
 
         }
 

@@ -1,6 +1,6 @@
 Describe "Test-RequiredToken.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
@@ -33,7 +33,7 @@ Describe "Test-RequiredToken.Tests" {
 
         BeforeAll {
             New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\checks') -ItemType Directory
+            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
 
             '@{
                 ''1'' = @{
@@ -84,7 +84,7 @@ Describe "Test-RequiredToken.Tests" {
                     MinOccurrences = 0
                     MaxOccurrences = 0
                 }
-            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\checks\HelpElementRules.psd1')
+            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpElementRules.psd1')
         }
 
         BeforeEach {
@@ -107,32 +107,32 @@ Describe "Test-RequiredToken.Tests" {
 
             {
                 $helpTokens = @{
-                    '.SYNOPSIS' = @(
+                    '.SYNOPSIS'    = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 1
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
                     '.DESCRIPTION' = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 3
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.PARAMETER' = @(
+                    '.PARAMETER'   = @(
                         @{
-                            "Name" = "Path"
+                            "Name"       = "Path"
                             "LineNumber" = 5
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.EXAMPLE' = @(
+                    '.EXAMPLE'     = @(
                         @{
-                            "Name" = ""
+                            "Name"       = ""
                             "LineNumber" = 7
-                            "Text" = "This is example text"
+                            "Text"       = "This is example text"
                         }
                     )
                 }
@@ -150,39 +150,39 @@ Describe "Test-RequiredToken.Tests" {
             {
 
                 $helpTokens = @{
-                    '.SYNOPSIS' = @(
+                    '.SYNOPSIS'    = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 1
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
                     '.DESCRIPTION' = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 3
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.PARAMETER' = @(
+                    '.PARAMETER'   = @(
                         @{
-                            "Name" = "Path"
+                            "Name"       = "Path"
                             "LineNumber" = 5
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.EXAMPLE' = @(
+                    '.EXAMPLE'     = @(
                         @{
-                            "Name" = ""
+                            "Name"       = ""
                             "LineNumber" = 7
-                            "Text" = "This is example text"
+                            "Text"       = "This is example text"
                         }
                     )
-                    '.NOTES' = @(
+                    '.NOTES'       = @(
                         @{
-                            "Name" = ""
+                            "Name"       = ""
                             "LineNumber" = 10
-                            "Text" = "This is a note"
+                            "Text"       = "This is a note"
                         }
                     )
 
@@ -200,25 +200,25 @@ Describe "Test-RequiredToken.Tests" {
 
             {
                 $helpTokens = @{
-                    '.SYNOPSIS' = @(
+                    '.SYNOPSIS'    = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 1
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
                     '.DESCRIPTION' = @(
                         @{
-                            "Name" = $null
+                            "Name"       = $null
                             "LineNumber" = 3
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
-                    '.PARAMETER' = @(
+                    '.PARAMETER'   = @(
                         @{
-                            "Name" = "Path"
+                            "Name"       = "Path"
                             "LineNumber" = 5
-                            "Text" = ""
+                            "Text"       = ""
                         }
                     )
                 }
