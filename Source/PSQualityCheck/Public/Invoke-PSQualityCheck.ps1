@@ -44,6 +44,9 @@ function Invoke-PSQualityCheck {
         .PARAMETER HelpRulesPath
         A path to the HelpRules parameter file
 
+        .PARAMETER IgnoreFile
+        A path to the .psqcignore file which excludes files/path from the tests
+
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
@@ -136,7 +139,10 @@ function Invoke-PSQualityCheck {
         [String[]]$Exclude,
 
         [Parameter(Mandatory = $false)]
-        [String]$HelpRulesPath
+        [String]$HelpRulesPath,
+
+        [Parameter(Mandatory = $false)]
+        [String]$IgnoreFile
 
     )
 
@@ -243,9 +249,15 @@ function Invoke-PSQualityCheck {
                 $getFileListSplat = @{
                     'Path' = $item
                 }
-                if ($PSBoundParameters.ContainsKey('Recurse') -or
-                    $PSBoundParameters.ContainsKey('ProjectPath')) {
-                    $getFileListSplat.Add('Recurse', $true)
+
+                if ($PSBoundParameters.ContainsKey('IgnoreFile')) {
+                    $getFileListSplat.Add('IgnoreFile', (Resolve-Path -Path $IgnoreFile))
+                }
+                else {
+                    if ($PSBoundParameters.ContainsKey('Recurse') -or
+                        $PSBoundParameters.ContainsKey('ProjectPath')) {
+                        $getFileListSplat.Add('Recurse', $true)
+                    }
                 }
 
                 $scriptsToTest += GetFileList @getFileListSplat -Extension '.ps1'

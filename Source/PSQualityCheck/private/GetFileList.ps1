@@ -15,6 +15,9 @@ function GetFileList {
         .PARAMETER Recurse
         A switch specifying whether or not to recursively search the path specified
 
+        .PARAMETER IgnoreFile
+        A path to a .psqcignore file (.gitignore file format) for ignoring files
+
         .EXAMPLE
         $files = GetFileList -Path 'c:\folder' -Extension ".ps1"
 
@@ -29,25 +32,32 @@ function GetFileList {
         [parameter(Mandatory = $true)]
         [string]$Extension,
         [parameter(Mandatory = $false)]
-        [switch]$Recurse
+        [switch]$Recurse,
+        [parameter(Mandatory = $false)]
+        [string]$IgnoreFile
     )
 
     $Extension = $Extension
 
-    $FileNameArray = @()
-
     if (Test-Path -Path $Path) {
 
-        $gciSplat = @{
-            'Path'    = $Path
-            'Exclude' = "*.Tests.*"
+        $FileNameArray = @()
+
+        if ($PSBoundParameters.ContainsKey('IgnoreFile')) {
+            $SelectedFilesArray = Get-FilteredChildItem -Path $Path -IgnoreFileName $IgnoreFile
         }
-        if ($PSBoundParameters.ContainsKey('Recurse')) {
-            $gciSplat.Add('Recurse', $true)
+        else {
+            $gciSplat = @{
+                'Path'    = $Path
+                'Exclude' = "*.Tests.*"
+            }
+            if ($PSBoundParameters.ContainsKey('Recurse')) {
+                $gciSplat.Add('Recurse', $true)
+            }
+            $SelectedFilesArray = Get-ChildItem @gciSplat
         }
 
-        $SelectedFilesArray = Get-ChildItem @gciSplat | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName
-        $SelectedFilesArray | ForEach-Object { $FileNameArray += [string]$_.FullName }
+        $SelectedFilesArray | Where-Object { $_.Extension -eq $Extension } | Select-Object -Property FullName | ForEach-Object { $FileNameArray += [string]$_.FullName }
 
     }
 
