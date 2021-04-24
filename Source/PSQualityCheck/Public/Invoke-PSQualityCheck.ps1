@@ -45,53 +45,58 @@ function Invoke-PSQualityCheck {
         A path to the HelpRules parameter file
 
         .PARAMETER IgnoreFile
-        A path to the .psqcignore file which excludes files/path from the tests
+        A path to the .psqcignore file which excludes files/path from the tests. This is in the .gitignore format
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts'
 
-        This will call the quality Data on single path
+        This will call the quality checks on single path
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -Recurse
 
-        This will call the quality Data on single path and sub folders
+        This will call the quality checks on single path and sub folders
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path @('C:\Scripts', 'C:\MoreScripts')
 
-        This will call the quality Data with multiple paths
+        This will call the quality checks with multiple paths
+
+        .EXAMPLE
+        Invoke-PSQualityCheck -ProjectPath 'C:\Project' -IgnoreFile ".psqcignore"
+
+        This will call the project quality checks on the C:\Project folder with the .psqcignore file
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1'
 
-        This will call the quality Data with single script file
+        This will call the quality checks with single script file
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.psm1'
 
-        This will call the quality Data with single module file
+        This will call the quality checks with single module file
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.psd1'
 
-        This will call the quality Data with single datafile file
+        This will call the quality checks with single datafile file
         Note: The datafile test will fail as it is not a file that is accepted for testing
 
         .EXAMPLE
         Invoke-PSQualityCheck -File @('C:\Scripts\Script.ps1','C:\Scripts\Script2.ps1')
 
-        This will call the quality Data with multiple files. Files can be either scripts or modules
+        This will call the quality checks with multiple files. Files can be either scripts or modules
 
         .EXAMPLE
         Invoke-PSQualityCheck -File 'C:\Scripts\Script.ps1' -ScriptAnalyzerRulesPath 'C:\ScriptAnalyzerRulesPath'
 
-        This will call the quality Data with single file and the extra PSScriptAnalyzer rules
+        This will call the quality checks with single file and the extra PSScriptAnalyzer rules
 
         .EXAMPLE
         Invoke-PSQualityCheck -Path 'C:\Scripts' -ShowCheckResults
 
-        This will display a summary of the Data performed (example below uses sample data):
+        This will display a summary of the checks performed (example below uses sample data):
 
             Name                            Files Tested Total Passed Failed Skipped
             ----                            ------------ ----- ------ ------ -------
@@ -100,7 +105,7 @@ function Invoke-PSQualityCheck {
             Extracted function script tests           22   330    309      0      21
             Total                                     24   346    325      0      21
 
-        For those who have spotted that the Total files tested isn't a total of the rows above, this is because the Module Tests and Extracting function Tests operate on the same file and are then not counted twice
+        For those who have spotted that the Total files tested isn't a total of the rows above, this is because the Module Tests and Extracting function Tests operate on the same file and are not counted twice
 
         .LINK
         Website: https://github.com/andrewrdavidson/PSQualityCheck
