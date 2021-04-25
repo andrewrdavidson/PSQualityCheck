@@ -290,7 +290,15 @@ function Invoke-PSQualityCheck {
             # Test whether the item is a file (also tells us if it exists)
             if (Test-Path -Path $item -PathType Leaf) {
 
-                $itemProperties = Get-ChildItem -Path $item
+                $getFilteredItemSplat = @{
+                    'Path' = $item
+                }
+
+                if ($PSBoundParameters.ContainsKey('IgnoreFile')) {
+                    $getFilteredItemSplat.Add('IgnoreFile', (Resolve-Path -Path $IgnoreFile))
+                }
+
+                $itemProperties = Get-FilteredChildItem @getFilteredItemSplat
 
                 switch ($itemProperties.Extension) {
 
