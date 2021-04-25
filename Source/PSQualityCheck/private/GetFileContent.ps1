@@ -43,7 +43,14 @@ function GetFileContent {
         }
 
         if ($parsedFunctions.Count -eq 0) {
-            $parsedFileContent = $fileContent
+
+            for ($line = 0; $line -lt $fileContent.Count; $line++) {
+
+                $parsedFileContent += $fileContent[$line]
+                $parsedFileContent += "`r`n"
+
+            }
+
         }
         else {
             if ($fileContent.Count -gt 1) {

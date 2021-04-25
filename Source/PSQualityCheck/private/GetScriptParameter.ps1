@@ -16,7 +16,7 @@ function GetScriptParameter {
     [OutputType([System.Exception], [HashTable])]
     param (
         [parameter(Mandatory = $true)]
-        [String]$Content
+        [String[]]$Content
     )
 
     try {
