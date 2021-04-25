@@ -44,11 +44,12 @@ BeforeDiscovery {
 
 Describe "Script Tests" -Tag "Script" {
 
-    Context "Script: <_.Name> at <_.Directory>" -Foreach $scriptFiles {
+    Context "Script: <_.Name> at <_.Directory>" -ForEach $scriptFiles {
 
         BeforeAll {
 
             $scriptFile = $_.FullName
+
             $fileContent = GetFileContent -Path $scriptFile
 
             if (-not([string]::IsNullOrEmpty($fileContent))) {

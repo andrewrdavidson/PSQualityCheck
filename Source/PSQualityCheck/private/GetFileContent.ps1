@@ -38,51 +38,52 @@ function GetFileContent {
 
         $parsedFunctions = @($parsedFileFunctions | Where-Object { $_.Type -eq "Keyword" -and $_.Content -like 'function' })
 
-        if ([string]::IsNullOrEmpty($parsedFunctions) -or $parsedFunctions.Count -eq 0) {
-            throw "No functions found in file, file is invalid"
-        }
-
         if ($parsedFunctions.Count -gt 1) {
             throw "Too many functions in file, file is invalid"
         }
 
-        if ($fileContent.Count -gt 1) {
+        if ($parsedFunctions.Count -eq 0) {
+            $parsedFileContent = $fileContent
+        }
+        else {
+            if ($fileContent.Count -gt 1) {
 
-            foreach ($function in $parsedFunctions) {
+                foreach ($function in $parsedFunctions) {
 
-                $startLine = ($function.StartLine)
+                    $startLine = ($function.StartLine)
 
-                for ($line = $fileContent.Count - 1; $line -gt $function.StartLine; $line--) {
+                    for ($line = $fileContent.Count - 1; $line -gt $function.StartLine; $line--) {
 
-                    if ($fileContent[$line] -like "*}*") {
+                        if ($fileContent[$line] -like "*}*") {
 
-                        $endLine = $line
-                        break
+                            $endLine = $line
+                            break
+
+                        }
 
                     }
 
-                }
+                    for ($line = $startLine; $line -lt $endLine; $line++) {
 
-                for ($line = $startLine; $line -lt $endLine; $line++) {
+                        $parsedFileContent += $fileContent[$line]
 
-                    $parsedFileContent += $fileContent[$line]
+                        if ($line -ne ($fileContent.Count - 1)) {
+                            $parsedFileContent += "`r`n"
+                        }
 
-                    if ($line -ne ($fileContent.Count - 1)) {
-                        $parsedFileContent += "`r`n"
                     }
 
                 }
 
             }
+            else {
 
-        }
-        else {
+                [int]$startBracket = $fileContent.IndexOf('{')
+                [int]$endBracket = $fileContent.LastIndexOf('}')
 
-            [int]$startBracket = $fileContent.IndexOf('{')
-            [int]$endBracket = $fileContent.LastIndexOf('}')
+                $parsedFileContent = $fileContent.substring($startBracket + 1, $endBracket - 1 - $startBracket)
 
-            $parsedFileContent = $fileContent.substring($startBracket + 1, $endBracket - 1 - $startBracket)
-
+            }
         }
 
     }
