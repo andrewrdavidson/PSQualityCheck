@@ -12,11 +12,11 @@ else {
 }
 
 # Install build dependencies
-$psdependencyConfigPath = Join-Path -Path $PSScriptRoot -ChildPath 'install.depend.psd1'
-Write-Output "Checking / resolving module dependencies from [$psdependencyConfigPath]..."
+$psDependencyConfigPath = Join-Path -Path $PSScriptRoot -ChildPath 'install.depend.psd1'
+Write-Output "Checking / resolving module dependencies from [$psDependencyConfigPath]..."
 Import-Module -Name 'PSDepend'
 $invokePSDependParams = @{
-    Path    = $psdependencyConfigPath
+    Path    = $psDependencyConfigPath
     Import  = $true
     Confirm = $false
     Install = $true
