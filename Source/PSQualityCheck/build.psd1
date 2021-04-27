@@ -3,7 +3,7 @@
 @{
     ModuleManifest           = "PSQualityCheck.psd1"
     # Subsequent relative paths are to the ModuleManifest
-    OutputDirectory          = "../../artifacts/PSQualityCheck"
+    OutputDirectory          = "../../build/PSQualityCheck"
     VersionedOutputDirectory = $true
     CopyDirectories          = @('data', 'bin')
 }
