@@ -70,12 +70,10 @@ function Install-BuiltModule {
     [OutputType([System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$Module
+        [string]$ModuleName
     )
 
-    # $Module = "PSTemplate"
-
-    Install-Module -Name $Module -Repository "$Module-local"
+    Install-Module -Name $ModuleName -Repository "$ModuleName-local"
 
 }
 
@@ -85,31 +83,38 @@ function Publish-BuiltModule {
     [OutputType([System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$Module,
+        [string]$ModuleName,
         [parameter(Mandatory = $true)]
         [string]$ArtifactsFolder,
+        [parameter(Mandatory = $true)]
+        [string]$SourceFolder,
+        [parameter(Mandatory = $true)]
         [string]$BuildFolder,
         [switch]$Clean
     )
 
-    # $Module = "PSTemplate"
-    $Version = (Import-PowerShellDataFile -Path ".\source\$Module\$Module.psd1").ModuleVersion
+    $version = (Import-PowerShellDataFile -Path "$SourceFolder\$ModuleName\$ModuleName.psd1").ModuleVersion
+    $repositoryName = "$moduleName-local"
 
-    # QUERY: Need this?
-    # New-Item -ItemType Directory -Path  ./artifacts -Force
-    # $ArtifactsFolder = Resolve-Path -Path "./artifacts"
-    if ($PSBoundParameters.ContainsKey('Clean')) {
-        Remove-Item -Path $ArtifactsFolder -Recurse -Force
-        New-Item -Path $ArtifactsFolder -ItemType Directory
+    if ($null -ne (Get-InstalledModule -Name $ModuleName -ErrorAction SilentlyContinue)) {
+        Uninstall-Module -Name $ModuleName
     }
 
-    Register-PSRepository -Name "$Module-local" -SourceLocation $ArtifactsFolder -InstallationPolicy Trusted
+    if ($null -ne (Get-PSRepository -Name $repositoryName -ErrorAction SilentlyContinue)) {
+        Unregister-PSRepository -Name $repositoryName
+    }
 
-    Publish-Module -Path "$BuildFolder\$Module\$Version" -Repository "$Module-local" -NuGetApiKey 'use real NuGetApiKey for real nuget server here'
+    $artifact = Join-Path -Path $ArtifactsFolder -ChildPath "$($ModuleName).$($version).nupkg"
 
-    # Install-Module -Name "$($Module)" -Repository "$($Module)-local"
+    if ($PSBoundParameters.ContainsKey('Clean')) {
+        if ((Test-Path -Path $artifact -ErrorAction SilentlyContinue)) {
+            Remove-Item -Path $artifact -Force
+        }
+    }
 
-    # Get-PSRepository
+    Register-PSRepository -Name $repositoryName -SourceLocation $ArtifactsFolder -InstallationPolicy Trusted
+
+    Publish-Module -Path "$BuildFolder\$ModuleName\$version" -Repository $repositoryName -NuGetApiKey 'use real NuGetApiKey for real nuget server here'
 
 }
 
@@ -119,13 +124,10 @@ function Uninstall-BuiltModule {
     [OutputType([System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$Module
+        [string]$ModuleName
     )
 
-    # $Module = "PSTemplate"
-
-    Uninstall-Module -Name $Module
-
+    Uninstall-Module -Name $ModuleName
 
 }
 
@@ -135,15 +137,25 @@ function Unpublish-BuiltModule {
     [OutputType([System.Void])]
     param (
         [parameter(Mandatory = $true)]
-        [string]$Module
+        [string]$ModuleName,
+        [parameter(Mandatory = $true)]
+        [string]$SourceFolder,
+        [parameter(Mandatory = $true)]
+        [string]$ArtifactsFolder
     )
 
-    # $Module = 'PSTemplate'
+    $repositoryName = "$moduleName-local"
 
-    Unregister-PSRepository -Name "$Module-local"
+    $version = (Import-PowerShellDataFile -Path "$SourceFolder\$ModuleName\$ModuleName.psd1").ModuleVersion
 
-    # Remove-Item -Path "./artifacts" -Recurse -Force
+    $artifact = Join-Path -Path $ArtifactsFolder -ChildPath "$ModuleName.$version.nupkg"
 
-    # Get-PSRepository
+    if ((Test-Path -Path $artifact -ErrorAction SilentlyContinue)) {
+        Remove-Item -Path $artifact -Force
+    }
+
+    if ($null -ne (Get-PSRepository -Name $repositoryName -ErrorAction SilentlyContinue)) {
+        Unregister-PSRepository -Name $repositoryName
+    }
 
 }
