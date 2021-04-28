@@ -23,10 +23,18 @@ $projectPath = Resolve-Path -Path ".\"
 $sourcePath = Resolve-Path -Path "$projectPath\source"
 $scriptsPath = Resolve-Path -Path "$projectPath\scripts"
 $testsPath = Resolve-Path -Path "$projectPath\tests"
-$buildFolder = Resolve-Path -Path "$projectPath\build"
-$artifactsFolder = Resolve-Path -Path "$projectPath\artifacts"
 $ignoreFile = Resolve-Path -Path ".psqcignore"
 $moduleName = "PSQualityCheck"
+
+$buildFolder = Join-Path -Path "$projectPath" -ChildPath "build"
+$artifactsFolder = Join-Path -Path "$projectPath" -ChildPath "artifacts"
+
+if (-not (Test-Path -Path $artifactsFolder -ErrorAction SilentlyContinue)) {
+    New-Item -Path $artifactsFolder -ItemType "directory" -force
+}
+if (-not (Test-Path -Path $buildFolder -ErrorAction SilentlyContinue)) {
+    New-Item -Path $buildFolder -ItemType "directory" -force
+}
 
 $modules = Get-ChildItem -Path $sourcePath -Directory
 
@@ -34,6 +42,11 @@ $modules = Get-ChildItem -Path $sourcePath -Directory
 # to allow us to use this module (PSQualityCheck) to test itself whist building
 try {
     foreach ($module in $modules) {
+
+        if ($module -in ((Get-Module) | Select-Object -Property Name)) {
+            Remove-Module $module
+        }
+
         $buildPropertiesFile = "$sourcePath\$($module.BaseName)\build.psd1"
         Write-Host $buildPropertiesFile
         Build-Module -SourcePath $buildPropertiesFile
@@ -44,11 +57,13 @@ catch {
     break
 }
 
+if ("$moduleName-local" -in ((Get-PSRepository) | Select-Object -Property Name)) {
+    unRegister-PSRepository -Name "$moduleName-local"
+}
+
 Publish-BuiltModule -Module $moduleName -ArtifactsFolder $artifactsFolder -BuildFolder $buildFolder -Clean
 
-Install-BuiltModule
-
-Import-Module -Name $moduleName -Repository "$moduleName-Local"
+Install-BuiltModule -Module $moduleName
 
 # Start of Project Based checks
 $qualityCheckSplat = @{
@@ -156,9 +171,16 @@ foreach ($result in $testResults) {
     $testFailedCount += $result.FailedCount
 }
 
-# If there are no script failures then copy the scripts to the Artifacts folder
+# If there are no script failures then copy the scripts to the build folder and archive to the Artifacts folder
 if ($testFailedCount -eq 0) {
+
     $builtScriptsFolder = Join-Path -Path $buildFolder -ChildPath "scripts"
+
+    if (-not (Test-Path -Path $builtScriptsFolder -ErrorAction SilentlyContinue)) {
+        New-Item -Path $buildFolder -Name "scripts" -ItemType "directory" -force
+    }
+
+    Copy-Item -Path "Scripts" -Destination $buildFolder -Recurse -Force -Container
 
     $compressSplat = @{
         Path             = $builtScriptsFolder

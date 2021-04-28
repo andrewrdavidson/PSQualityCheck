@@ -24,8 +24,8 @@ function GetFileList {
         .EXAMPLE
         $files = GetFileList -Path 'c:\folder' -Extension ".ps1" -Recurse
 
-        .EXAMPLE
-        $files = GetFileList -Path 'c:\folder' -IgnoreFile ".psqcignore"
+        #.EXAMPLE
+        #$files = GetFileList -Path 'c:\folder' -IgnoreFile ".psqcignore"
     #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
