@@ -10,7 +10,7 @@ function TestHelpTokensTextIsValid {
         A array of tokens containing the tokens of the Help Comment
 
         .EXAMPLE
-        Test-HelpTokensTextIsValid -HelpTokens $HelpTokens
+        TestHelpTokensTextIsValid -HelpTokens $HelpTokens
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

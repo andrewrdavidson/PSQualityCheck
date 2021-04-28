@@ -13,7 +13,7 @@ function TestHelpTokensCountIsValid {
         Path to the HelpRules file
 
         .EXAMPLE
-        Test-HelpTokensCountIsValid -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
+        TestHelpTokensCountIsValid -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
 
         .NOTES
         This function will only check the Min/Max counts of required help tokens

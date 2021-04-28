@@ -10,7 +10,7 @@ function TestParameterVariablesHaveType {
         A HashTable containing the parameters from the param block
 
         .EXAMPLE
-        Test-ParameterVariablesHaveType -ParameterVariables $ParameterVariables
+        TestParameterVariablesHaveType -ParameterVariables $ParameterVariables
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

@@ -146,7 +146,7 @@ Describe "Script Tests" -Tag "Script" {
         # Note: Disabled because I'm questioning the validity of the rule. So many function haven't got a need for params
         # It "check script contains param attribute"  -Tag "ContainsParam" {
 
-        #     $paramCount = (@(Get-TokenMarker -ParsedContent $ParsedFile -Type "Keyword" -Content "param")).Count
+        #     $paramCount = (@(GetTokenMarker -ParsedContent $ParsedFile -Type "Keyword" -Content "param")).Count
 
         #     $paramCount | Should -Be 1
 

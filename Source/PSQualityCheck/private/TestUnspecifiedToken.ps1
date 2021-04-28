@@ -13,7 +13,7 @@ function TestUnspecifiedToken {
         Path to the HelpRules file
 
         .EXAMPLE
-        Test-UnspecifiedToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
+        TestUnspecifiedToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

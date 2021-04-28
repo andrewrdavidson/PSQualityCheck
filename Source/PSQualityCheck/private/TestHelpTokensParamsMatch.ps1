@@ -13,7 +13,7 @@ function TestHelpTokensParamsMatch {
         A object containing the parameters from the param block
 
         .EXAMPLE
-        Test-HelpTokensParamsMatch -HelpTokens $HelpTokens -ParameterVariables $ParameterVariables
+        TestHelpTokensParamsMatch -HelpTokens $HelpTokens -ParameterVariables $ParameterVariables
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.String[]])]

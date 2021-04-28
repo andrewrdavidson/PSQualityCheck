@@ -13,7 +13,7 @@ function TestRequiredToken {
         Path to the HelpRules file
 
         .EXAMPLE
-        Test-RequiredToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
+        TestRequiredToken -HelpTokens $HelpTokens -HelpRulesPath "C:\HelpRules"
     #>
     [CmdletBinding()]
     [OutputType([System.Exception], [System.Void])]

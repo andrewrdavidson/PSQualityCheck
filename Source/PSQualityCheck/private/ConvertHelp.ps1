@@ -10,7 +10,7 @@ function ConvertHelp {
         A string containing the Help Comment
 
         .EXAMPLE
-        $helpObject = Convert-Help -Help $Help
+        $helpObject = ConvertHelp -Help $Help
     #>
     [CmdletBinding()]
     [OutputType([HashTable], [System.Exception])]
