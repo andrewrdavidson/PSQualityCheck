@@ -1,11 +1,11 @@
-Describe "Get-ParsedContent.Tests" {
+Describe "GetParsedFile.Tests" {
 
     Context "Parameter Tests" -ForEach @(
-        @{ 'Name' = 'Content'; 'Type' = 'String' }
+        @{ 'Name' = 'Path'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-ParsedContent"
+            $commandletUnderTest = "GetParsedFile"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -45,7 +45,7 @@ Describe "Get-ParsedContent.Tests" {
                     "EndColumn" = 9
                 },
                 @{
-                    "Content" = "Get-FileContent"
+                    "Content" = "GetFileContent"
                     "Type" = "CommandArgument"
                     "Start" = 9
                     "Length" = 15
@@ -74,6 +74,16 @@ Describe "Get-ParsedContent.Tests" {
                     "EndLine" = 1
                     "EndColumn" = 28
                 }
+                @{
+                    "Content" = "`r`n"
+                    "Type" = "NewLine"
+                    "Start" = 27
+                    "Length" = 2
+                    "StartLine" = 1
+                    "StartColumn" = 28
+                    "EndLine" = 2
+                    "EndColumn" = 1
+                }
             )
 
         }
@@ -82,16 +92,20 @@ Describe "Get-ParsedContent.Tests" {
 
             {
 
-                Get-ParsedContent -Content $null
+                GetParsedFile -Path $null
 
             } | Should -Throw
 
         }
+
         It "should return correct parse tokens for content" {
 
-            $fileContent = "function Get-FileContent {}"
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
+            $fileContent = "function GetFileContent {}"
 
-            ($parsedModule, $parserErrorCount) = Get-ParsedContent -Content $fileContent
+            Set-Content -Path $testPath -Value $fileContent
+
+            ($parsedModule, $parserErrorCount) = GetParsedFile -Path $testPath
 
             for ($x = 0; $x -lt $parsedModule.Count; $x++) {
 
@@ -108,15 +122,21 @@ Describe "Get-ParsedContent.Tests" {
 
             }
 
+            Remove-Item -Path $testPath -Force
+
             $parserErrorCount | Should -BeExactly 0
 
         }
 
+
         It "should not return matching parse tokens for mismatching content" {
 
+            $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
             $fileContent = "function Get-Content {}"
 
-            ($parsedModule, $parserErrorCount) = Get-ParsedContent -Content $fileContent
+            Set-Content -Path $testPath -Value $fileContent
+
+            ($parsedModule, $parserErrorCount) = GetParsedFile -Path $testPath
 
             $flag = $true
 
@@ -136,6 +156,8 @@ Describe "Get-ParsedContent.Tests" {
                 }
 
             }
+
+            Remove-Item -Path $testPath -Force
 
             $flag | Should -BeFalse
 

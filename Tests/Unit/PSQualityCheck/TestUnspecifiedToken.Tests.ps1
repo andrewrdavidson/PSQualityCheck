@@ -1,11 +1,11 @@
-Describe "Test-UnspecifiedToken.Tests" {
+Describe "TestUnspecifiedToken.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-UnspecifiedToken"
+            $commandletUnderTest = "TestUnspecifiedToken"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -97,7 +97,7 @@ Describe "Test-UnspecifiedToken.Tests" {
 
             {
 
-                Test-UnspecifiedToken -HelpTokens $null
+                TestUnspecifiedToken -HelpTokens $null
 
             } | Should -Throw
 
@@ -137,7 +137,7 @@ Describe "Test-UnspecifiedToken.Tests" {
                     )
                 }
 
-                Test-UnspecifiedToken -HelpTokens $helpTokens
+                TestUnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -188,7 +188,7 @@ Describe "Test-UnspecifiedToken.Tests" {
 
                 }
 
-                Test-UnspecifiedToken -HelpTokens $helpTokens
+                TestUnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
@@ -209,7 +209,7 @@ Describe "Test-UnspecifiedToken.Tests" {
                     )
                 }
 
-                Test-UnspecifiedToken -HelpTokens $helpTokens
+                TestUnspecifiedToken -HelpTokens $helpTokens
 
                 Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 

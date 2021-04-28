@@ -1,11 +1,11 @@
-Describe "Get-FileContent.Tests" {
+Describe "GetFileContent.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Path'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-FileContent"
+            $commandletUnderTest = "GetFileContent"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -35,7 +35,7 @@ Describe "Get-FileContent.Tests" {
 
             {
 
-                Get-FileContent -Path $null
+                GetFileContent -Path $null
 
             } | Should -Throw
 
@@ -47,7 +47,7 @@ Describe "Get-FileContent.Tests" {
             $fileContent = ""
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($fileContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -59,7 +59,7 @@ Describe "Get-FileContent.Tests" {
             $fileContent = "Write-Host"
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($fileContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -73,7 +73,7 @@ Describe "Get-FileContent.Tests" {
             "
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($fileContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -82,11 +82,11 @@ Describe "Get-FileContent.Tests" {
         It "should pass when Path is valid with only one empty function in the file" {
 
             $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $matchContent = ""
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($matchContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -95,11 +95,11 @@ Describe "Get-FileContent.Tests" {
         It "should pass when Path is valid with only one single-line function in the file" {
 
             $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
-            $fileContent = "function Get-FileContent { Write-Host }"
+            $fileContent = "function GetFileContent { Write-Host }"
             $matchContent = " Write-Host "
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($matchContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -108,11 +108,11 @@ Describe "Get-FileContent.Tests" {
         It "should pass when Path is valid with only one single-line advanced function in the file" {
 
             $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
-            $fileContent = "function Get-FileContent { if ($true) { Write-Host } }"
+            $fileContent = "function GetFileContent { if ($true) { Write-Host } }"
             $matchContent = " if ($true) { Write-Host } "
             Set-Content -Path $testPath -Value $fileContent
 
-            $parsedFileContent = Get-FileContent -Path $testPath
+            $parsedFileContent = GetFileContent -Path $testPath
 
             ($matchContent -eq $parsedFileContent) | Should -BeTrue
 
@@ -121,16 +121,16 @@ Describe "Get-FileContent.Tests" {
         It "should pass when Path is valid with only one multi-line function in the file" {
 
             $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
-            $fileContent1 = "function Get-FileContent {
+            $fileContent1 = "function GetFileContent {
                                 Write-Host
                             }"
             $matchContent1 = "                                Write-Host`r`n"
 
             Set-Content -Path $testPath -Value $fileContent1
 
-            $parsedFileContent1 = Get-FileContent -Path $testPath
+            $parsedFileContent1 = GetFileContent -Path $testPath
 
-            $fileContent2 = "function Get-FileContent {
+            $fileContent2 = "function GetFileContent {
                                 if ($true) {
                                     Write-Host
                                 }
@@ -141,7 +141,7 @@ Describe "Get-FileContent.Tests" {
 
             Set-Content -Path $testPath -Value $fileContent2
 
-            $parsedFileContent2 = Get-FileContent -Path $testPath
+            $parsedFileContent2 = GetFileContent -Path $testPath
 
             ($matchContent1 -eq $parsedFileContent1) | Should -BeTrue
             ($matchContent2 -eq $parsedFileContent2) | Should -BeTrue
@@ -152,7 +152,7 @@ Describe "Get-FileContent.Tests" {
 
             {
                 $testPath = Join-Path -Path $TestDrive -ChildPath 'test.ps1'
-                $fileContent = "function Get-FileContent {
+                $fileContent = "function GetFileContent {
                                     Write-Host
                                 }
 
@@ -162,7 +162,7 @@ Describe "Get-FileContent.Tests" {
 
                 Set-Content -Path $testPath -Value $fileContent
 
-                $parsedFileContent = Get-FileContent -Path $testPath
+                $parsedFileContent = GetFileContent -Path $testPath
 
             } | Should -Throw
 

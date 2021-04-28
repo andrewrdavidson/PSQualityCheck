@@ -1,12 +1,12 @@
-Describe "Export-FunctionsFromModule.Tests" {
+Describe "ExportFunctionsFromModule.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Path'; 'Type' = 'String' }
         @{ 'Name' = 'ExtractPath'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Export-FunctionsFromModule"
+            $commandletUnderTest = "ExportFunctionsFromModule"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -45,7 +45,7 @@ Describe "Export-FunctionsFromModule.Tests" {
 
             {
 
-                Export-FunctionsFromModule -Path $null -ExtractPath $null
+                ExportFunctionsFromModule -Path $null -ExtractPath $null
 
             } | Should -Throw
 
@@ -58,7 +58,7 @@ Describe "Export-FunctionsFromModule.Tests" {
                 $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.ps1'
                 Set-Content -Path $testPath1 -Value $fileContent
 
-                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+                ExportFunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
 
             } | Should -Throw
 
@@ -71,7 +71,7 @@ Describe "Export-FunctionsFromModule.Tests" {
                 $testPath1 = Join-Path -Path $sourcePath -ChildPath 'test.psm1'
                 Set-Content -Path $testPath1 -Value $fileContent
 
-                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+                ExportFunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
 
             } | Should -Throw
 
@@ -89,7 +89,7 @@ Describe "Export-FunctionsFromModule.Tests" {
                 $functionPath = Join-Path $extractPath -ChildPath "test"
                 $functionFile = Join-Path $functionPath -ChildPath "Test-Function.ps1"
 
-                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+                ExportFunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
 
                 $files = Get-ChildItem -Path $functionPath
 
@@ -116,7 +116,7 @@ Describe "Export-FunctionsFromModule.Tests" {
                 $functionFile1 = Join-Path $functionPath -ChildPath "Test-Function.ps1"
                 $functionFile2 = Join-Path $functionPath -ChildPath "Test-SecondFunction.ps1"
 
-                Export-FunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
+                ExportFunctionsFromModule -Path $testPath1 -ExtractPath $extractPath
 
                 $files = Get-ChildItem -Path $functionPath
 

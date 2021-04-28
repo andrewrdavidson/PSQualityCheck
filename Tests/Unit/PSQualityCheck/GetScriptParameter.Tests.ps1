@@ -1,11 +1,11 @@
-Describe "Get-ScriptParameter.Tests" {
+Describe "GetScriptParameter.Tests" {
 
-    Context "Parameter Tests" -Foreach @(
+    Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'Content'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-ScriptParameter"
+            $commandletUnderTest = "GetScriptParameter"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -35,7 +35,7 @@ Describe "Get-ScriptParameter.Tests" {
 
             {
 
-                Get-ScriptParameter -Content $null
+                GetScriptParameter -Content $null
 
             } | Should -Throw
 
@@ -44,9 +44,9 @@ Describe "Get-ScriptParameter.Tests" {
         It "should throw when passed no parameters" {
 
             {
-                $fileContent = "function Get-FileContent { }"
+                $fileContent = "function GetFileContent { }"
 
-                $parameterVariables = Get-ScriptParameter -Content $fileContent
+                $parameterVariables = GetScriptParameter -Content $fileContent
 
                 $parameterVariables | Should -BeNullOrEmpty
 
@@ -58,7 +58,7 @@ Describe "Get-ScriptParameter.Tests" {
 
             $fileContent = 'param ( $parameterOne )'
 
-            $parameterVariables = Get-ScriptParameter -Content $fileContent
+            $parameterVariables = GetScriptParameter -Content $fileContent
 
             $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
             $parameterVariables.('parameterOne') | Should -BeNullOrEmpty
@@ -69,7 +69,7 @@ Describe "Get-ScriptParameter.Tests" {
 
             $fileContent = 'param ( [int]$parameterOne )'
 
-            $parameterVariables = Get-ScriptParameter -Content $fileContent
+            $parameterVariables = GetScriptParameter -Content $fileContent
 
             $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
             $parameterVariables.('parameterOne') | Should -BeExactly '[int]'
@@ -83,7 +83,7 @@ Describe "Get-ScriptParameter.Tests" {
                             [string]$parameterTwo
                             )'
 
-            $parameterVariables = Get-ScriptParameter -Content $fileContent
+            $parameterVariables = GetScriptParameter -Content $fileContent
 
             $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
             $parameterVariables.('parameterOne') | Should -BeExactly '[int]'
@@ -100,7 +100,7 @@ Describe "Get-ScriptParameter.Tests" {
                             $parameterTwo
                             )'
 
-            $parameterVariables = Get-ScriptParameter -Content $fileContent
+            $parameterVariables = GetScriptParameter -Content $fileContent
 
             $parameterVariables.ContainsKey('parameterOne') | Should -BeTrue
             $parameterVariables.('parameterOne') | Should -BeExactly '[int]'

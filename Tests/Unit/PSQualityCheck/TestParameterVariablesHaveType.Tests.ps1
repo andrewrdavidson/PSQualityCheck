@@ -1,11 +1,11 @@
-Describe "Test-ParameterVariablesHaveType.Tests" {
+Describe "TestParameterVariablesHaveType.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'ParameterVariables'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-ParameterVariablesHaveType"
+            $commandletUnderTest = "TestParameterVariablesHaveType"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -35,7 +35,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
 
             {
 
-                Test-ParameterVariablesHaveType -ParameterVariables $null
+                TestParameterVariablesHaveType -ParameterVariables $null
 
             } | Should -Throw
 
@@ -48,7 +48,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
                     'ParameterWithType' = '[string]'
                 }
 
-                Test-ParameterVariablesHaveType -ParameterVariables $parameterVariable
+                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
 
             } | Should -Not -Throw
 
@@ -61,7 +61,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
                     'ParameterWithoutType' = $null
                 }
 
-                Test-ParameterVariablesHaveType -ParameterVariables $parameterVariable
+                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -74,7 +74,7 @@ Describe "Test-ParameterVariablesHaveType.Tests" {
                     'ParameterWithEmptyType' = ''
                 }
 
-                Test-ParameterVariablesHaveType -ParameterVariables $parameterVariable
+                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
 
             } | Should -Throw
 

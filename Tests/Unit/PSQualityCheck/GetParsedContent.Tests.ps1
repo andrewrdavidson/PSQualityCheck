@@ -1,13 +1,11 @@
-Describe "Get-Token.Tests" {
+Describe "GetParsedContent.Tests" {
 
     Context "Parameter Tests" -ForEach @(
-        @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
-        @{ 'Name' = 'Type'; 'Type' = 'String' }
         @{ 'Name' = 'Content'; 'Type' = 'String' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-Token"
+            $commandletUnderTest = "GetParsedContent"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -31,12 +29,11 @@ Describe "Get-Token.Tests" {
 
     }
 
-    # TODO Broken Test, requires Get-TokenMarker and Get-TokenComponent mocking out
-
     Context "Function tests" {
 
         BeforeAll {
-            $ParsedContent = @(
+
+            $parsedFileContent = @(
                 @{
                     "Content" = "function"
                     "Type" = "Keyword"
@@ -48,7 +45,7 @@ Describe "Get-Token.Tests" {
                     "EndColumn" = 9
                 },
                 @{
-                    "Content" = "Get-FileContent"
+                    "Content" = "GetFileContent"
                     "Type" = "CommandArgument"
                     "Start" = 9
                     "Length" = 15
@@ -78,44 +75,71 @@ Describe "Get-Token.Tests" {
                     "EndColumn" = 28
                 }
             )
+
         }
 
         It "should throw when passing null parameters" {
 
             {
 
-                Get-Token -ParsedContent $null -Type $null -Content $null
+                GetParsedContent -Content $null
 
             } | Should -Throw
 
         }
+        It "should return correct parse tokens for content" {
 
-        It "should find token where parameters are valid" {
+            $fileContent = "function GetFileContent {}"
 
-            $token = Get-Token -ParsedContent $ParsedContent -Type "Keyword" -Content "Function"
+            ($parsedModule, $parserErrorCount) = GetParsedContent -Content $fileContent
 
             for ($x = 0; $x -lt $parsedModule.Count; $x++) {
 
                 (
-                    ($token[$x].StartLine -eq $ParsedContent[$x].StartLine) -and
-                    ($token[$x].Content -eq $ParsedContent[$x].Content) -and
-                    ($token[$x].Type -eq $ParsedContent[$x].Type) -and
-                    ($token[$x].Start -eq $ParsedContent[$x].Start) -and
-                    ($token[$x].Length -eq $ParsedContent[$x].Length) -and
-                    ($token[$x].StartColumn -eq $ParsedContent[$x].StartColumn) -and
-                    ($token[$x].EndLine -eq $ParsedContent[$x].EndLine) -and
-                    ($token[$x].EndColumn -eq $ParsedContent[$x].EndColumn)
+                    ($parsedModule[$x].StartLine -eq $parsedFileContent[$x].StartLine) -and
+                    ($parsedModule[$x].Content -eq $parsedFileContent[$x].Content) -and
+                    ($parsedModule[$x].Type -eq $parsedFileContent[$x].Type) -and
+                    ($parsedModule[$x].Start -eq $parsedFileContent[$x].Start) -and
+                    ($parsedModule[$x].Length -eq $parsedFileContent[$x].Length) -and
+                    ($parsedModule[$x].StartColumn -eq $parsedFileContent[$x].StartColumn) -and
+                    ($parsedModule[$x].EndLine -eq $parsedFileContent[$x].EndLine) -and
+                    ($parsedModule[$x].EndColumn -eq $parsedFileContent[$x].EndColumn)
                 ) | Should -BeTrue
 
             }
 
+            $parserErrorCount | Should -BeExactly 0
+
         }
 
-        It "should not find token where parameters are invalid" {
+        It "should not return matching parse tokens for mismatching content" {
 
-            $token = (Get-Token -ParsedContent $ParsedContent -Type "Unknown" -Content "Data")
+            $fileContent = "function Get-Content {}"
 
-            $token | Should -BeNullOrEmpty
+            ($parsedModule, $parserErrorCount) = GetParsedContent -Content $fileContent
+
+            $flag = $true
+
+            for ($x = 0; $x -lt $parsedModule.Count; $x++) {
+
+                if (
+                    ($parsedModule[$x].StartLine -ne $parsedFileContent[$x].StartLine) -or
+                    ($parsedModule[$x].Content -ne $parsedFileContent[$x].Content) -or
+                    ($parsedModule[$x].Type -ne $parsedFileContent[$x].Type) -or
+                    ($parsedModule[$x].Start -ne $parsedFileContent[$x].Start) -or
+                    ($parsedModule[$x].Length -ne $parsedFileContent[$x].Length) -or
+                    ($parsedModule[$x].StartColumn -ne $parsedFileContent[$x].StartColumn) -or
+                    ($parsedModule[$x].EndLine -ne $parsedFileContent[$x].EndLine) -or
+                    ($parsedModule[$x].EndColumn -ne $parsedFileContent[$x].EndColumn)
+                ) {
+                    $flag = $false
+                }
+
+            }
+
+            $flag | Should -BeFalse
+
+            $parserErrorCount | Should -BeExactly 0
 
         }
 

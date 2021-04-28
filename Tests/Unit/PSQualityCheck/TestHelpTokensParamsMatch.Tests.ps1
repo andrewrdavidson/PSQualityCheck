@@ -1,4 +1,4 @@
-Describe "Test-HelpTokensParamsMatch.Tests" {
+Describe "TestHelpTokensParamsMatch.Tests" {
 
     Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
@@ -6,7 +6,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpTokensParamsMatch"
+            $commandletUnderTest = "TestHelpTokensParamsMatch"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -36,7 +36,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
 
             {
 
-                Test-HelpTokensParamsMatch -HelpTokens $null -ParameterVariables $null
+                TestHelpTokensParamsMatch -HelpTokens $null -ParameterVariables $null
 
             } | Should -Throw
 
@@ -58,7 +58,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterWithType" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Not -Throw
 
@@ -80,7 +80,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterWithType" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -108,7 +108,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Not -Throw
 
@@ -136,7 +136,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -164,7 +164,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -187,7 +187,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -210,7 +210,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -237,7 +237,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                     "ParameterTwo" = '[string]'
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 
@@ -263,7 +263,7 @@ Describe "Test-HelpTokensParamsMatch.Tests" {
                 $parameterVariable = @{
                 }
 
-                Test-HelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
+                TestHelpTokensParamsMatch -HelpTokens $help -ParameterVariables $parameterVariable
 
             } | Should -Throw
 

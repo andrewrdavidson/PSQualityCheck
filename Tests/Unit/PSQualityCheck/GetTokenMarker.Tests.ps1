@@ -46,7 +46,7 @@ Describe "GetTokenMarker.Tests" {
                     "EndColumn"   = 9
                 },
                 @{
-                    "Content"     = "Get-FileContent"
+                    "Content"     = "GetFileContent"
                     "Type"        = "CommandArgument"
                     "Start"       = 9
                     "Length"      = 15
@@ -78,7 +78,7 @@ Describe "GetTokenMarker.Tests" {
             )
 
             $tokenMatch = @{
-                "Content"     = "Get-FileContent"
+                "Content"     = "GetFileContent"
                 "Type"        = "CommandArgument"
                 "Start"       = 9
                 "Length"      = 15
@@ -100,17 +100,17 @@ Describe "GetTokenMarker.Tests" {
 
         }
 
-        It "should find 'CommandArgument' type with 'Get-FileContent' value" {
+        It "should find 'CommandArgument' type with 'GetFileContent' value" {
 
-            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "Get-FileContent"
+            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "CommandArgument" -Content "GetFileContent"
 
             Compare-Object -ReferenceObject $token.Values -DifferenceObject $tokenMatch.values | Should -BeNullOrEmpty
 
         }
 
-        It "should not find 'Dummy' type with 'Get-FileContent' value" {
+        It "should not find 'Dummy' type with 'GetFileContent' value" {
 
-            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "Dummy" -Content "Get-FileContent"
+            $token = GetTokenMarker -ParsedContent $ParsedContent -Type "Dummy" -Content "GetFileContent"
 
             $token | Should -BeNullOrEmpty
 

@@ -1,13 +1,13 @@
-Describe "Get-FileList.Tests" {
+Describe "GetFileList.Tests" {
 
-    Context "Parameter Tests" -ForEach @(
+    Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'Path'; 'Type' = 'String'; 'MandatoryFlag' = $true }
         @{ 'Name' = 'Extension'; 'Type' = 'String'; 'MandatoryFlag' = $true }
         @{ 'Name' = 'Recurse'; 'Type' = 'SwitchParameter'; 'MandatoryFlag' = $false }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-FileList"
+            $commandletUnderTest = "GetFileList"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -37,7 +37,7 @@ Describe "Get-FileList.Tests" {
 
             {
 
-                Get-FileList -Path $null -Extension $null
+                GetFileList -Path $null -Extension $null
 
             } | Should -Throw
 
@@ -45,11 +45,11 @@ Describe "Get-FileList.Tests" {
 
         It "should return one file when checking folder with one matching files" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.ps1'
             Set-Content -Path $testPath1 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
 
@@ -59,13 +59,13 @@ Describe "Get-FileList.Tests" {
 
         It "should return two files when checking folder with two matching files" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.ps1'
             Set-Content -Path $testPath1 -Value $fileContent
             $testPath2 = Join-Path -Path $TestDrive -ChildPath 'test2.ps1'
             Set-Content -Path $testPath2 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
             Remove-Item -Path $testPath2 -Force
@@ -76,11 +76,11 @@ Describe "Get-FileList.Tests" {
 
         It "should return no files when checking folder with non-matching files" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.psm1'
             Set-Content -Path $testPath1 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
 
@@ -90,13 +90,13 @@ Describe "Get-FileList.Tests" {
 
         It "should return one file when checking folder with some matching files" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.psm1'
             Set-Content -Path $testPath1 -Value $fileContent
             $testPath2 = Join-Path -Path $TestDrive -ChildPath 'test2.ps1'
             Set-Content -Path $testPath2 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
             Remove-Item -Path $testPath2 -Force
@@ -107,13 +107,13 @@ Describe "Get-FileList.Tests" {
 
         It "should return correct file when checking folder" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.psm1'
             Set-Content -Path $testPath1 -Value $fileContent
             $testPath2 = Join-Path -Path $TestDrive -ChildPath 'test2.ps1'
             Set-Content -Path $testPath2 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
             Remove-Item -Path $testPath2 -Force
@@ -124,13 +124,13 @@ Describe "Get-FileList.Tests" {
 
         It "should return multiple correct files when checking folder" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test1.ps1'
             Set-Content -Path $testPath1 -Value $fileContent
             $testPath2 = Join-Path -Path $TestDrive -ChildPath 'test2.ps1'
             Set-Content -Path $testPath2 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
             Remove-Item -Path $testPath2 -Force
@@ -141,11 +141,11 @@ Describe "Get-FileList.Tests" {
 
         It "should not return Test files when checking folder" {
 
-            $fileContent = "function Get-FileContent {}"
+            $fileContent = "function GetFileContent {}"
             $testPath1 = Join-Path -Path $TestDrive -ChildPath 'test.Tests.ps1'
             Set-Content -Path $testPath1 -Value $fileContent
 
-            $fileList = Get-FileList -Path $TestDrive -Extension ".ps1"
+            $fileList = GetFileList -Path $TestDrive -Extension ".ps1"
 
             Remove-Item -Path $testPath1 -Force
 

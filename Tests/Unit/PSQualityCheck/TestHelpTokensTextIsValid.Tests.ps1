@@ -1,11 +1,11 @@
-Describe "Test-HelpTokensTextIsValid.Tests" {
+Describe "TestHelpTokensTextIsValid.Tests" {
 
     Context "Parameter Tests" -ForEach @(
         @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Test-HelpTokensTextIsValid"
+            $commandletUnderTest = "TestHelpTokensTextIsValid"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -35,7 +35,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
 
             {
 
-                Test-HelpTokensTextIsValid -HelpTokens $null
+                TestHelpTokensTextIsValid -HelpTokens $null
 
             } | Should -Throw
 
@@ -54,7 +54,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Not -Throw
 
@@ -73,7 +73,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 
@@ -92,7 +92,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 
@@ -125,7 +125,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Not -Throw
 
@@ -158,7 +158,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 
@@ -191,7 +191,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 
@@ -224,7 +224,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 
@@ -257,7 +257,7 @@ Describe "Test-HelpTokensTextIsValid.Tests" {
                     )
                 }
 
-                Test-HelpTokensTextIsValid -HelpTokens $help
+                TestHelpTokensTextIsValid -HelpTokens $help
 
             } | Should -Throw
 

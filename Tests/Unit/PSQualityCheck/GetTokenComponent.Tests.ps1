@@ -1,4 +1,4 @@
-Describe "Get-TokenComponent.Tests" {
+Describe "GetTokenComponent.Tests" {
 
     Context "Parameter Tests" -Foreach @(
         @{ 'Name' = 'ParsedContent'; 'Type' = 'Object[]' }
@@ -6,7 +6,7 @@ Describe "Get-TokenComponent.Tests" {
     ) {
 
         BeforeAll {
-            $commandletUnderTest = "Get-TokenComponent"
+            $commandletUnderTest = "GetTokenComponent"
         }
 
         It "should have $Name as a mandatory parameter" {
@@ -45,7 +45,7 @@ Describe "Get-TokenComponent.Tests" {
                     "EndColumn" = 9
                 },
                 @{
-                    "Content" = "Get-FileContent"
+                    "Content" = "GetFileContent"
                     "Type" = "CommandArgument"
                     "Start" = 9
                     "Length" = 15
@@ -81,7 +81,7 @@ Describe "Get-TokenComponent.Tests" {
 
             {
 
-                Get-TokenComponent -ParsedContent $null -StartLine $null
+                GetTokenComponent -ParsedContent $null -StartLine $null
 
             } | Should -Throw
 
@@ -89,7 +89,7 @@ Describe "Get-TokenComponent.Tests" {
 
         It "should find token where 'StartLine' is valid" {
 
-            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 1
+            $token = GetTokenComponent -ParsedContent $ParsedContent -StartLine 1
 
             Compare-Object -ReferenceObject $token.Values -DifferenceObject $ParsedContent.values | Should -BeNullOrEmpty
 
@@ -97,10 +97,10 @@ Describe "Get-TokenComponent.Tests" {
 
         It "should not find token where 'StartLine' is invalid" {
 
-            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine 3
+            $token = GetTokenComponent -ParsedContent $ParsedContent -StartLine 3
             $token | Should -BeNullOrEmpty
 
-            $token = Get-TokenComponent -ParsedContent $ParsedContent -StartLine $null
+            $token = GetTokenComponent -ParsedContent $ParsedContent -StartLine $null
             $token | Should -BeNullOrEmpty
 
         }
