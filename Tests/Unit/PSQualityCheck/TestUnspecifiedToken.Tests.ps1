@@ -1,41 +1,43 @@
-Describe "TestUnspecifiedToken.Tests" {
+InModuleScope PSQualityCheck {
 
-    Context "Parameter Tests" -Foreach @(
-        @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
-    ) {
+    Describe "TestUnspecifiedToken.Tests" {
 
-        BeforeAll {
-            $commandletUnderTest = "TestUnspecifiedToken"
+        Context "Parameter Tests" -ForEach @(
+            @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
+        ) {
+
+            BeforeAll {
+                $commandletUnderTest = "TestUnspecifiedToken"
+            }
+
+            It "should have $Name as a mandatory parameter" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+
+            }
+
+            It "should $Name not belong to a parameter set" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+            }
+
+            It "should $Name type be $Type" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
+
+            }
+
         }
 
-        It "should have $Name as a mandatory parameter" {
+        Context "Function tests" {
 
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+            BeforeAll {
+                New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
+                New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
 
-        }
-
-        It "should $Name not belong to a parameter set" {
-
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
-
-        }
-
-        It "should $Name type be $Type" {
-
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
-
-        }
-
-    }
-
-    Context "Function tests" {
-
-        BeforeAll {
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
-
-            '@{
+                '@{
                 ''1'' = @{
                     Key = ''.SYNOPSIS''
                     Required = $true
@@ -84,136 +86,138 @@ Describe "TestUnspecifiedToken.Tests" {
                     MinOccurrences = 0
                     MaxOccurrences = 0
                 }
-            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpElementRules.psd1')
-        }
-
-        BeforeEach {
-            Mock Get-Module -ParameterFilter { $Name -eq "PSQualityCheck" } {
-                return @{'ModuleBase' = Join-Path -Path $TestDrive -ChildPath 'module' }
+            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
             }
-        }
 
-        It "should throw when passing null parameters" {
-
-            {
-
-                TestUnspecifiedToken -HelpTokens $null
-
-            } | Should -Throw
-
-        }
-
-        It "should not throw when checking required help tokens" {
-
-            {
-                $helpTokens = @{
-                    '.SYNOPSIS'    = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 3
-                            "Text"       = ""
-                        }
-                    )
-                    '.PARAMETER'   = @(
-                        @{
-                            "Name"       = "Path"
-                            "LineNumber" = 5
-                            "Text"       = ""
-                        }
-                    )
-                    '.EXAMPLE'     = @(
-                        @{
-                            "Name"       = ""
-                            "LineNumber" = 7
-                            "Text"       = "This is example text"
-                        }
-                    )
+            BeforeEach {
+                Mock Get-Module -ParameterFilter { $Name -eq "PSQualityCheck" } {
+                    return @{'ModuleBase' = Join-Path -Path $TestDrive -ChildPath 'module' }
                 }
+            }
 
-                TestUnspecifiedToken -HelpTokens $helpTokens
+            It "should throw when passing null parameters" {
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                {
 
-            } | Should -Not -Throw
+                    TestUnspecifiedToken -HelpTokens $null -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
 
-        }
+                } | Should -Throw
 
-        It "should not throw when checking required help tokens plus optional help tokens" {
+            }
 
-            {
+            It "should not throw when checking required help tokens" {
 
-                $helpTokens = @{
-                    '.SYNOPSIS'    = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 3
-                            "Text"       = ""
-                        }
-                    )
-                    '.PARAMETER'   = @(
-                        @{
-                            "Name"       = "Path"
-                            "LineNumber" = 5
-                            "Text"       = ""
-                        }
-                    )
-                    '.EXAMPLE'     = @(
-                        @{
-                            "Name"       = ""
-                            "LineNumber" = 7
-                            "Text"       = "This is example text"
-                        }
-                    )
-                    '.NOTES'       = @(
-                        @{
-                            "Name"       = ""
-                            "LineNumber" = 10
-                            "Text"       = "This is a note"
-                        }
-                    )
+                {
+                    $helpTokens = @{
+                        '.SYNOPSIS'    = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            }
+                        )
+                        '.DESCRIPTION' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 3
+                                "Text"       = ""
+                            }
+                        )
+                        '.PARAMETER'   = @(
+                            @{
+                                "Name"       = "Path"
+                                "LineNumber" = 5
+                                "Text"       = ""
+                            }
+                        )
+                        '.EXAMPLE'     = @(
+                            @{
+                                "Name"       = ""
+                                "LineNumber" = 7
+                                "Text"       = "This is example text"
+                            }
+                        )
+                    }
 
-                }
+                    TestUnspecifiedToken -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
 
-                TestUnspecifiedToken -HelpTokens $helpTokens
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                } | Should -Not -Throw
 
-            } | Should -Not -Throw
+            }
 
-        }
+            It "should not throw when checking required help tokens plus optional help tokens" {
 
-        It "should throw when unspecified help token is present" {
+                {
 
-            {
-                $helpTokens = @{
-                    '.DUMMY' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        }
-                    )
-                }
+                    $helpTokens = @{
+                        '.SYNOPSIS'    = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            }
+                        )
+                        '.DESCRIPTION' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 3
+                                "Text"       = ""
+                            }
+                        )
+                        '.PARAMETER'   = @(
+                            @{
+                                "Name"       = "Path"
+                                "LineNumber" = 5
+                                "Text"       = ""
+                            }
+                        )
+                        '.EXAMPLE'     = @(
+                            @{
+                                "Name"       = ""
+                                "LineNumber" = 7
+                                "Text"       = "This is example text"
+                            }
+                        )
+                        '.NOTES'       = @(
+                            @{
+                                "Name"       = ""
+                                "LineNumber" = 10
+                                "Text"       = "This is a note"
+                            }
+                        )
 
-                TestUnspecifiedToken -HelpTokens $helpTokens
+                    }
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                    TestUnspecifiedToken -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
 
-            } | Should -Throw
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+
+                } | Should -Not -Throw
+
+            }
+
+            It "should throw when unspecified help token is present" {
+
+                {
+                    $helpTokens = @{
+                        '.DUMMY' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            }
+                        )
+                    }
+
+                    TestUnspecifiedToken -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
+
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+
+                } | Should -Throw
+
+            }
 
         }
 

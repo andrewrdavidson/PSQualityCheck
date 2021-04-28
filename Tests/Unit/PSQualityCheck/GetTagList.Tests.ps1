@@ -1,6 +1,10 @@
-Describe "Get-TagList.Tests" {
+InModuleScope PSQualityCheck {
 
-    Context "Function tests" {
+    Describe "Get-TagList.Tests" {
+
+        Context "Function tests" {
+
+        }
 
     }
 

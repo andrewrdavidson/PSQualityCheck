@@ -1,82 +1,86 @@
-Describe "TestParameterVariablesHaveType.Tests" {
+InModuleScope PSQualityCheck {
 
-    Context "Parameter Tests" -Foreach @(
-        @{ 'Name' = 'ParameterVariables'; 'Type' = 'HashTable' }
-    ) {
+    Describe "TestParameterVariablesHaveType.Tests" {
 
-        BeforeAll {
-            $commandletUnderTest = "TestParameterVariablesHaveType"
-        }
+        Context "Parameter Tests" -ForEach @(
+            @{ 'Name' = 'ParameterVariables'; 'Type' = 'HashTable' }
+        ) {
 
-        It "should have $Name as a mandatory parameter" {
+            BeforeAll {
+                $commandletUnderTest = "TestParameterVariablesHaveType"
+            }
 
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+            It "should have $Name as a mandatory parameter" {
 
-        }
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
 
-        It "should $Name not belong to a parameter set" {
+            }
 
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+            It "should $Name not belong to a parameter set" {
 
-        }
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
 
-        It "should $Name type be $Type" {
+            }
 
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
+            It "should $Name type be $Type" {
 
-        }
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
 
-    }
-
-    Context "Function tests" {
-
-        It "should throw when passing null parameters" {
-
-            {
-
-                TestParameterVariablesHaveType -ParameterVariables $null
-
-            } | Should -Throw
+            }
 
         }
 
-        It "should not throw with valid parameter" {
+        Context "Function tests" {
 
-            {
-                $parameterVariable = @{
-                    'ParameterWithType' = '[string]'
-                }
+            It "should throw when passing null parameters" {
 
-                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
+                {
 
-            } | Should -Not -Throw
+                    TestParameterVariablesHaveType -ParameterVariables $null
 
-        }
+                } | Should -Throw
 
-        It "should throw with null type parameter" {
+            }
 
-            {
-                $parameterVariable = @{
-                    'ParameterWithoutType' = $null
-                }
+            It "should not throw with valid parameter" {
 
-                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
+                {
+                    $parameterVariable = @{
+                        'ParameterWithType' = '[string]'
+                    }
 
-            } | Should -Throw
+                    TestParameterVariablesHaveType -ParameterVariables $parameterVariable
 
-        }
+                } | Should -Not -Throw
 
-        It "should throw with empty type parameter" {
+            }
 
-            {
-                $parameterVariable = @{
-                    'ParameterWithEmptyType' = ''
-                }
+            It "should throw with null type parameter" {
 
-                TestParameterVariablesHaveType -ParameterVariables $parameterVariable
+                {
+                    $parameterVariable = @{
+                        'ParameterWithoutType' = $null
+                    }
 
-            } | Should -Throw
+                    TestParameterVariablesHaveType -ParameterVariables $parameterVariable
+
+                } | Should -Throw
+
+            }
+
+            It "should throw with empty type parameter" {
+
+                {
+                    $parameterVariable = @{
+                        'ParameterWithEmptyType' = ''
+                    }
+
+                    TestParameterVariablesHaveType -ParameterVariables $parameterVariable
+
+                } | Should -Throw
+
+            }
 
         }
 

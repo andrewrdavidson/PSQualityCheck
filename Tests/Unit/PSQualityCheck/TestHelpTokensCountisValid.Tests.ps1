@@ -1,41 +1,43 @@
-Describe "TestHelpTokensCountIsValid.Tests" {
+InModuleScope PSQualityCheck {
 
-    Context "Parameter Tests" -Foreach @(
-        @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
-    ) {
+    Describe "TestHelpTokensCountIsValid.Tests" {
 
-        BeforeAll {
-            $commandletUnderTest = "TestHelpTokensCountIsValid"
+        Context "Parameter Tests" -Foreach @(
+            @{ 'Name' = 'HelpTokens'; 'Type' = 'HashTable' }
+        ) {
+
+            BeforeAll {
+                $commandletUnderTest = "TestHelpTokensCountIsValid"
+            }
+
+            It "should have $Name as a mandatory parameter" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+
+            }
+
+            It "should $Name not belong to a parameter set" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
+
+            }
+
+            It "should $Name type be $Type" {
+
+                (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
+
+            }
+
         }
 
-        It "should have $Name as a mandatory parameter" {
+        Context "Function tests" {
 
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Name | Should -BeExactly $Name
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].Attributes.Mandatory | Should -BeTrue
+            BeforeAll {
+                New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
+                New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
 
-        }
-
-        It "should $Name not belong to a parameter set" {
-
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterSets.Keys | Should -Be '__AllParameterSets'
-
-        }
-
-        It "should $Name type be $Type" {
-
-            (Get-Command -Name $commandletUnderTest).Parameters[$Name].ParameterType.Name | Should -Be $Type
-
-        }
-
-    }
-
-    Context "Function tests" {
-
-        BeforeAll {
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module') -ItemType Directory
-            New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data') -ItemType Directory
-
-            '@{
+                '@{
                 ''1'' = @{
                     Key = ''.SYNOPSIS''
                     Required = $true
@@ -84,131 +86,133 @@ Describe "TestHelpTokensCountIsValid.Tests" {
                     MinOccurrences = 0
                     MaxOccurrences = 0
                 }
-            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpElementRules.psd1')
-        }
-
-        BeforeEach {
-            Mock Get-Module -ParameterFilter { $Name -eq "PSQualityCheck" } {
-                return @{'ModuleBase' = Join-Path -Path $TestDrive -ChildPath 'module' }
+            }' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
             }
-        }
 
-        It "should throw when passing null parameters" {
-
-            {
-
-                TestHelpTokensCountIsValid -HelpTokens $null
-
-            } | Should -Throw
-
-        }
-
-        It "should not throw when checking required help tokens count" {
-
-            {
-                $helpTokens = @{
-                    '.SYNOPSIS' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        }
-                    )
+            BeforeEach {
+                Mock Get-Module -ParameterFilter { $Name -eq "PSQualityCheck" } {
+                    return @{'ModuleBase' = Join-Path -Path $TestDrive -ChildPath 'module' }
                 }
+            }
 
-                TestHelpTokensCountIsValid -HelpTokens $helpTokens
+            It "should throw when passing null parameters" {
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                {
 
-            } | Should -Not -Throw
+                    TestHelpTokensCountIsValid -HelpTokens $null -HelpRulesPath $null
 
-        }
+                } | Should -Throw
 
-        It "should throw when required help token is out of min/max range" {
+            }
 
-            {
-                $helpTokens = @{
-                    '.SYNOPSIS'    = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        },
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 2
-                            "Text"       = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 3
-                            "Text"       = ""
-                        }
-                    )
-                    '.PARAMETER'   = @(
-                        @{
-                            "Name"       = "Path"
-                            "LineNumber" = 5
-                            "Text"       = ""
-                        }
-                    )
-                }
+            It "should not throw when checking required help tokens count" {
 
-                TestHelpTokensCountIsValid -HelpTokens $helpTokens
+                {
+                    $helpTokens = @{
+                        '.SYNOPSIS' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            }
+                        )
+                    }
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                    TestHelpTokensCountIsValid -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
 
-            } | Should -Throw
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
-        }
+                } | Should -Not -Throw
+
+            }
+
+            It "should throw when required help token is out of min/max range" {
+
+                {
+                    $helpTokens = @{
+                        '.SYNOPSIS'    = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            },
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 2
+                                "Text"       = ""
+                            }
+                        )
+                        '.DESCRIPTION' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 3
+                                "Text"       = ""
+                            }
+                        )
+                        '.PARAMETER'   = @(
+                            @{
+                                "Name"       = "Path"
+                                "LineNumber" = 5
+                                "Text"       = ""
+                            }
+                        )
+                    }
+
+                    TestHelpTokensCountIsValid -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
+
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+
+                } | Should -Throw
+
+            }
 
 
-        It "should not throw when optional help token is out of min/max range" {
+            It "should not throw when optional help token is out of min/max range" {
 
-            {
-                $helpTokens = @{
-                    '.SYNOPSIS'    = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 1
-                            "Text"       = ""
-                        }
-                    )
-                    '.DESCRIPTION' = @(
-                        @{
-                            "Name"       = $null
-                            "LineNumber" = 3
-                            "Text"       = ""
-                        }
-                    )
-                    '.PARAMETER'   = @(
-                        @{
-                            "Name"       = "Path"
-                            "LineNumber" = 5
-                            "Text"       = ""
-                        }
-                    )
-                    '.NOTES'       = @(
-                        @{
-                            "Name"       = ""
-                            "LineNumber" = 10
-                            "Text"       = "This is a note"
-                        },
-                        @{
-                            "Name"       = ""
-                            "LineNumber" = 10
-                            "Text"       = "This is a note"
-                        }
-                    )
-                }
+                {
+                    $helpTokens = @{
+                        '.SYNOPSIS'    = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 1
+                                "Text"       = ""
+                            }
+                        )
+                        '.DESCRIPTION' = @(
+                            @{
+                                "Name"       = $null
+                                "LineNumber" = 3
+                                "Text"       = ""
+                            }
+                        )
+                        '.PARAMETER'   = @(
+                            @{
+                                "Name"       = "Path"
+                                "LineNumber" = 5
+                                "Text"       = ""
+                            }
+                        )
+                        '.NOTES'       = @(
+                            @{
+                                "Name"       = ""
+                                "LineNumber" = 10
+                                "Text"       = "This is a note"
+                            },
+                            @{
+                                "Name"       = ""
+                                "LineNumber" = 10
+                                "Text"       = "This is a note"
+                            }
+                        )
+                    }
 
-                TestHelpTokensCountIsValid -HelpTokens $helpTokens
+                    TestHelpTokensCountIsValid -HelpTokens $helpTokens -HelpRulesPath (Join-Path -Path $TestDrive -ChildPath 'module\Data\HelpRules.psd1')
 
-                Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
+                    Assert-MockCalled -CommandName Get-Module -Times 1 -ParameterFilter { $Name -eq "PSQualityCheck" }
 
-            } | Should -Not -Throw
+                } | Should -Not -Throw
+
+            }
 
         }
 
