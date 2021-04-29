@@ -77,7 +77,7 @@ catch {
     #     Uninstall-BuiltModule -Module $module
     #     Unpublish-BuiltModule -Module $module -SourceFolder $sourcePath -ArtifactsFolder $artifactsFolder
     # }
-    throw "Bootstrap Build failed"
+    throw $_
     break
 }
 
@@ -154,7 +154,7 @@ foreach ($result in $unitTestResults) {
 # Check to see whether the unit tests have failed
 if ($unitTestFailedCount -ne 0 ) {
     Write-Error -Message 'One or more module were not built because there were function unit test errors'
-    throw
+    throw $_
 }
 
 # TODO: Add integration tests here
@@ -194,7 +194,7 @@ foreach ($result in $scriptTestResults) {
 }
 if ($scriptTestFailedCount -ne 0 ) {
     Write-Error -Message 'One or more scripts failed unit test'
-    throw
+    throw $_
 }
 ## End of bootstrap build and tests
 
@@ -216,7 +216,7 @@ try {
     }
 }
 catch {
-    throw "Build failed"
+    throw $_
     break
 }
 
