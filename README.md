@@ -2,6 +2,8 @@
 
 ## Summary
 
+### **NEW** PSQualityCheck v2.0.0 and **COMING SOON!** its companion module PSQualityTempate
+
 This is a PowerShell module which runs a series of Pester 5 tests to validate code quality. It uses a combination of Pester tests, PSScriptAnalyzer and a set of quality standards to ensure consistent quality on PowerShell scripts and modules.
 
 For more information please see the wiki here [Wiki](https://github.com/andrewrdavidson/PSQualityCheck/wiki)
