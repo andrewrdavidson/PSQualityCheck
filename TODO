@@ -1,0 +1,8 @@
+Project check - Must contain 1+ Modules with 1+ Functions. Any Function should have 1 unit test. Optional Integration tests.
+
+Project output should contain list of functions and paths.
+
+add function that exports list of modules and paths independant of invoke psqualitycheck
+
+
+

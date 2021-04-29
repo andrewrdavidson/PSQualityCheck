@@ -1,0 +1,6 @@
+**/*.Tests.ps1
+**/*.Checks.ps1
+Extraction.ps1
+*.psd1
+**/data/**
+**/bin/**
