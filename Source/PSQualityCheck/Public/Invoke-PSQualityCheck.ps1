@@ -238,6 +238,15 @@ function Invoke-PSQualityCheck {
             }
             else {
                 Write-Error "Project Path $ProjectPath does not exist"
+                $projectResults =
+                @{
+                    'Count'        = 0
+                    'TotalCount'   = 0
+                    'NotRunCount'  = 0
+                    'PassedCount'  = 0
+                    'FailedCount'  = 0
+                    'SkippedCount' = 0
+                }
             }
 
         }
@@ -418,6 +427,26 @@ function Invoke-PSQualityCheck {
             $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
         }
+        else {
+            $moduleResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
+            $extractionResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
+        }
 
         if ($runScriptCheck -eq $true -and (Test-Path -Path $extractPath -ErrorAction SilentlyContinue)) {
 
@@ -428,6 +457,18 @@ function Invoke-PSQualityCheck {
             $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
             $PesterConfiguration.Run.Container = $container3
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
+
+        }
+        else {
+            $extractedScriptResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
         }
 
         # Tidy up and temporary paths that have been used
@@ -446,6 +487,17 @@ function Invoke-PSQualityCheck {
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
+    }
+    else {
+        $scriptResults =
+        @{
+            'Count'        = 0
+            'TotalCount'   = 0
+            'NotRunCount'  = 0
+            'PassedCount'  = 0
+            'FailedCount'  = 0
+            'SkippedCount' = 0
+        }
     }
 
     # Show/Export results in the various formats
