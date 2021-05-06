@@ -16,7 +16,10 @@ if (-not ($NuGetPath = (Get-Command 'nuget.exe' -ErrorAction SilentlyContinue).P
         Write-Output "Updating System Environment path"
         $path += ";$NuGetPath"
         $env:Path = $path
-        [Environment]::SetEnvironmentVariable("Path", $path, 'Machine')
+        if (-not ($Env:BUILD_SOURCESDIRECTORY -and $Env:BUILD_BUILDNUMBER)) {
+            # Test for Azure build Agent - Exception calling "SetEnvironmentVariable" with "3" argument(s): "Requested registry access is not allowed."
+            [Environment]::SetEnvironmentVariable("Path", $path, 'Machine')
+        }
     }
 
 }
