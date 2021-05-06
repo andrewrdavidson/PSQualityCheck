@@ -6,7 +6,7 @@
     Configuration    = 'Latest'
     Pester           = @{
         Name       = 'Pester'
-        Version    = '5.1.1'
+        Version    = '5.2.0'
         Parameters = @{
             SkipPublisherCheck = $true
         }
