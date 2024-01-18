@@ -4,7 +4,7 @@ param (
     [switch]$Install
 )
 
-Import-Module -Name Pester -MinimumVersion 5.1.0
+Import-Module -Name Pester -MinimumVersion 5.2.0
 Import-Module -Name Cofl.Util -MinimumVersion 1.2.2
 Import-Module -Name ".\build-functions.psm1" -Force
 

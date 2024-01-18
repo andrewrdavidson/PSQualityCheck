@@ -5,6 +5,6 @@
     # Subsequent relative paths are to the ModuleManifest
     OutputDirectory          = "../../build/PSQualityCheck"
     VersionedOutputDirectory = $true
-    CopyDirectories          = @('data', 'bin')
+    CopyDirectories          = @('data')
 }
 
