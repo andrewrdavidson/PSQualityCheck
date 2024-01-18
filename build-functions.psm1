@@ -73,7 +73,7 @@ function Install-BuiltModule {
         [string]$ModuleName
     )
 
-    Install-Module -Name $ModuleName -Repository "$ModuleName-local"
+    Install-Module -Name $ModuleName -Repository "$ModuleName-local" -Force
 
 }
 

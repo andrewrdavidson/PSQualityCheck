@@ -6,7 +6,7 @@
     Configuration    = 'Latest'
     Pester           = @{
         Name       = 'Pester'
-        Version    = '5.2.0'
+        Version    = '5.5.0'
         Parameters = @{
             SkipPublisherCheck = $true
         }
@@ -15,5 +15,5 @@
     PowerShellGet    = 'Latest'
     PSScriptAnalyzer = 'Latest'
     InvokeBuild      = 'Latest'
-    "Cofl.Util"      = 'Latest'
+    'Cofl.Util'      = 'Latest'
 }

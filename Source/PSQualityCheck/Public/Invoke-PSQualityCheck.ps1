@@ -115,14 +115,14 @@ function Invoke-PSQualityCheck {
     [CmdletBinding()]
     [OutputType([System.Void], [HashTable], [System.Object[]])]
     param (
-        [Parameter(Mandatory = $true, ParameterSetName = "Path")]
+        [Parameter(Mandatory = $true, ParameterSetName = 'Path')]
         [String[]]$Path,
-        [Parameter(Mandatory = $true, ParameterSetName = "File")]
+        [Parameter(Mandatory = $true, ParameterSetName = 'File')]
         [String[]]$File,
-        [Parameter(Mandatory = $true, ParameterSetName = "ProjectPath")]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ProjectPath')]
         [String]$ProjectPath,
 
-        [Parameter(Mandatory = $false, ParameterSetName = "Path")]
+        [Parameter(Mandatory = $false, ParameterSetName = 'Path')]
         [switch]$Recurse,
 
         [Parameter(Mandatory = $false)]
@@ -162,7 +162,7 @@ function Invoke-PSQualityCheck {
     # Validate any incoming parameters for clashes
     if ($PSBoundParameters.ContainsKey('ShowCheckResults') -and $PSBoundParameters.ContainsKey('Passthru')) {
 
-        Write-Error "-ShowCheckResults and -Passthru cannot be used at the same time"
+        Write-Error '-ShowCheckResults and -Passthru cannot be used at the same time'
         break
 
     }
@@ -180,15 +180,14 @@ function Invoke-PSQualityCheck {
 
         if ( -not (Test-Path -Path $HelpRulesPath)) {
 
-            Write-Error "-HelpRulesPath does not exist"
+            Write-Error '-HelpRulesPath does not exist'
             break
 
         }
 
-    }
-    else {
+    } else {
 
-        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath "Data\HelpRules.psd1")
+        $helpRulesPath = (Join-Path -Path $modulePath -ChildPath 'Data\HelpRules.psd1')
 
     }
 
@@ -196,8 +195,7 @@ function Invoke-PSQualityCheck {
 
         # left here so that we can over-ride passed in object with values we require
 
-    }
-    else {
+    } else {
         # Default Pester Parameters
         $PesterConfiguration = [PesterConfiguration]::Default
         $PesterConfiguration.Run.Exit = $false
@@ -221,8 +219,8 @@ function Invoke-PSQualityCheck {
                 # setup the rest of the Path based tests
                 # this needs to include the module/public module/private and scripts folder only, not the data or any other folders
                 $ProjectPath = (Resolve-Path -Path $ProjectPath)
-                $sourceRootPath = (Join-Path -Path $ProjectPath -ChildPath "Source")
-                $scriptPath = (Join-Path -Path $ProjectPath -ChildPath "Scripts")
+                $sourceRootPath = (Join-Path -Path $ProjectPath -ChildPath 'Source')
+                $scriptPath = (Join-Path -Path $ProjectPath -ChildPath 'Scripts')
                 $Path = @($scriptPath)
 
                 # Get the list of Modules
@@ -230,14 +228,22 @@ function Invoke-PSQualityCheck {
 
                 foreach ($module in $modules) {
 
-                    $Path += (Join-Path -Path $module -ChildPath "Public")
-                    $Path += (Join-Path -Path $module -ChildPath "Private")
+                    $Path += (Join-Path -Path $module -ChildPath 'Public')
+                    $Path += (Join-Path -Path $module -ChildPath 'Private')
 
                 }
 
-            }
-            else {
+            } else {
                 Write-Error "Project Path $ProjectPath does not exist"
+                $projectResults =
+                @{
+                    'Count'        = 0
+                    'TotalCount'   = 0
+                    'NotRunCount'  = 0
+                    'PassedCount'  = 0
+                    'FailedCount'  = 0
+                    'SkippedCount' = 0
+                }
             }
 
         }
@@ -257,8 +263,7 @@ function Invoke-PSQualityCheck {
 
                 if ($PSBoundParameters.ContainsKey('IgnoreFile')) {
                     $getFileListSplat.Add('IgnoreFile', (Resolve-Path -Path $IgnoreFile))
-                }
-                else {
+                } else {
                     if ($PSBoundParameters.ContainsKey('Recurse') -or
                         $PSBoundParameters.ContainsKey('ProjectPath')) {
                         $getFileListSplat.Add('Recurse', $true)
@@ -268,8 +273,7 @@ function Invoke-PSQualityCheck {
                 $scriptsToTest += GetFileList @getFileListSplat -Extension '.ps1'
                 $modulesToTest += GetFileList @getFileListSplat -Extension '.psm1'
 
-            }
-            else {
+            } else {
 
                 Write-Warning -Message "$item is not a directory, skipping"
 
@@ -312,8 +316,7 @@ function Invoke-PSQualityCheck {
 
                 }
 
-            }
-            else {
+            } else {
 
                 Write-Warning -Message "$item is not a file, skipping"
 
@@ -336,8 +339,7 @@ function Invoke-PSQualityCheck {
         $runModuleCheck = $false
         $runScriptCheck = $false
 
-    }
-    else {
+    } else {
         $runModuleCheck = $true
         $runScriptCheck = $true
     }
@@ -349,8 +351,7 @@ function Invoke-PSQualityCheck {
             $scriptTagsToInclude = $scriptTags
             $runModuleCheck = $true
             $runScriptCheck = $true
-        }
-        else {
+        } else {
             # Validate tests to include from $Include
             $Include | ForEach-Object {
                 if ($_ -in $moduleTags) {
@@ -417,6 +418,25 @@ function Invoke-PSQualityCheck {
             $PesterConfiguration.Run.Container = $container2
             $extractionResults = Invoke-Pester -Configuration $PesterConfiguration
 
+        } else {
+            $moduleResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
+            $extractionResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
         }
 
         if ($runScriptCheck -eq $true -and (Test-Path -Path $extractPath -ErrorAction SilentlyContinue)) {
@@ -428,6 +448,17 @@ function Invoke-PSQualityCheck {
             $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $extractedScriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
             $PesterConfiguration.Run.Container = $container3
             $extractedScriptResults = Invoke-Pester -Configuration $PesterConfiguration
+
+        } else {
+            $extractedScriptResults =
+            @{
+                'Count'        = 0
+                'TotalCount'   = 0
+                'NotRunCount'  = 0
+                'PassedCount'  = 0
+                'FailedCount'  = 0
+                'SkippedCount' = 0
+            }
         }
 
         # Tidy up and temporary paths that have been used
@@ -442,10 +473,20 @@ function Invoke-PSQualityCheck {
     if ($scriptsToTest.Count -ge 1 -and $runScriptCheck -eq $true) {
 
         # Run the Script tests against all the valid script files found
-        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath }
+        $container3 = New-PesterContainer -Path (Join-Path -Path $modulePath -ChildPath 'Data\Script.Checks.ps1') -Data @{ Source = $scriptsToTest; ScriptAnalyzerRulesPath = $ScriptAnalyzerRulesPath; HelpRulesPath = $HelpRulesPath }
         $PesterConfiguration.Run.Container = $container3
         $scriptResults = Invoke-Pester -Configuration $PesterConfiguration
 
+    } else {
+        $scriptResults =
+        @{
+            'Count'        = 0
+            'TotalCount'   = 0
+            'NotRunCount'  = 0
+            'PassedCount'  = 0
+            'FailedCount'  = 0
+            'SkippedCount' = 0
+        }
     }
 
     # Show/Export results in the various formats
@@ -525,7 +566,7 @@ function Invoke-PSQualityCheck {
         if ($null -ne $scriptResults) {
             $qualityCheckResults +=
             @{
-                'Test'         = "Script Tests"
+                'Test'         = 'Script Tests'
                 'Files Tested' = $scriptsToTest.Count
                 'Total'        = ($scriptResults.TotalCount - $scriptResults.NotRunCount)
                 'Passed'       = $scriptResults.PassedCount
@@ -541,7 +582,7 @@ function Invoke-PSQualityCheck {
 
         $qualityCheckResults +=
         @{
-            'Test'         = "Total"
+            'Test'         = 'Total'
             'Files Tested' = $filesTested
             'Total'        = $total
             'Passed'       = $passed
@@ -568,11 +609,11 @@ function Invoke-PSQualityCheck {
 
     if ($PSBoundParameters.ContainsKey('ExportCheckResults')) {
 
-        $projectResults | Export-Clixml -Path "projectResults.xml"
-        $moduleResults | Export-Clixml -Path "moduleResults.xml"
-        $extractionResults | Export-Clixml -Path "extractionResults.xml"
-        $scriptResults | Export-Clixml -Path "scriptsToTest.xml"
-        $extractedScriptResults | Export-Clixml -Path "extractedScriptResults.xml"
+        $projectResults | Export-Clixml -Path 'projectResults.xml'
+        $moduleResults | Export-Clixml -Path 'moduleResults.xml'
+        $extractionResults | Export-Clixml -Path 'extractionResults.xml'
+        $scriptResults | Export-Clixml -Path 'scriptsToTest.xml'
+        $extractedScriptResults | Export-Clixml -Path 'extractedScriptResults.xml'
 
     }
 
@@ -590,9 +631,8 @@ function Invoke-PSQualityCheck {
 
             return $resultObject
 
-        }
-        else {
-            Write-Error "Unable to pass back result objects. Passthru not enabled in Pester Configuration object"
+        } else {
+            Write-Error 'Unable to pass back result objects. Passthru not enabled in Pester Configuration object'
         }
 
     }
