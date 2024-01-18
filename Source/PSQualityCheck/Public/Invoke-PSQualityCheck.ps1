@@ -622,11 +622,11 @@ function Invoke-PSQualityCheck {
         if ($PesterConfiguration.Run.PassThru.Value -eq $true) {
 
             $resultObject = @{
-                'project'         = $projectResults
-                'module'          = $moduleResults
-                'extraction'      = $extractionResults
-                'script'          = $scriptResults
-                'extractedscript' = $extractedScriptResults
+                'project'          = $projectResults
+                'module'           = $moduleResults
+                'extraction'       = $extractionResults
+                'script'           = $scriptResults
+                'extracted-script' = $extractedScriptResults
             }
 
             return $resultObject
